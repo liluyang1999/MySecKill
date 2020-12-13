@@ -4,11 +4,22 @@
     <data-source source="LOCAL" name="@localhost" uuid="928c06a7-49f5-44ef-bd30-2d8cc02e4f2e">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
       <driver-properties>
         <property name="serverTimezone" value="UTC" />
       </driver-properties>
+    </data-source>
+    <data-source source="LOCAL" name="MySecKill/Hibernate" uuid="08deafad-11b1-4332-ada8-c686f7792cf0">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate</remarks>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://127.0.0.1:3306/world?useUnicode = true \
+                                                     &amp; characterEncoding = UTF-8 \
+                                                     &amp; serverTimezone = UTC \
+                                                     &amp; useSSL = true</jdbc-url>
     </data-source>
   </component>
 </project>
