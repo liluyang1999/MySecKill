@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta charset="UTF-8">
+    <title>登录界面</title>
+</head>
+<body>
+
+    <!--登录信息填写表格 -->
+    <form th:action="@{/test}" th:object="${user}" method="post">
+        <div>
+            <span class="layui-bg-black">账号：</span>
+            <span class="layui-bg-cyan"><input type="text" th:field="*{name}"/> </span>
+        </div>
+    </form>
+
+    <span sec:authentication="name"><strong></strong></span>
+    <span sec:authorize="hasRole('ROLE_ADMIN')">管理员</span>
+    <span sec:authorize="hasRole('ROLE_USER')">普通用户</span>
+
+</body>
+
+</html>
+
+<script src="../../static/layui/layui.js"></script>
+<script>
+    layui.use(['layer','form'], function() {
+        var layer = layui.layer, form = layui.form;
+        layer.msg("欢迎来到保险中心");
+    })
+</script>
