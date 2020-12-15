@@ -1,9 +1,6 @@
 package com.example.lly.entity.RBAC;
 
 import lombok.Data;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,11 +12,11 @@ import java.util.List;
 
 @Entity
 @Data
-public class SystemUser implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  //由数据库自行修改ID
-    private long id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -29,13 +26,13 @@ public class SystemUser implements UserDetails {
     private Boolean enabled = Boolean.TRUE;
 
     @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    private List<SystemRole> roles;
+    private List<Role> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        List<SystemRole> roles = this.getRoles();
-        for(SystemRole role : roles) {
+        List<Role> roles = this.getRoles();
+        for(Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.getRole()));
         }
         return authorities;

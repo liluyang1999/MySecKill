@@ -7,11 +7,11 @@ import java.util.List;
 
 @Entity
 @Data
-public class SystemPermission {
+public class Permission {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -27,20 +27,20 @@ public class SystemPermission {
     private Boolean available = Boolean.FALSE;
 
     @Transient
-    private List<SystemPermission> permissions;   //不会被持久化
+    private List<Permission> permissions;   //不会被持久化
 
 
     @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JoinTable(name = "System_Role_Permission",
-               joinColumns = {@JoinColumn(name = "PermissionId")},
-               inverseJoinColumns = {@JoinColumn(name = "RoleId")})
-    private List<SystemRole> roles;
+    @JoinTable(name = "role_permission",
+               joinColumns = {@JoinColumn(name = "permission_id")},
+               inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    private List<Role> roles;
 
-    public List<SystemPermission> getPermissions() {
+    public List<Permission> getPermissions() {
         return this.permissions;
     }
 
-    public void setPermissions(List<SystemPermission> permissions) {
+    public void setPermissions(List<Permission> permissions) {
         this.permissions = permissions;
     }
 

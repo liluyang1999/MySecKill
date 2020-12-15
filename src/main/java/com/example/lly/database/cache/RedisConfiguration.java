@@ -1,4 +1,4 @@
-package com.example.lly.database.redis;
+package com.example.lly.database.cache;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;

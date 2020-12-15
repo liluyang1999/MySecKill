@@ -7,11 +7,11 @@ import java.util.List;
 
 @Entity
 @Data
-public class SystemRole {
+public class Role {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
     private String name;
 
     private String role;
@@ -19,16 +19,16 @@ public class SystemRole {
     private Boolean available = Boolean.FALSE;  //该角色是否可用
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "system_role_permission",
+    @JoinTable(name = "role_permission",
                joinColumns = {@JoinColumn(name = "RoleID")},
                inverseJoinColumns = {@JoinColumn(name = "PermissionID")})
-    private List<SystemPermission> permissions;
+    private List<Permission> permissions;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "system_user_role",
+    @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "RoleID")},
             inverseJoinColumns = {@JoinColumn(name = "UserID")})
-    private List<SystemUser> systemUsers;
+    private List<User> users;
 
 
     private void testFunction(String str1) {
