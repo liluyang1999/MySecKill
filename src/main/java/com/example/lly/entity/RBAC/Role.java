@@ -10,7 +10,7 @@ import java.util.List;
 public class Role {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
@@ -30,9 +30,5 @@ public class Role {
             inverseJoinColumns = {@JoinColumn(name = "UserID")})
     private List<User> users;
 
-
-    private void testFunction(String str1) {
-
-    }
 
 }

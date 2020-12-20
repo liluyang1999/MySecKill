@@ -5,12 +5,12 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Entity   //This entity will be administered by JPA
 @Data
 public class Permission {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)   //由数据库自行修改ID
     private Long id;
 
     private String name;
