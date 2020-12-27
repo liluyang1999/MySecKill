@@ -2,6 +2,8 @@ package com.example.lly.util;
 
 public class CodeCollection {
 
+    public static final int unknownException = 100;
+
     public static final int success = 200;
 
     public static final int requestError = 400;
