@@ -38,8 +38,4 @@ public class Result extends HashMap<String, Object> {
     }
 
 
-
-
-
-
 }

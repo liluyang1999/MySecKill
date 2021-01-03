@@ -1,6 +1,7 @@
 package com.example.lly.util.encryption;
 
 import com.example.lly.util.BaseUtil;
+import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 
