@@ -3,11 +3,12 @@ package com.example.lly.entity.RBAC;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity   //This entity will be administered by JPA
 @Data
-public class Permission {
+public class Permission implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)   //由数据库自行修改ID

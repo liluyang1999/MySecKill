@@ -1,10 +1,11 @@
 package com.example.lly.entity.pojo;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Result extends HashMap<String, Object> {
+public class Result extends HashMap<String, Object> implements Serializable {
 
-    public static final long serialVersonUID = 1L;
+    public static final long serialVersionUID = 1L;
 
     public static Result okay(Object msg) {
         Result result = new Result();

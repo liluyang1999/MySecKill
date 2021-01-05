@@ -36,7 +36,7 @@ public class RedisConfig extends CachingConfigurerSupport {
         return cacheManager;
     }
 
-    //Registered as Beas for the Visualization
+    //Registered as Beans for the Visualization
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
