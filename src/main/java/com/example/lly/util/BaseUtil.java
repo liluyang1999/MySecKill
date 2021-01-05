@@ -16,5 +16,7 @@ public class BaseUtil {
         return str + prefix;
     }
 
+    public static int joker = 3;
+
 
 }

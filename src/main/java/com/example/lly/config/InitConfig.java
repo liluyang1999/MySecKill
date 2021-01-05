@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.ServletContext;
-import java.beans.Transient;
 import java.util.ResourceBundle;
 
 //CDN Configuration
@@ -24,8 +23,6 @@ public class InitConfig implements ApplicationListener<ContextRefreshedEvent> {
             }
         }
     }
-
-
 
 
 }
