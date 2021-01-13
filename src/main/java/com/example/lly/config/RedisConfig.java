@@ -10,6 +10,8 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
+import java.io.Serializable;
+
 @Configuration
 public class RedisConfig extends CachingConfigurerSupport {
 
@@ -38,8 +40,8 @@ public class RedisConfig extends CachingConfigurerSupport {
 
     //Registered as Beans for the Visualization
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, Serializable> redisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, Serializable> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(factory);
         return redisTemplate;
     }

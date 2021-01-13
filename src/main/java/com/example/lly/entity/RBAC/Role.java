@@ -6,8 +6,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity
 @Data
+@Entity
+@Table(name = "rbac_role")
 public class Role implements Serializable {
 
     @Id

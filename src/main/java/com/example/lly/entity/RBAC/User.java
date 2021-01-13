@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
+//Role-Based Access Control，基于角色的访问控制
 @Data
+@Entity
+@Table(name = "rbac_user")
 public class User implements UserDetails {
 
     @Id

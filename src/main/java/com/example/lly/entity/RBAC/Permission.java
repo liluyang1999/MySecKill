@@ -6,9 +6,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity   //This entity will be administered by JPA
 @Data
-public class Permission implements Serializable {
+@Entity   //This entity will be administered by JPA
+@Table(name = "rbac_permission")
+public class Permission implements Serializable, Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)   //由数据库自行修改ID
