@@ -13,7 +13,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name = "seckill")  //name, schema, catalog...
-public class SecKill implements Serializable, Cloneable {
+public class Seckill implements Serializable, Cloneable {
 
     @Serial
     private static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;

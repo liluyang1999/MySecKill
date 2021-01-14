@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "success_seckill")
-public class SuccessSecKill extends SecKill implements Serializable, Cloneable {
+public class SuccessSeckill extends Seckill implements Serializable, Cloneable {
 
     @Serial
     private static final long serialVersionUID = 1L;

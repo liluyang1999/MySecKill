@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "fail_seckill")
-public class FailSecKill extends SecKill implements Serializable, Cloneable {
+public class FailSeckill extends Seckill implements Serializable, Cloneable {
 
     @Serial
     private static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;

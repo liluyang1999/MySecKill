@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MySecKill.iml" filepath="$PROJECT_DIR$/MySecKill.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MySeckill.iml" filepath="$PROJECT_DIR$/MySeckill.iml" />
     </modules>
   </component>
 </project>

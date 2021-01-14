@@ -1,6 +1,6 @@
 package com.example.lly.queue.redis;
 
-import com.example.lly.service.impl.SecKillServiceImpl;
+import com.example.lly.service.impl.SeckillServiceImpl;
 import com.example.lly.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ public class RedisConsumer {
     private RedisUtil redisUtil;
 
     @Autowired
-    private SecKillServiceImpl serviceKillService;
+    private SeckillServiceImpl serviceKillService;
 
 
 
