@@ -1,7 +1,5 @@
 package com.example.lly.util.algorithm;
 
-import io.lettuce.core.GeoArgs;
-
 public class BubbleSort {
 
     public static int[] sort(int[] list) {
@@ -18,10 +16,6 @@ public class BubbleSort {
         }
         return sortedList;
     }
-
-//    public static Object[] sort(Object[] list) {
-//
-//    }
 
 
     public static void main(String[] args) {
