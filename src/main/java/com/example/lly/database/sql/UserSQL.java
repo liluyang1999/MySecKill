@@ -5,14 +5,14 @@ import java.util.Map;
 //Writing SQL below
 public class UserSQL {
 
-    String tableName = "system_user";
+    String tableName = "user";
 
     public String listAllUser() {
         return "SELECT * FROM user";
     }
 
     public String queryByUserId(Map<String, Object> param) {
-        Long userID = (Long)param.get("systemUserId");
+        Long userID = (Long)param.get("userId");
         return "SELECT * FROM " + tableName + " WHERE id = " + userID;
     }
 

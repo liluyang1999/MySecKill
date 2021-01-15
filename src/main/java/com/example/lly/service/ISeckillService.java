@@ -6,7 +6,7 @@ import com.example.lly.entity.pojo.SeckillInfo;
 
 import java.util.List;
 
-public interface SeckillService {
+public interface ISeckillService {
 
     //单个秒杀
     SeckillInfo getSeckillById(long id);

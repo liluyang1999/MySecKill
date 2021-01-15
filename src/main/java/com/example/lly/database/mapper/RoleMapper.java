@@ -13,15 +13,12 @@ import java.util.List;
 public interface RoleMapper {
 
     @SelectProvider(type = RoleSQL.class, method = "queryByRoleID")
-    @ResultMap("Role")
-    Role queryByRoleID(@Param("systemRoleId") Long systemRoleId);
+    Role queryByRoleID(@Param("roleId") Long roleId);
 
     @SelectProvider(type = RoleSQL.class, method = "queryAllAvailableRole")
-    @ResultMap("Role")
     List<Role> queryAllAvailableRole();
 
     @SelectProvider(type = RoleSQL.class, method = "queryAllUnavailableRole")
-    @ResultMap("Role")
     List<Role> queryAllUnavailableRole();
 
 

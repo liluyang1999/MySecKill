@@ -2,6 +2,7 @@ package com.example.lly.queue;
 
 import com.example.lly.entity.pojo.SeckillInfo;
 import com.example.lly.entity.pojo.SuccessInfo;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -10,22 +11,28 @@ public class SeckillQueue {
 
     private static final int MAX_SIZE = 150;
 
+    /**
+     * 构造函数私有化防止被实例化
+     */
     private SeckillQueue(){}
 
     /**
-     *静态内部类，进程被调用时候才会加载出来，有一定的延迟性
+     *静态内部类，延迟加载节省开销
      */
-    private static class QueueHolder {
+    private static class Singleton {
         private static SeckillQueue seckillQueue = new SeckillQueue();
     }
 
+    /**
+     * 得到实例唯一接口
+     */
     public static SeckillQueue getSeckillQueue() {
-        return QueueHolder.seckillQueue;
+        return Singleton.seckillQueue;
     }
 
     /**
     *ArrayBlockingQueue 一个对象数组 + 一把锁 + 两个条件
-    *LinkedBlockingQueue
+    *LinkedBlockingQueue   链表，两把锁
      */
     //public BlockingQueue<SuccessSeckill> successSeckillsQueue = new LinkedBlockingQueue<>(MAX_SIZE);
     public static BlockingQueue<SuccessInfo> blockingQueue = new ArrayBlockingQueue<>(MAX_SIZE);
@@ -45,6 +52,9 @@ public class SeckillQueue {
         return blockingQueue.take();
     }
 
+    /**
+     * 阻塞队列大小
+     */
     public int size() {
         return blockingQueue.size();
     }

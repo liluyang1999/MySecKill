@@ -5,7 +5,7 @@ import java.util.Map;
 //Writing SQL below
 public class RoleSQL {
 
-    String tableName = "system_role";
+    String tableName = "role";
 
     public String queryByRoleId(Map<String, Object> param) {
         long id = (long)param.get("id");

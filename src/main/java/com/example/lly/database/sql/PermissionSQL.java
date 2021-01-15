@@ -5,7 +5,7 @@ import java.util.Map;
 //Write SQL below
 public class PermissionSQL {
 
-    String tableName = "system_permission";
+    String tableName = "permission";
 
     public String queryByPermissionId(Map<String, Object> param) {
         Long permissionId = (Long)(param.get("id"));

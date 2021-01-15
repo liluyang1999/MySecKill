@@ -17,7 +17,7 @@ public interface UserMapper {
 
     @SelectProvider(type = UserSQL.class, method = "queryByUserId")
     @ResultMap("User")
-    User queryBySystemUserId(@Param("systemUserId") long systemUserId);
+    User queryBySystemUserId(@Param("userId") long systemUserId);
 
 
 }
