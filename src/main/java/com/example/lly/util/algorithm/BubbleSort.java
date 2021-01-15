@@ -18,6 +18,8 @@ public class BubbleSort {
     }
 
 
+
+
     public static void main(String[] args) {
         int[] list1 = {1,3,2,5,2,4,1,2};
         list1 = BubbleSort.sort(list1);

@@ -2,24 +2,24 @@ package com.example.lly.service;
 
 import com.example.lly.entity.pojo.Product;
 import com.example.lly.entity.pojo.Result;
-import com.example.lly.entity.pojo.Seckill;
+import com.example.lly.entity.pojo.SeckillInfo;
 
 import java.util.List;
 
 public interface SeckillService {
 
     //单个秒杀
-    Seckill getSeckillById(long id);
+    SeckillInfo getSeckillById(long id);
 
     //所有秒杀
-    List<Seckill> getAllSeckill();
+    List<SeckillInfo> getAllSeckill();
 
     //得到秒杀活动售卖的所有商品
     List<Product> getAllProductInSeckill(long secKillId);
 
     //得到秒杀活动售卖的所有商品的数量
     int getProductNumberInSeckill(long secKillId);
-    int getProductNumberInSeckill(Seckill secKill);
+    int getProductNumberInSeckill(SeckillInfo secKill);
 
     //判断该商品是否在秒杀商品队列里
     boolean productInSeckill(long id);

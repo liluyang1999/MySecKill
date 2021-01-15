@@ -1,43 +1,50 @@
 package com.example.lly.entity.pojo;
 
 import com.example.lly.util.BaseUtil;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
-/*
-@Entity 和 @Table 配套使用，优先级：@Table > @Entity
+/**
+ * 注解 Entity 和 Table 配套使用，优先级：@Table > @Entity
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "seckill")  //name, schema, catalog...
-public class Seckill implements Serializable, Cloneable {
+@Table(name = "seckill_info")  //name, schema, catalog...
+public class SeckillInfo implements Serializable, Cloneable {
 
     @Serial
     private static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;
 
     @Version
-    private int version;
+    private int versionCount;   //乐观锁版本控制
 
     @Id
     @NotNull
-    @Column(name = "seckill_id")
+    @Column(name = "seckill_id", unique = true)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long seckillId;
+    protected long seckillId;  //秒杀活动唯一Id
 
-    protected String name;
+    protected String name;   //秒杀活动名字
 
-    protected int number;
+    protected int number;    //剩余数量
 
-    protected Activity activity;   //具体描述活动
+    @OneToOne
+    protected Product product;   //秒杀的商品
 
-    protected Timestamp createTime;
+    protected Timestamp createTime;  //活动创建时间
 
-    protected Timestamp startTime;
+    protected Timestamp startTime;   //活动开始时间
 
-    protected Timestamp endTime;
+    protected Timestamp endTime;     //活动结束时间
 
     public long getSeckillId() {
         return seckillId;
@@ -61,14 +68,6 @@ public class Seckill implements Serializable, Cloneable {
 
     public void setNumber(int number) {
         this.number = number;
-    }
-
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
     }
 
     public Timestamp getCreateTime() {
@@ -95,6 +94,18 @@ public class Seckill implements Serializable, Cloneable {
         this.endTime = endTime;
     }
 
+    @Override
+    public String toString() {
+        return "SeckillInfo{" +
+                "seckillId=" + seckillId +
+                ", name='" + name + '\'' +
+                ", number=" + number +
+                ", productName='" + product.getName() + '\'' +
+                ", createTime=" + createTime +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
+    }
 }
 
 

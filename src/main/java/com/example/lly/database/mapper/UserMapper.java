@@ -20,6 +20,4 @@ public interface UserMapper {
     User queryBySystemUserId(@Param("systemUserId") long systemUserId);
 
 
-
-
 }

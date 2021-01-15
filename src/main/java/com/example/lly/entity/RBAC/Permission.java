@@ -31,7 +31,6 @@ public class Permission implements Serializable, Cloneable {
     @Transient
     private List<Permission> permissions;   //不会被持久化
 
-
     @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(name = "role_permission",
                joinColumns = {@JoinColumn(name = "permission_id")},

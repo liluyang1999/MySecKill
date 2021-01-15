@@ -1,7 +1,7 @@
 package com.example.lly.queue;
 
-import com.example.lly.entity.pojo.Seckill;
-import com.example.lly.entity.pojo.SuccessSeckill;
+import com.example.lly.entity.pojo.SeckillInfo;
+import com.example.lly.entity.pojo.SuccessInfo;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -28,20 +28,20 @@ public class SeckillQueue {
     *LinkedBlockingQueue
      */
     //public BlockingQueue<SuccessSeckill> successSeckillsQueue = new LinkedBlockingQueue<>(MAX_SIZE);
-    public static BlockingQueue<SuccessSeckill> blockingQueue = new ArrayBlockingQueue<>(MAX_SIZE);
+    public static BlockingQueue<SuccessInfo> blockingQueue = new ArrayBlockingQueue<>(MAX_SIZE);
 
     /**
      * offer方法是队列未满插入返回true，满了则返回false不插入，适用于秒杀情景，还可以设定等待时间，其余add会抛异常，put正常等待唤醒
      * 生产者入队操作
      */
-    public Boolean produce(SuccessSeckill seckill) {
+    public Boolean produce(SuccessInfo seckill) {
         return blockingQueue.offer(seckill);
     }
 
     /**
      *消费者出队操作
      */
-    public Seckill consume(Seckill seckill) throws InterruptedException {
+    public SeckillInfo consume(SeckillInfo seckillInfo) throws InterruptedException {
         return blockingQueue.take();
     }
 

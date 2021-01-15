@@ -12,13 +12,13 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class HttpUtil {
 
-    public String sendMessageByClient(String url, MultiValueMap<String, String> params, HttpMethod method) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);  //表单提交
-        RequestEntity<MultiValueMap<String, String>> requestEntity = new RequestEntity<MultiValueMap<String, String>>(params, httpHeaders);
-        return restTemplate.exchange(url, method, requestEntity, String.class).getBody();  //通用方法发送请求
-    }
+//    public String sendMessageByClient(String url, MultiValueMap<String, String> params, HttpMethod method) {
+//        RestTemplate restTemplate = new RestTemplate();
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);  //表单提交
+//        RequestEntity<MultiValueMap<String, String>> requestEntity = new RequestEntity<MultiValueMap<String, String>>(params, httpHeaders);
+//        return restTemplate.exchange(url, method, requestEntity, String.class).getBody();  //通用方法发送请求
+//    }
 
 
 }
