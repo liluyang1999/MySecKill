@@ -1,7 +1,7 @@
 package com.example.lly.database.mapper;
 
-import com.example.lly.database.sql.PermissionSQL;
-import com.example.lly.entity.RBAC.Permission;
+import com.example.lly.database.sql.provider.PermissionSqlProvider;
+import com.example.lly.object.entity.rbac.Permission;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
@@ -9,16 +9,12 @@ import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
 
-@Mapper
-public interface PermissionMapper {
+public interface PermissionMapper extends BaseMapper<Permission> {
 
-    @SelectProvider(type = PermissionSQL.class, method = "queryByPermissionId")
-    @ResultMap("Permission")
-    Permission queryByPermissionSQL(@Param("systemPermissionId") Long systemPermissionId);
+//    @SelectProvider(type = PermissionSqlProvider.class, method = "queryByPermissionId")
+//    Permission queryByPermissionId(@Param("permissionId") long id);
 
-    @SelectProvider(type = PermissionSQL.class, method = "queryByPermissionName")
-    @ResultMap("Permission")
-    List<Permission> queryByPermissionName(@Param("systemPermissionName") String systemPermissionName);
-
+    @SelectProvider(type = PermissionSqlProvider.class, method = "queryByPermissionName")
+    List<Permission> queryByPermissionName(@Param("name") String name);
 
 }

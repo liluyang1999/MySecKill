@@ -25,10 +25,20 @@ public class BaseUtil implements Serializable {
          return str1 + str2;
     }
 
-    public String addPrefix(String str, String prefix) {
+    public static String addPrefix(String str, String prefix) {
         return prefix + str;
     }
 
+    public static String getTableName(Object entity) {
+        return "t_" + entity.getClass().getSimpleName().toLowerCase();
+    }
 
+    public static String getTableName(Class<?> clazz) {
+        return "t_" + clazz.getSimpleName().toLowerCase();
+    }
+
+    public static Boolean notNullAndBlank(String str) {
+        return (str != null ) && (!"".equals(str));
+    }
 
 }

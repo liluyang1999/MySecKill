@@ -1,5 +1,6 @@
 package com.example.lly.service.impl;
 
+import com.example.lly.service.HttpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
  */
 
 @Service
-public class HttpServiceImpl {
+public class HttpServiceImpl implements HttpService {
 
     private RestTemplate restTemplate;
 
@@ -19,6 +20,7 @@ public class HttpServiceImpl {
         this.restTemplate = new RestTemplate();
     }
 
+    @Override
     public String sendMessageByClient(String url, MultiValueMap<String, String> params, HttpMethod method) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);  //表单提交

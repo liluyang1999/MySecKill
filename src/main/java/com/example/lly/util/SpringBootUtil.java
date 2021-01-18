@@ -15,7 +15,7 @@ public class SpringBootUtil implements ApplicationContextAware {
         if(SpringBootUtil.applicationContext == null) {
             SpringBootUtil.applicationContext = applicationContext;
         }
-        System.out.println("****ApplicationContext设置完成！****");
+        System.out.println("****************ApplicationContext设置完成！**************************************");
     }
 
     public static ApplicationContext getApplicationContext() {

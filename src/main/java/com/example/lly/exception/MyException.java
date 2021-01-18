@@ -1,9 +1,7 @@
 package com.example.lly.exception;
 
 import com.example.lly.util.CodeCollection;
-import lombok.Data;
 
-@Data
 public class MyException extends RuntimeException {
 
     private static final Long serialVersionUID = 1L;

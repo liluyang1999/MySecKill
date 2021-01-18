@@ -17,7 +17,6 @@ public class RedisConfig extends CachingConfigurerSupport {
 
     @Bean
     public KeyGenerator keyGenerator() {
-
         //Define the existing policy of cache data
         //Lambda expression
         return (target, method, params) -> {

@@ -8,6 +8,7 @@ class MySeckillApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }
