@@ -1,8 +1,8 @@
 package com.example.lly.service;
 
-import com.example.lly.object.entity.Product;
-import com.example.lly.object.pojo.Result;
-import com.example.lly.object.entity.SeckillInfo;
+import com.example.lly.entity.Product;
+import com.example.lly.dto.Result;
+import com.example.lly.entity.SeckillInfo;
 
 import java.util.List;
 
@@ -36,9 +36,6 @@ public interface SeckillService {
     //上锁，普通锁 or AOP+锁
     Result lockSeckill(long userId, long seckillId);
     Result lockSecKillWithAop(long userId, long seckillId);
-
-
-
 
 
 }

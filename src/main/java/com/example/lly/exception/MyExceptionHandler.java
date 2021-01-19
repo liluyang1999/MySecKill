@@ -1,6 +1,6 @@
 package com.example.lly.exception;
 
-import com.example.lly.object.pojo.Result;
+import com.example.lly.dto.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;

@@ -1,8 +1,8 @@
 package com.example.lly.service.impl;
 
-import com.example.lly.object.entity.Product;
-import com.example.lly.object.entity.SeckillInfo;
-import com.example.lly.object.pojo.Result;
+import com.example.lly.entity.Product;
+import com.example.lly.entity.SeckillInfo;
+import com.example.lly.dto.Result;
 import com.example.lly.service.SeckillService;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,6 @@ import java.util.List;
 
 @Service
 public class SeckillServiceImpl implements SeckillService {
-
 
     @Override
     public SeckillInfo getSeckillById(long id) {

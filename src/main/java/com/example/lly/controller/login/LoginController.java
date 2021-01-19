@@ -1,9 +1,9 @@
 package com.example.lly.controller.login;
 
-import com.example.lly.database.mapper.BaseMapper;
-import com.example.lly.database.mapper.UserMapper;
-import com.example.lly.object.entity.Product;
-import com.example.lly.object.entity.rbac.User;
+import com.example.lly.dao.mapper.BaseMapper;
+import com.example.lly.dao.mapper.rbac.UserMapper;
+import com.example.lly.entity.Product;
+import com.example.lly.entity.rbac.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -15,7 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 //@ComponentScan("com.example.lly.config")
 @SpringBootApplication
 @EnableCaching
-@MapperScan("com.example.lly.database.mapper")
+@MapperScan("com.example.lly.dao.mapper")
 public class MySecKillApplication {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MySecKillApplication.class);
