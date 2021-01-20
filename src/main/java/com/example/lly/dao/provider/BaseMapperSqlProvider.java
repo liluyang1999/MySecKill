@@ -8,20 +8,6 @@ import java.util.Map;
 
 public class BaseMapperSqlProvider {
 
-
-    public String queryById(Map<String, Object> params) {
-        String tableName = BaseUtil.getTableName((Class<?>) (params.get("clazz")));
-        Integer id = (Integer) params.get("id");
-        return "SELECT * FROM " + tableName + " WHERE id = " + id;
-    }
-
-
-    public String queryAll(Map<String, Object> params) {
-        String tableName = BaseUtil.getTableName((Class<?>) (params.get("clazz")));
-        return "SELECT * FROM " + tableName;
-    }
-
-
     public String insert(Object entity) {
         String tableName = BaseUtil.getTableName(entity);
         Class<?> clazz = entity.getClass();
@@ -75,6 +61,18 @@ public class BaseMapperSqlProvider {
         return sql.toString();
     }
 
+
+//    public String queryById(Map<String, Object> params) {
+//        String tableName = BaseUtil.getTableName((Class<?>) (params.get("clazz")));
+//        Integer id = (Integer) params.get("id");
+//        return "SELECT * FROM " + tableName + " WHERE id = " + id;
+//    }
+//
+//
+//    public String queryAll(Map<String, Object> params) {
+//        String tableName = BaseUtil.getTableName((Class<?>) (params.get("clazz")));
+//        return "SELECT * FROM " + tableName;
+//    }
 
 }
 

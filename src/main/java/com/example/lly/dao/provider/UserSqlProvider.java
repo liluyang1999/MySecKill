@@ -1,5 +1,7 @@
 package com.example.lly.dao.provider;
 
+import java.util.Map;
+
 public class UserSqlProvider {
 
     private final String userTableName = "t_user";
@@ -16,6 +18,16 @@ public class UserSqlProvider {
 
     public String queryAll() {
         return "SELECT * FROM " + userTableName;
+    }
+
+    public String queryByAccount(String account) {
+        return "SELECT * FROM " + userTableName + " WHERE account = " + account;
+    }
+
+    public String queryByAccountAndPassword(Map<String, Object> params) {
+        String account = (String) params.get("account");
+        String password = (String) params.get("password");
+        return "SELECT * FROM " + userTableName + " WHERE account = " + account + "AND password = " + password;
     }
 
 }

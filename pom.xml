@@ -25,6 +25,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.6</version>
+        </dependency>
+
         <!--数据库-->
         <dependency>
             <groupId>mysql</groupId>
@@ -85,6 +91,13 @@
             <optional>true</optional>
         </dependency>
         <!--********************-->
+
+        <!--秒杀消息推送-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <!--******************************-->
 
         <!--Java lang包增强-->
         <dependency>

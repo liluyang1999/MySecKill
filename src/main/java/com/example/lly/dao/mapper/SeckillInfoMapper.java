@@ -2,18 +2,31 @@ package com.example.lly.dao.mapper;
 
 import com.example.lly.dao.provider.SeckillInfoSqlProvider;
 import com.example.lly.entity.SeckillInfo;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.*;
 
+import javax.persistence.ForeignKey;
 import java.sql.Timestamp;
 import java.util.List;
 
 public interface SeckillInfoMapper extends BaseMapper<SeckillInfo> {
 
+    @Results(id = "seckillInfoMap", value = {
+            @Result(property = "id", column = "id"),
+            @Result(property = "name", column = "name"),
+            @Result(property = "number", column = "number"),
+            @Result(property = "createTime", column = "create_time"),
+            @Result(property = "startTime", column = "start_time"),
+            @Result(property = "endTime", column = "end_time"),
+            @Result(property = "version", column = "version")
+    })
+    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryById")
+    SeckillInfo queryById(@Param("id") Integer id);
+
 
     /**
      * 按照索引值(从零开始)最大数量来查询，对应SQL语句的LIMIT用法
      */
+    @ResultMap("seckillInfoMap")
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryByLimit")
     List<SeckillInfo> queryByLimit(@Param("index") int index, @Param("limit") int limit);
 

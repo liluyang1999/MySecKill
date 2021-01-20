@@ -1,6 +1,5 @@
 package com.example.lly.exception;
 
-import com.example.lly.dto.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
@@ -21,23 +20,23 @@ public class MyExceptionHandler {
     public void initBinder(WebDataBinder binder) {}
 
     @ExceptionHandler(MyException.class)
-    public Result handleException(MyException exception) {
-        Result result = new Result();
-        result.put("code", exception.getCode());
-        result.put("msg", exception.getMessage());
-        return result;
+    public MsgResult handleException(MyException exception) {
+        MsgResult msgResult = new MsgResult();
+        msgResult.put("code", exception.getCode());
+        msgResult.put("msg", exception.getMessage());
+        return msgResult;
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
-    public Result handleException(DuplicateKeyException exception) {
+    public MsgResult handleException(DuplicateKeyException exception) {
         logger.error(exception.getMessage());
-        return Result.error("检测到数据库中存在着重复记录");
+        return MsgResult.error("检测到数据库中存在着重复记录");
     }
 
     @ExceptionHandler(Exception.class)
-    public Result handleException(Exception exception) {
+    public MsgResult handleException(Exception exception) {
         logger.error(exception.getMessage());
-        return Result.error();
+        return MsgResult.error();
     }
 
 

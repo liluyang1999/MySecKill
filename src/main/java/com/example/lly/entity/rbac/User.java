@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "t_user")
-public class User implements UserDetails {
+public class User implements UserDetails, Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +30,7 @@ public class User implements UserDetails {
     private String name;
 
     private String password;
+
     private Boolean enabled;
 
     @Column(unique = true)
@@ -37,11 +39,10 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @Transient
     @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(name = "t_user_role",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private List<Role> roles;
 
     @Override
@@ -49,7 +50,7 @@ public class User implements UserDetails {
         List<GrantedAuthority> authorities = new ArrayList<>();
         List<Role> roles = this.getRoles();
         for(Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
+            authorities.add(new SimpleGrantedAuthority(role.getRole()));
         }
         return authorities;
     }
@@ -84,5 +85,17 @@ public class User implements UserDetails {
         return true;
     }
 
-    public static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;
+
+    @Serial
+    @Transient
+    private static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
 }
+
+
+

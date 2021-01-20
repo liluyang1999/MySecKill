@@ -1,8 +1,12 @@
 package com.example.lly.controller.login;
 
 import com.example.lly.dao.mapper.BaseMapper;
+import com.example.lly.dao.mapper.rbac.PermissionMapper;
+import com.example.lly.dao.mapper.rbac.RoleMapper;
 import com.example.lly.dao.mapper.rbac.UserMapper;
 import com.example.lly.entity.Product;
+import com.example.lly.entity.rbac.Permission;
+import com.example.lly.entity.rbac.Role;
 import com.example.lly.entity.rbac.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,32 +25,28 @@ public class LoginController {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private RoleMapper roleMapper;
+
+    @Autowired
+    private PermissionMapper permissionMapper;
+
     private Product product = new Product(123,"雀巢奶昔");
 
-    @GetMapping("/insert")
-    public String testMyBatis() {
-        baseMapper.insert(new Product(123, "雀巢奶昔"));
-        return "插入成功!";
+    @GetMapping("/queryUser")
+    public User query1() {
+         return userMapper.queryById(1);
     }
 
-    @GetMapping("/queryAll")
-    public List<User> queryTest() {
-         return userMapper.queryAll();
+    @GetMapping("/queryRole")
+    public Role query2() {
+        return roleMapper.queryById(1);
     }
 
-    @GetMapping("/queryById")
-    public User query() {
-        return userMapper.queryById(1);
+    @GetMapping("/queryPermission")
+    public Permission query3() {
+       return permissionMapper.queryById(11);
     }
 
-    @GetMapping("/update")
-    public int updateTest() {
-       return baseMapper.update(new Product(123, "黑岩石族"));
-    }
-
-    @GetMapping("/delete")
-    public int deleteTest() {
-        return baseMapper.delete(123, Product.class);
-    }
 
 }

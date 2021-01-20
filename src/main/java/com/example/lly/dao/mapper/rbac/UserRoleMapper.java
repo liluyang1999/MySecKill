@@ -2,8 +2,8 @@ package com.example.lly.dao.mapper.rbac;
 
 import com.example.lly.entity.rbac.Role;
 import com.example.lly.entity.rbac.User;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
 
 import java.util.List;
 
@@ -18,5 +18,9 @@ public interface UserRoleMapper {
     @Select("SELECT * FROM t_user WHERE" +
             " id IN (SELECT user_id FROM t_user_role WHERE role_id = #{id})")
     List<User> queryAllUserByRoleId(Integer roleId);
+
+    @Select("SELECT account FROM t_user WHERE" +
+            " id IN (SELECT user_id FROM t_user_role WHERE role_id = #{id})")
+    List<String> queryAllUserAccountByRoleId(Integer roleId);
 
 }

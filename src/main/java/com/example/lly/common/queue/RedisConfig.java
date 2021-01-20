@@ -1,4 +1,4 @@
-package com.example.lly.config;
+package com.example.lly.common.queue;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;

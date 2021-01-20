@@ -33,7 +33,18 @@ public interface UserMapper extends BaseMapper<User> {
 
 
     @ResultMap("userMap")
+    @SelectProvider(type = UserSqlProvider.class, method = "queryByAccount")
+    User queryByAccount(@Param("account") String account);
+
+
+    @ResultMap("userMap")
     @SelectProvider(type = UserSqlProvider.class, method = "queryAll")
     List<User> queryAll();
+
+
+    @ResultMap("userMap")
+    @SelectProvider(type = UserSqlProvider.class, method = "queryByAccountAndPassword")
+    User queryByAccountAndPassword(@Param("account") String account, @Param("password") String password);
+
 
 }

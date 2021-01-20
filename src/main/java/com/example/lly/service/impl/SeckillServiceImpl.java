@@ -2,7 +2,7 @@ package com.example.lly.service.impl;
 
 import com.example.lly.entity.Product;
 import com.example.lly.entity.SeckillInfo;
-import com.example.lly.dto.Result;
+import com.example.lly.exception.MsgResult;
 import com.example.lly.service.SeckillService;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public class SeckillServiceImpl implements SeckillService {
 
     @Override
-    public SeckillInfo getSeckillById(long id) {
+    public SeckillInfo getSeckillInfoById(long id) {
         return null;
     }
 
@@ -67,12 +67,12 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
     @Override
-    public Result lockSeckill(long userId, long seckillId) {
+    public MsgResult lockSeckill(long userId, long seckillId) {
         return null;
     }
 
     @Override
-    public Result lockSecKillWithAop(long userId, long seckillId) {
+    public MsgResult lockSecKillWithAop(long userId, long seckillId) {
         return null;
     }
 }

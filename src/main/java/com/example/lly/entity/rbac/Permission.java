@@ -2,13 +2,15 @@ package com.example.lly.entity.rbac;
 
 import com.example.lly.util.BaseUtil;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 @Data
-@Entity   //This entity will be administered by JPA
+@Entity
 @Table(name = "t_permission")
 public class Permission implements Serializable, Cloneable {
 
@@ -19,7 +21,7 @@ public class Permission implements Serializable, Cloneable {
     private String name;
 
     @Column(columnDefinition = "enum('menu', 'button')")
-    private String resourceType;    //资源类型
+    private String type;    //资源类型
 
     private String url;
 
@@ -27,26 +29,26 @@ public class Permission implements Serializable, Cloneable {
 
     private Integer parentId;      //父类编号
 
-    private Boolean available = Boolean.FALSE;
+    private Boolean available;
 
-    @Transient
-    private List<Permission> permissions;   //不会被持久化
-
-    @Transient
     @ManyToMany(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(name = "t_role_permission",
-               joinColumns = {@JoinColumn(name = "permission_id", referencedColumnName = "id")},
-               inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "permission_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private List<Role> roles;
 
-    public List<Permission> getPermissions() {
-        return this.permissions;
-    }
+    @Serial
+    @Transient
+    private static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;
 
-    public void setPermissions(List<Permission> permissions) {
-        this.permissions = permissions;
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
-
-    public static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;
 
 }
+
+
+
+
+

@@ -18,9 +18,3 @@ public interface BaseMapper<T> {
 
 }
 
-
-//    @SelectProvider(type = BaseMapperSqlProvider.class, method = "queryById")
-//    T queryById(@Param("id") Integer id, @Param("clazz") Class<T> clazz);
-//
-//    @SelectProvider(type = BaseMapperSqlProvider.class, method = "queryAll")
-//    List<T> queryAll(@Param("clazz") Class<T> clazz);

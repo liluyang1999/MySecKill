@@ -1,5 +1,6 @@
 package com.example.lly.dao.mapper.rbac;
 
+import com.example.lly.entity.rbac.Permission;
 import com.example.lly.entity.rbac.Role;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -9,12 +10,12 @@ import java.util.List;
 @Mapper
 public interface RolePermissionMapper {
 
-
-    @Select("SELECT * FROM t_role")
+    @Select("SELECT * FROM t_role WHERE" +
+            " id IN (SELECT role_id FROM t_role_permission WHERE permission_id = #{id})")
     List<Role> queryAllRoleByPermissionId(Integer permissionId);
 
-
-
-
+    @Select("SELECT * FROM t_permission WHERE " +
+            " id IN (SELECT permission_id FROM t_role_permission WHERE role_id = #{id})")
+    List<Permission> queryAllPermissionByRoleId(Integer roleId);
 
 }

@@ -1,7 +1,7 @@
 package com.example.lly.service;
 
 import com.example.lly.entity.Product;
-import com.example.lly.dto.Result;
+import com.example.lly.exception.MsgResult;
 import com.example.lly.entity.SeckillInfo;
 
 import java.util.List;
@@ -9,13 +9,15 @@ import java.util.List;
 public interface SeckillService {
 
     //单个秒杀
-    SeckillInfo getSeckillById(long id);
+    SeckillInfo getSeckillInfoById(Integer id);
 
     //所有秒杀
-    List<SeckillInfo> getAllSeckill();
+    List<SeckillInfo> getAllSeckillInfo();
 
     //得到秒杀活动售卖的所有商品
-    List<Product> getAllProductInSeckill(long secKillId);
+    List<Product> getAllProductInSeckillInfo(Integer secKillInfoId);
+
+    String getSeckillInfoUrl(Integer seckillInfoId);
 
     //得到秒杀活动售卖的所有商品的数量
     int getProductNumberInSeckill(long secKillId);
@@ -34,8 +36,8 @@ public interface SeckillService {
     boolean removeProductFromSeckill(Product product);
 
     //上锁，普通锁 or AOP+锁
-    Result lockSeckill(long userId, long seckillId);
-    Result lockSecKillWithAop(long userId, long seckillId);
+    MsgResult lockSeckill(long userId, long seckillId);
+    MsgResult lockSecKillWithAop(long userId, long seckillId);
 
 
 }

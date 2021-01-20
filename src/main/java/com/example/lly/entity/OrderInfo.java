@@ -2,6 +2,7 @@ package com.example.lly.entity;
 
 import com.example.lly.util.BaseUtil;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.sql.Timestamp;
 @IdClass(OrderInfoPK.class)
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Entity
 @Table(name = "t_orderinfo")
 public class OrderInfo implements Serializable {
