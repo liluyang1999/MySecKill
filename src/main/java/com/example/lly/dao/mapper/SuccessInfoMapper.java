@@ -1,7 +1,9 @@
 package com.example.lly.dao.mapper;
 
 import com.example.lly.entity.OrderInfo;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface SuccessInfoMapper extends BaseMapper<OrderInfo> {
 
 //    /**

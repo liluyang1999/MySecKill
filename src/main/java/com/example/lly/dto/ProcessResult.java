@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ProcessResult {
 
-    private boolean ifOpenSeckill;
+    private Boolean ifOpenSeckill;
 
     private String md5Encryption;
 
-    private Long seckillInfoId;
+    private Long seckillUrl;
 
     private LocalDateTime now;
 
@@ -28,10 +28,10 @@ public class ProcessResult {
         return "ProcessResult{" +
                 "活动状态=" + ifOpenSeckill +
                 ", md5加密='" + md5Encryption + '\'' +
-                ", 活动ID=" + seckillInfoId +
+                ", 活动ID=" + seckillUrl +
                 ", 当前时刻=" + now +
-                ", 活动开启时刻=" + start +
-                ", 活动结束时刻=" + end +
+                ", 开启时刻=" + start +
+                ", 结束时刻=" + end +
                 '}';
     }
 

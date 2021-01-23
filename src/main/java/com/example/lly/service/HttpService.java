@@ -5,6 +5,6 @@ import org.springframework.util.MultiValueMap;
 
 public interface HttpService {
 
-    String sendMessageByClient(String url, MultiValueMap<String, String> params, HttpMethod method);
+    String sendMessageByClient(String url, HttpMethod method, MultiValueMap<String, String> params);
 
 }

@@ -8,6 +8,7 @@ import javax.persistence.ForeignKey;
 import java.sql.Timestamp;
 import java.util.List;
 
+@Mapper
 public interface SeckillInfoMapper extends BaseMapper<SeckillInfo> {
 
     @Results(id = "seckillInfoMap", value = {
@@ -22,6 +23,13 @@ public interface SeckillInfoMapper extends BaseMapper<SeckillInfo> {
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryById")
     SeckillInfo queryById(@Param("id") Integer id);
 
+    @ResultMap("seckillInfoMap")
+    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryByName")
+    SeckillInfo queryByName(@Param("name") String name);
+
+    @ResultMap("seckillInfoMap")
+    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryAll")
+    List<SeckillInfo> queryAll();
 
     /**
      * 按照索引值(从零开始)最大数量来查询，对应SQL语句的LIMIT用法

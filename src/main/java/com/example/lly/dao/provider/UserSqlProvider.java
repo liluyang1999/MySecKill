@@ -1,5 +1,7 @@
 package com.example.lly.dao.provider;
 
+import com.example.lly.util.BaseUtil;
+
 import java.util.Map;
 
 public class UserSqlProvider {
@@ -12,22 +14,26 @@ public class UserSqlProvider {
         return "SELECT * FROM " + userTableName + " WHERE id = " + id;
     }
 
-    public String queryByName(String name) {
-        return "SELECT * FROM " + userTableName + " WHERE name = " + name;
+    public String queryByUsername(String username) {
+        return "SELECT * FROM " + userTableName + " WHERE username = " + BaseUtil.addQuotationMark(username);
     }
 
     public String queryAll() {
         return "SELECT * FROM " + userTableName;
     }
 
-    public String queryByAccount(String account) {
-        return "SELECT * FROM " + userTableName + " WHERE account = " + account;
+
+    public String queryByDisplayName(String displayName) {
+        return "SELECT * FROM " + userTableName + " WHERE display_name = " + BaseUtil.addQuotationMark(displayName);
     }
 
-    public String queryByAccountAndPassword(Map<String, Object> params) {
-        String account = (String) params.get("account");
+
+    public String queryByUsernameAndPassword(Map<String, Object> params) {
+        String username = (String) params.get("username");
         String password = (String) params.get("password");
-        return "SELECT * FROM " + userTableName + " WHERE account = " + account + "AND password = " + password;
+        return "SELECT * FROM " + userTableName + " WHERE username = " + BaseUtil.addQuotationMark(username) +
+                " AND password = " + BaseUtil.addQuotationMark(password);
     }
+
 
 }

@@ -6,16 +6,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Created by liluyang1999
  */
 
 //@ComponentScan("com.example.lly.config")
-@SpringBootApplication
-@EnableCaching
 @MapperScan("com.example.lly.dao.mapper")
+@EnableCaching
+@SpringBootApplication
 public class MySecKillApplication {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MySecKillApplication.class);

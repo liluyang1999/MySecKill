@@ -8,10 +8,13 @@ import com.example.lly.entity.Product;
 import com.example.lly.entity.rbac.Permission;
 import com.example.lly.entity.rbac.Role;
 import com.example.lly.entity.rbac.User;
+import com.example.lly.service.DemoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 
@@ -21,6 +24,9 @@ public class LoginController {
 
     @Autowired
     private BaseMapper<Product> baseMapper;
+
+    @Autowired
+    private DemoService demoService;
 
     @Autowired
     private UserMapper userMapper;
@@ -40,12 +46,23 @@ public class LoginController {
 
     @GetMapping("/queryRole")
     public Role query2() {
+        ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
         return roleMapper.queryById(1);
     }
 
     @GetMapping("/queryPermission")
     public Permission query3() {
        return permissionMapper.queryById(11);
+    }
+
+    @RequestMapping("/find")
+    public User findUser() {
+        return demoService.findOne("zhangsan");
+    }
+
+    @RequestMapping("/findAnother")
+    public User findAnother() {
+        return demoService.findAnother("zhangsan");
     }
 
 

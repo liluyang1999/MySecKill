@@ -3,7 +3,6 @@ package com.example.lly.common.socket;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.NoArgsConstructor;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,9 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 @Component
 @NoArgsConstructor
@@ -20,7 +21,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 public class WebSocketServer {
 
     //线程安全的WebSocket，记录每个对应客户端的服务端和当前在线数量
-    private static ConcurrentSkipListSet<WebSocketServer> socketServerSet = new ConcurrentSkipListSet<>();
+    private static Map<String, WebSocketServer> socketServers = new ConcurrentSkipListMap<>();
 
     private String clientId;  //接受客户端的id
     private Session session;  //发送数据的会话
@@ -33,8 +34,8 @@ public class WebSocketServer {
 
     public static void sendMessageToAll(String msg) {
         logger.info("**********群发消息**********");
-        for(WebSocketServer server : socketServerSet) {
-            server.sendNonBlockingMessage(msg);
+        for(Map.Entry<String, WebSocketServer> serverEntry: socketServers.entrySet()) {
+            serverEntry.getValue().sendNonBlockingMessage(msg);
         }
         logger.info("**********群发完毕**********");
     }
@@ -49,9 +50,9 @@ public class WebSocketServer {
             sendMessageToAll(msg);
         } else {
             //搜索指定的对象发送
-            for(WebSocketServer server : socketServerSet) {
-                if(target.equals(server.getClientId())) {
-                    sendMessage(server, msg);
+            for(Map.Entry<String, WebSocketServer> serverEntry: socketServers.entrySet()) {
+                if(target.equals(serverEntry.getValue().getClientId())) {
+                    sendMessage(serverEntry.getValue(), msg);
                 }
             }
         }
@@ -63,7 +64,7 @@ public class WebSocketServer {
         server.setClientId(clientId);
         server.setSession(session);
         increaseCurrentOnlineNumber();
-        WebSocketServer.socketServerSet.add(server);
+        WebSocketServer.socketServers.put(clientId, server);
         try {
             this.sendBlockingMessage("**********建立成功!**********");
         } catch (IOException e){
@@ -75,7 +76,7 @@ public class WebSocketServer {
 
     @OnClose
     public void onClose() {
-        socketServerSet.remove(this);
+        socketServers.remove(this.getClientId());
         try {
             this.session.close();
         } catch (IOException e) {
@@ -132,12 +133,12 @@ public class WebSocketServer {
         this.session = session;
     }
 
-    public static ConcurrentSkipListSet<WebSocketServer> getSocketServerSet() {
-        return socketServerSet;
+    public static Map<String, WebSocketServer> getSocketServerSet() {
+        return socketServers;
     }
 
-    public static void setSocketServerSet(ConcurrentSkipListSet<WebSocketServer> socketServerSet) {
-        WebSocketServer.socketServerSet = socketServerSet;
+    public static void setSocketServerSet(Map<String, WebSocketServer> socketServerSet) {
+        WebSocketServer.socketServers = socketServerSet;
     }
 
     private final static Logger logger = LoggerFactory.getLogger(WebSocketServer.class);

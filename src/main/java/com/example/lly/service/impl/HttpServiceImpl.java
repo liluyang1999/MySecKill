@@ -21,7 +21,7 @@ public class HttpServiceImpl implements HttpService {
     }
 
     @Override
-    public String sendMessageByClient(String url, MultiValueMap<String, String> params, HttpMethod method) {
+    public String sendMessageByClient(String url, HttpMethod method, MultiValueMap<String, String> params) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);  //表单提交
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, httpHeaders);

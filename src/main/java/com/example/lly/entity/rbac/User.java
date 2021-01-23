@@ -24,10 +24,10 @@ public class User implements UserDetails, Cloneable {
     private Integer id;
 
     @Column(nullable = false, unique = true)
-    private String account;
+    private String username;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    private String displayName;
 
     private String password;
 
@@ -62,7 +62,7 @@ public class User implements UserDetails, Cloneable {
 
     @Override
     public String getUsername() {
-        return this.name;
+        return this.username;
     }
 
     @Override
@@ -93,6 +93,18 @@ public class User implements UserDetails, Cloneable {
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", dispalyName='" + displayName + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 
 }

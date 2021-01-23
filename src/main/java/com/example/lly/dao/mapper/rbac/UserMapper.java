@@ -14,8 +14,8 @@ public interface UserMapper extends BaseMapper<User> {
     @SelectProvider(type = UserSqlProvider.class, method = "queryById")
     @Results(id = "userMap", value = {
             @Result(property = "id", column = "id"),
-            @Result(property = "account", column = "account"),
-            @Result(property = "name", column = "name"),
+            @Result(property = "username", column = "username"),
+            @Result(property = "displayName", column = "display_name"),
             @Result(property = "password", column = "password"),
             @Result(property = "enabled", column = "enabled"),
             @Result(property = "phone", column = "phone"),
@@ -28,23 +28,22 @@ public interface UserMapper extends BaseMapper<User> {
 
 
     @ResultMap("userMap")
-    @SelectProvider(type = UserSqlProvider.class, method = "queryByName")
-    User queryByName(@Param("name") String name);
-
-
-    @ResultMap("userMap")
-    @SelectProvider(type = UserSqlProvider.class, method = "queryByAccount")
-    User queryByAccount(@Param("account") String account);
+    @SelectProvider(type = UserSqlProvider.class, method = "queryByUsername")
+    User queryByUsername(@Param("username") String username);
 
 
     @ResultMap("userMap")
     @SelectProvider(type = UserSqlProvider.class, method = "queryAll")
     List<User> queryAll();
 
+    @ResultMap("userMap")
+    @SelectProvider(type = UserSqlProvider.class, method = "queryByDisplayName")
+    List<User> queryByDisplayName(String displayName);
+
 
     @ResultMap("userMap")
-    @SelectProvider(type = UserSqlProvider.class, method = "queryByAccountAndPassword")
-    User queryByAccountAndPassword(@Param("account") String account, @Param("password") String password);
+    @SelectProvider(type = UserSqlProvider.class, method = "queryByUsernameAndPassword")
+    User queryByUsernameAndPassword(@Param("account") String account, @Param("password") String password);
 
 
 }

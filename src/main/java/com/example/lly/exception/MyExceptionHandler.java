@@ -27,6 +27,14 @@ public class MyExceptionHandler {
         return msgResult;
     }
 
+    @ExceptionHandler(BaseSeckillException.class)
+    public MsgResult handleException(BaseSeckillException exception){
+        MsgResult msgResult = new MsgResult();
+        msgResult.put("code", exception.getCode());
+        msgResult.put("msg", exception.getMessage());
+        return msgResult;
+    }
+
     @ExceptionHandler(DuplicateKeyException.class)
     public MsgResult handleException(DuplicateKeyException exception) {
         logger.error(exception.getMessage());
