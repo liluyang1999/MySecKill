@@ -7,7 +7,12 @@ import java.io.Serial;
 //Base seckill exception
 public class BaseSeckillException extends RuntimeException {
 
+    private static final String message = "秒杀异常！";
     protected int code;
+
+    public BaseSeckillException() {
+        super(message);
+    }
 
     public BaseSeckillException(Throwable cause) {
         super(cause);
@@ -28,6 +33,10 @@ public class BaseSeckillException extends RuntimeException {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public static String getMsg() {
+        return message;
     }
 
     @Serial

@@ -11,6 +11,7 @@ import java.util.List;
 @Mapper
 public interface PermissionMapper extends BaseMapper<Permission> {
 
+
     @Results(id = "permissionMap", value = {
             @Result(property = "id", column = "id", id = true),
             @Result(property = "name", column = "name"),
@@ -26,15 +27,15 @@ public interface PermissionMapper extends BaseMapper<Permission> {
     @SelectProvider(type = PermissionSqlProvider.class, method = "queryById")
     Permission queryById(@Param("id") Integer id);
 
-    @ResultMap("permissionMap")
+    @ResultType(Permission.class)
     @SelectProvider(type = PermissionSqlProvider.class, method = "queryByName")
     List<Permission> queryByName(@Param("name") String name);
 
-    @ResultMap("permissionMap")
+    @ResultType(Permission.class)
     @SelectProvider(type = PermissionSqlProvider.class, method = "queryByType")
     List<Permission> queryByType(@Param("type") String type);
 
-    @ResultMap("permissionMap")
+    @ResultType(Permission.class)
     @SelectProvider(type = PermissionSqlProvider.class, method = "queryAll")
     List<Permission> queryAll();
 

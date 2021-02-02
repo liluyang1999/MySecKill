@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Title</title>
+    <meta charset="UTF-8">
+    <!-- CSRF验证传递token值 -->
+<!--    <meta name="_csrf" th:content="${_csrf.token}" />-->
+<!--    <meta name="_csrf_header" th:content="${_csrf.headerName}" />-->
+</head>
+<body>
+<!-- 头部标题 开始 -->
+<div class="layui-fluid zyl_center">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-sm12 layui-col-md12 zyl_mar_01">
+            <blockquote class="layui-elem-quote">
+                <strong style="font-size: 35px; color: #0C0C0C">个人主页</strong>
+            </blockquote>
+        </div>
+    </div>
+</div>
+<!-- 头部标题 结束 -->
+
+
+<div sec:authorize="isAnonymous()">
+    未登录, 点击<a th:href="@{/login_page}">登录</a>
+</div>
+<div sec:authorize="isAuthenticated()">
+    <p>已登录</p>
+    <p>用户名: <span sec:authentication="displayName"></span></p>
+    <p>角色: <span sec:authentication="principal.authorities"></span></p>
+    <p>账号: <span sec:authentication="principal.username"></span></p>
+</div>
+</body>
+</html>

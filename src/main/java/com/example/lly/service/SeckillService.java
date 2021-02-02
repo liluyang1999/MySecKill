@@ -1,5 +1,7 @@
 package com.example.lly.service;
 
+import com.example.lly.dto.ExecutedResult;
+import com.example.lly.dto.StateExposer;
 import com.example.lly.entity.Product;
 import com.example.lly.exception.MsgResult;
 import com.example.lly.entity.SeckillInfo;
@@ -7,6 +9,9 @@ import com.example.lly.entity.SeckillInfo;
 import java.util.List;
 
 public interface SeckillService {
+
+    String seckillInfoGeneralCacheName = "seckillInfoCache";
+    String stateExposerGeneralCacheName = "stateExposer";
 
     //单个秒杀
     SeckillInfo getSeckillInfoById(Integer id);
@@ -17,15 +22,16 @@ public interface SeckillService {
     //得到秒杀活动售卖的所有商品
     List<Product> getAllProductInSeckillInfo(Integer secKillInfoId);
 
-    String getSeckillInfoUrl(Integer seckillInfoId);
+    StateExposer getCorrespondingStateExposer(Integer seckillInfoId);
 
-    //得到秒杀活动售卖的所有商品的数量
-    int getProductNumberInSeckill(Integer secKillId);
-    int getProductNumberInSeckill(SeckillInfo secKill);
+    ExecutedResult executeSeckillTask(Integer userId, Integer seckillInfo, String encodedValue);
+
+
+    //得到秒杀活动售卖的商品的剩余数量
+    int getRemainingNumberInSeckill(Integer secKillInfoId);
 
     //判断该商品是否在秒杀商品队列里
-    boolean productInSeckill(Integer id);
-    boolean productInSeckill(Product product);
+    boolean productInSeckill(Integer productId);
 
     //放入秒杀商品队列，成功返回0，失败返回-1
     boolean insertProductToSeckill(Integer id);

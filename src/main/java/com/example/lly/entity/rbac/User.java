@@ -1,7 +1,10 @@
 package com.example.lly.entity.rbac;
 
 import com.example.lly.util.BaseUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,11 +14,14 @@ import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 //Role-Based Access Control，基于角色的访问控制
 @Data
 @Entity
 @Table(name = "t_user")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User implements UserDetails, Cloneable {
 
     @Id
@@ -46,16 +52,6 @@ public class User implements UserDetails, Cloneable {
     private List<Role> roles;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        List<Role> roles = this.getRoles();
-        for(Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getRole()));
-        }
-        return authorities;
-    }
-
-    @Override
     public String getPassword() {
         return this.password;
     }
@@ -66,25 +62,48 @@ public class User implements UserDetails, Cloneable {
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
     public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    public User(String username, String password, String displayName, Boolean enabled, String phone, String email) {
+        this.id = null;
+        this.username = username;
+        this.password = password;
+        this.displayName = displayName;
+        this.enabled = enabled;
+        this.phone = phone;
+        this.email = email;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        List<Role> roles = this.getRoles();
+        for(Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
+        }
+        return authorities;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
         return true;
     }
 
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
     @Serial
     @Transient
@@ -99,7 +118,7 @@ public class User implements UserDetails, Cloneable {
     public String toString() {
         return "User{" +
                 "username='" + username + '\'' +
-                ", dispalyName='" + displayName + '\'' +
+                ", displayName='" + displayName + '\'' +
                 ", password='" + password + '\'' +
                 ", enabled=" + enabled +
                 ", phone='" + phone + '\'' +

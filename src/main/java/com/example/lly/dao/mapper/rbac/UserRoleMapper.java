@@ -15,9 +15,11 @@ public interface UserRoleMapper {
     List<Role> queryAllRoleByUserId(Integer userId);
 
 
+
     @Select("SELECT * FROM t_user WHERE" +
             " id IN (SELECT user_id FROM t_user_role WHERE role_id = #{id})")
     List<User> queryAllUserByRoleId(Integer roleId);
+
 
     @Select("SELECT account FROM t_user WHERE" +
             " id IN (SELECT user_id FROM t_user_role WHERE role_id = #{id})")

@@ -26,13 +26,14 @@ public class DemoService {
     }
 
 
-    @Cacheable(value = "user2", key = "user2")
+//    @Cacheable(value = "user10")
     public User findOne(String username) {
-//        if(redisTemplate.hasKey("user5")) {
-//            System.out.println("已经有缓存了！");
-//            return (User) redisTemplate.opsForValue().get("user5");
-//        }
+        if(redisTemplate.hasKey("user10")) {
+            System.out.println("已经有缓存了！");
+            return (User) redisTemplate.opsForValue().get("user10");
+        }
         User user = userMapper.queryByUsername(username);
+        redisTemplate.opsForValue().set("user10", user);
         System.out.println("做了缓存！");
         return user;
     }

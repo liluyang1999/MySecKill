@@ -21,8 +21,8 @@ public class OrderInfo implements Serializable {
 
     @Id
     @NotNull
-    @Column(name = "seckill_id")
-    private Integer seckillId;     //秒杀活动的Id
+    @Column(name = "seckillinfo_id")
+    private Integer seckillInfoId;     //秒杀活动的Id
 
     @Id
     @NotNull
@@ -35,12 +35,12 @@ public class OrderInfo implements Serializable {
     @Column(name = "order_time")
     private Timestamp orderTime;    //订单创建时间，与数据库交互尽量用TimeStamp
 
-    public Integer getSeckillId() {
-        return seckillId;
+    public Integer getSeckillInfoId() {
+        return seckillInfoId;
     }
 
-    public void setSeckillId(Integer seckillId) {
-        this.seckillId = seckillId;
+    public void setSeckillInfoId(Integer seckillInfoId) {
+        this.seckillInfoId = seckillInfoId;
     }
 
     public Integer getUserId() {
@@ -71,7 +71,7 @@ public class OrderInfo implements Serializable {
     public String toString() {
         return "OrderInfo{" +
                 "orderTime=" + orderTime +
-                ", seckillId=" + seckillId +
+                ", seckillId=" + seckillInfoId +
                 ", userId='" + userId +
                 ", state=" + state +
                 '}';

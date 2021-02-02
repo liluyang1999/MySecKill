@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World~</title>
+</head>
+<body>
+This
+<script th:src="@{/js/vue.min.js}"></script>
+<script th:src="@{js/webSocket.js}"></script>
+<script th:src="@{js/jquery.min.js}"></script>
+<script>
+    var tableTitle = [{
+        key : "name",
+        title : "商品名称"
+    }, {
+        key : "number",
+        title : "数量"
+    }, {
+        key : "startTime",
+        title : "秒杀时间",
+        render : function(h, params) {
+            return h('div', new Date(params.row.startTime).Format('yyyy-MM-dd hh:mm:ss'));
+        }
+    }, {
+        title : '操作',
+        key : 'action',
+        width : 500,
+        align : 'center',
+        render : function(h, params) {
+            var functionList = [];
+            var showH = h('Button', {
+                props : {
+                    type : 'primary',
+                    size : 'small',
+                    icon : 'ios-infinite'
+                },
+                style : {
+                    marginRight : '8px'
+                },
+                on : {
+                    click : function() {
+                        window.open(params.row.seckillId+".shtml");
+                    }
+                }
+            }, '购买');
+            functionList.push(showH);
+            return h('div', functionList);
+        }
+    }];
+    var vueMethod = new Vue({
+        el: '#app',
+        data : {
+            seckillData : [],
+        },
+        methods : {
+            listSeckill: function() {
+                $.ajax({
+                    url: "seckill_page/listSeckill", //Url发过去请求得到秒杀商品列表
+                    type: "POST",
+                    dataType: "JSON",
+                    data: { },
+                    success: function(result) {
+                        vueMethod.seckillData = result.msg;
+                    }
+                });
+            },
+            initFormatter : function(){
+                Date.prototype.Format = function(fmt) { //
+                    let o = {
+                        "M+" : this.getMonth()+1,                 //月份
+                        "d+" : this.getDate(),                    //日
+                        "h+" : this.getHours(),                   //小时
+                        "m+" : this.getMinutes(),                 //分
+                        "s+" : this.getSeconds(),                 //秒
+                        "q+" : Math.floor((this.getMonth()+3)/3), //季度
+                        "S"  : this.getMilliseconds()             //毫秒
+                    };
+                    if(/(y+)/.test(fmt))
+                        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+                    for(var k in o)
+                        if(new RegExp("("+ k +")").test(fmt))
+                            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+                    return fmt;
+                }
+            }
+        },
+        created : function() {
+            this.listSeckill();
+            this.initFormatter();
+        }
+    });
+</script>
+</body>
+</html>

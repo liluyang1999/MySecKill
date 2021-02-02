@@ -3,6 +3,7 @@ package com.example.lly.dao.mapper;
 import com.example.lly.dao.provider.SeckillInfoSqlProvider;
 import com.example.lly.entity.SeckillInfo;
 import org.apache.ibatis.annotations.*;
+import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 
 import javax.persistence.ForeignKey;
 import java.sql.Timestamp;
@@ -27,17 +28,15 @@ public interface SeckillInfoMapper extends BaseMapper<SeckillInfo> {
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryByName")
     SeckillInfo queryByName(@Param("name") String name);
 
-    @ResultMap("seckillInfoMap")
+    @ResultType(SeckillInfo.class)
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryAll")
     List<SeckillInfo> queryAll();
 
     /**
-     * 按照索引值(从零开始)最大数量来查询，对应SQL语句的LIMIT用法
+     * 按照活动Id与秒杀时刻去扣减库存，下单时间要符合
      */
-    @ResultMap("seckillInfoMap")
-    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryByLimit")
-    List<SeckillInfo> queryByLimit(@Param("index") int index, @Param("limit") int limit);
-
+    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "decreaseNumber")
+    int decreaseNumber(@Param("id") Integer id, @Param("orderTime") Timestamp orderTime);
 
     /**
      * 按照活动ID增加库存，手动设定增加的库存量
@@ -45,11 +44,14 @@ public interface SeckillInfoMapper extends BaseMapper<SeckillInfo> {
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "increaseNumber")
     int increaseNumber(@Param("seckillId") long seckillId);
 
-    /**
-     * 按照活动Id与秒杀时刻去扣减库存，下单时间要符合
-     */
-    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "decreaseNumber")
-    int decreaseNumber(@Param("seckillId") long seckillId, @Param("orderTime") Timestamp orderTime);
+    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryNumberById")
+    int queryNumberById(@Param("seckillInfoId") Integer seckillInfoId);
 
+    /**
+     * 按照索引值(从零开始)最大数量来查询，对应SQL语句的LIMIT用法
+     */
+    @ResultType(SeckillInfo.class)
+    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryByLimit")
+    List<SeckillInfo> queryByLimit(@Param("index") int index, @Param("limit") int limit);
 
 }

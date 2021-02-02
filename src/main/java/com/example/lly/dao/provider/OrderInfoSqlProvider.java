@@ -17,11 +17,15 @@ public class OrderInfoSqlProvider {
                 " AND user_id = " + userId;
     }
 
-    public String queryBySeckillId(Integer id) {
-        return "SELECT * FROM " + orderInfoTableName + " WHERE seckill_id = " + id;
+    public String queryAll() {
+        return "SELECT * FROM " + orderInfoTableName;
     }
 
-    public String queryByOrderId(Integer id) {
+    public String queryBySeckillInfoId(Integer id) {
+        return "SELECT * FROM " + orderInfoTableName + " WHERE seckillinfo_id = " + id;
+    }
+
+    public String queryByUserId(Integer id) {
         return "SELECT * FROM " + orderInfoTableName + " WHERE user_id = " + id;
     }
 

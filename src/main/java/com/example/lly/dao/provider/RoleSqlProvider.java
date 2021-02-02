@@ -1,7 +1,5 @@
 package com.example.lly.dao.provider;
 
-import org.apache.ibatis.annotations.Param;
-
 //Writing SQL below
 public class RoleSqlProvider {
 
@@ -23,5 +21,8 @@ public class RoleSqlProvider {
         return "SELECT * FROM" + tableName + " WHERE availbale = " + 0;
     }
 
+    public String queryByName(String name) {
+        return "SELECT * FROM " + tableName + " WHERE role = " + name;
+    }
 
 }

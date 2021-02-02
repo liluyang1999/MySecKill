@@ -11,7 +11,6 @@ import java.util.List;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-    @SelectProvider(type = UserSqlProvider.class, method = "queryById")
     @Results(id = "userMap", value = {
             @Result(property = "id", column = "id"),
             @Result(property = "username", column = "username"),
@@ -22,8 +21,9 @@ public interface UserMapper extends BaseMapper<User> {
             @Result(property = "email", column = "email"),
             @Result(property = "roles", column = "id",
                     many = @Many(select = "com.example.lly.dao.mapper.rbac.UserRoleMapper.queryAllRoleByUserId",
-                                 fetchType = FetchType.EAGER))
+                            fetchType = FetchType.EAGER))
     })
+    @SelectProvider(type = UserSqlProvider.class, method = "queryById")
     User queryById(@Param("id") Integer id);
 
 
@@ -32,16 +32,16 @@ public interface UserMapper extends BaseMapper<User> {
     User queryByUsername(@Param("username") String username);
 
 
-    @ResultMap("userMap")
+    @ResultType(User.class)
     @SelectProvider(type = UserSqlProvider.class, method = "queryAll")
     List<User> queryAll();
 
-    @ResultMap("userMap")
+    @ResultType(User.class)
     @SelectProvider(type = UserSqlProvider.class, method = "queryByDisplayName")
     List<User> queryByDisplayName(String displayName);
 
 
-    @ResultMap("userMap")
+    @ResultType(User.class)
     @SelectProvider(type = UserSqlProvider.class, method = "queryByUsernameAndPassword")
     User queryByUsernameAndPassword(@Param("account") String account, @Param("password") String password);
 

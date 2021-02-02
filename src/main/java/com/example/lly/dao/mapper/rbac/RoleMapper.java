@@ -28,13 +28,20 @@ public interface RoleMapper extends BaseMapper<Role> {
     })
     Role queryById(@Param("id") Integer id);
 
+    @ResultType(Role.class)
     @SelectProvider(type = RoleSqlProvider.class, method = "queryAll")
     List<Role> queryAll();
 
+    @ResultType(Role.class)
     @SelectProvider(type = RoleSqlProvider.class, method = "queryAllAvailableRole")
     List<Role> queryAllAvailableRole();
 
+    @ResultType(Role.class)
     @SelectProvider(type = RoleSqlProvider.class, method = "queryAllUnavailableRole")
     List<Role> queryAllUnavailableRole();
+
+    @ResultMap("roleMap")
+    @SelectProvider(type = RoleSqlProvider.class, method = "queryByName")
+    Role queryByName(String name);
 
 }

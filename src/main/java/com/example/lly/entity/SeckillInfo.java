@@ -31,6 +31,8 @@ public class SeckillInfo implements Serializable {
 
     protected String name;   //秒杀活动名字
 
+    protected Integer productId;  //秒杀商品的id
+
     protected Integer number;    //剩余数量
 
     @OneToOne

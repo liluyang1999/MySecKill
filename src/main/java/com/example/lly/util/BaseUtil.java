@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 @Component
 public class BaseUtil {
@@ -32,6 +33,10 @@ public class BaseUtil {
 
     public static String addPrefix(String str, String prefix) {
         return prefix + str;
+    }
+
+    public static String addIdToName(String name, Integer id) {
+        return name + ":" + id;
     }
 
     public static String getTableName(Object entity) {
@@ -89,6 +94,14 @@ public class BaseUtil {
         return Timestamp.valueOf(localDateTime);
     }
 
+    public static String generateRandomSalt(int number) {
+        StringBuilder code = new StringBuilder();
+        Random random = new Random();
+        for(int i = 0; i < number; i++) {
+            code.append(random.nextInt(10));
+        }
+        return code.toString();
+    }
 
 
     public static void main(String[] args) {
@@ -97,12 +110,7 @@ public class BaseUtil {
         joker2 = BaseUtil.copyFrom(joker);
         Date date = new Date();
         date.setTime(System.currentTimeMillis());
-        System.out.println(date.getTime());
-        System.out.println(Calendar.getInstance().getCalendarType());
-        System.out.println(Calendar.getInstance().getFirstDayOfWeek());
-        System.out.println(Calendar.getInstance().getTime());
-        System.out.println(Calendar.getInstance().getTimeInMillis());
-        System.out.println(Calendar.getInstance().getTimeZone());
+        System.out.println(BaseUtil.generateRandomSalt(10));
     }
 
 }
