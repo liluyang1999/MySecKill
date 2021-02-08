@@ -93,40 +93,42 @@
         <div class="layui-row">
             <div th:each="seckillInfoInProgress: ${seckillInfoInProgressList}">
                 <!-- 开始遍历 -->
-                <div class="layui-col-md3">
+                <div class="layui-col-md6">
 
                     <!-- each -->
                     <div class="layui-row">
                         <div class="layui-col-md6">
-                            <strong th:text="seckillInfoInProgress.getName()">活动名称</strong>
+                            <strong th:text="${seckillInfoInProgress.getName()}">活动名称</strong>
                         </div>
                     </div>
                     <div class="layui-row">
                         <div class="layui-col-md3">
-                            <img alt="活动图片" src=""/>
+                            <img alt="活动图片" height="100px" src="/static/image/404.jpg"
+                                 th:src="@{${seckillInfoInProgress.getProduct().getFilePath()}}" width="100px"/>
                         </div>
                         <div class="layui-col-md3">
                             <div class="layui-row">
                                 <div class="layui-col-md3">
-                                    <strong th:text="seckillInfoInProgress.getExpectedNumber()">发送数量</strong>
+                                    <strong th:text="${seckillInfoInProgress.getExpectedNumber()}">发送数量</strong>
                                 </div>
                             </div>
                             <div class="layui-row">
                                 <div class="layui-col-md3">
-                                    <strong th:text="'距离结束:' + seckillInfoInProgress.getProductId()">倒计时:</strong>
+                                    <strong th:text="'距离结束:' + ${seckillInfoInProgress.getProductId()}">倒计时:</strong>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="layui-row">
                         <div class="layui-col-md1">
-                            <strong th:text="seckillInfoInProgress.getSeckillPrice()">秒杀价格</strong>
+                            <strong th:text="${seckillInfoInProgress.getSeckillPrice()}">秒杀价格</strong>
                         </div>
                         <div class="layui-col-md1">
-                            <strong th:text="seckillInfoInProgress.getOriginalPrice()">原价</strong>
+                            <strong th:text="${seckillInfoInProgress.getOriginalPrice()}">原价</strong>
                         </div>
                         <div class="layui-col-md1">
-                            <button th:onclick="" th:text="">详情</button>
+                            <button class="layui-btn-normal" th:onclick="requestSeckillInfoDetail()" th:text="详情">详情
+                            </button>
                         </div>
                     </div>
                     <!-- each -->
@@ -148,32 +150,33 @@
                     <!-- each -->
                     <div class="layui-row">
                         <div class="layui-col-md6">
-                            <strong th:text="seckillInfoInFuture.Name">活动名称</strong>
+                            <strong th:text="${seckillInfoInFuture.getName()}">活动名称</strong>
                         </div>
                     </div>
                     <div class="layui-row">
                         <div class="layui-col-md3">
-                            <img alt="活动图片" src=""/>
+                            <img alt="活动图片" height="100px" src="/static/image/404.jpg"
+                                 th:src="@{${seckillInfoInFuture.getProduct().getFilePath()}}" width="100px"/>
                         </div>
                         <div class="layui-col-md3">
                             <div class="layui-row">
                                 <div class="layui-col-md3">
-                                    <strong th:text="seckillInfoInFuture.ExpectedNumber">发送数量</strong>
+                                    <strong th:text="${seckillInfoInFuture.getExpectedNumber()}">发送数量</strong>
                                 </div>
                             </div>
                             <div class="layui-row">
                                 <div class="layui-col-md3">
-                                    <strong th:text="'倒计时:' + seckillInfoInFuture.productId">倒计时:</strong>
+                                    <strong th:text="'倒计时:' + ${seckillInfoInFuture.getProductId()}">倒计时:</strong>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="layui-row">
                         <div class="layui-col-md3">
-                            <strong th:text="seckillInfoInFuture.seckillPrice">秒杀价格</strong>
+                            <strong th:text="${seckillInfoInFuture.getSeckillPrice()}">秒杀价格</strong>
                         </div>
                         <div class="layui-col-md3">
-                            <strong th:text="seckillInfoInFuture.originalPrice">原价</strong>
+                            <strong th:text="${seckillInfoInFuture.getOriginalPrice()}">原价</strong>
                         </div>
                     </div>
                     <!-- each -->
@@ -192,6 +195,7 @@
 <!-- Javascript引入 -->
 <script src="/static/js/jquery.min.js" th:src="@{/static/js/jquery.min.js}" type="text/javascript"></script>
 <script src="/static/layui/layui.js" th:src="@{/static/layui/layui.js}" type="text/javascript"></script>
+<script src="/static/js/seckill.js" th:src="@{/static/js/seckill.js}" type="text/javascript"></script>
 <!-- Javascript引入 -->
 <script>
     layui.use(['carousel', 'form', 'element'], function () {
@@ -214,7 +218,6 @@
         });
     });
 </script>
-
 </html>
 
 

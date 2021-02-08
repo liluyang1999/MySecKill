@@ -1,14 +1,12 @@
 package com.example.lly.util;
 
-import jodd.typeconverter.impl.LocalDateTimeConverter;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
-import java.time.*;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Random;
 
@@ -26,6 +24,8 @@ public class BaseUtil {
     public static final double MAX_DOUBLE = Double.MAX_VALUE;
 
     public static Charset defaultCharset = StandardCharsets.UTF_8;
+
+    public static final String imagePath = "/static/image";
 
     public static String addQuotationMark(String str) {
         return "'" + str + "'";

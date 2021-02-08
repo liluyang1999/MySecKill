@@ -54,7 +54,6 @@ public class HoppingController {
         mav.addObject("ifAuthentication", true);
         mav.addObject("seckillInfoInProgressList", seckillInfoInProgressList);
         mav.addObject("seckillInfoInFutureList", seckillInfoInFutureList);
-        System.out.println("验证通过了");
         return mav;
     }
 

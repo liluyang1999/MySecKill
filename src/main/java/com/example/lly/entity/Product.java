@@ -26,6 +26,16 @@ public class Product implements Serializable {
     @Column(name = "price", nullable = false)
     private Integer price;
 
+    @Column(name = "file_path")
+    private String filePath;
+
+    public Product(String name, Integer price) {
+        this.id = null;
+        this.name = name;
+        this.price = price;
+        this.filePath = BaseUtil.imagePath + "/product/" + name + ".jpg";
+    }
+
     public Integer getId() {
         return id;
     }
@@ -40,6 +50,22 @@ public class Product implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     @Serial
