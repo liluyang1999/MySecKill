@@ -40,7 +40,7 @@ public class TestingController {
     @Autowired
     private SeckillService seckillService;
 
-    private Product product = new Product(123,"雀巢奶昔");
+    private final Product product = new Product(123, "雀巢奶昔", 30);
 
     @GetMapping("/queryUser")
     public User query1() {

@@ -23,6 +23,9 @@ public class Product implements Serializable {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @Column(name = "price", nullable = false)
+    private Integer price;
+
     public Integer getId() {
         return id;
     }

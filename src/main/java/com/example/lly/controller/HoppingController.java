@@ -86,7 +86,7 @@ public class HoppingController {
     public ModelAndView goToExecuteSeckillPage(HttpServletRequest request, @RequestBody SeckillInfo seckillInfo) {
         String token = request.getParameter(JwtTokenUtil.TOKEN_HEADER);
         ModelAndView mav;
-        if (StringUtils.isEmpty(token) || !jwtAuthService.validateTokenFromHeader(token)) {
+        if (this.authenticateToken(token)) {
             mav = new ModelAndView("login");
             mav.addObject("ifAuthentictaion", false);
             return mav;
@@ -103,9 +103,9 @@ public class HoppingController {
     //管理秒杀活动, (新增活动), 获取秒杀活动列表
     @RequestMapping("/login_page/home_page/seckill_management_page")
     public ModelAndView goToManegeSeckillPage(HttpServletRequest request) {
-        String token = request.getParameter(JwtTokenUtil.TOKEN_HEADER);
+        String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
         ModelAndView mav;
-        if (StringUtils.isEmpty(token) || !jwtAuthService.validateTokenFromHeader(token)) {
+        if (this.authenticateToken(token)) {
             //验证不通过, 跳回登录页面
             mav = new ModelAndView("login");
             mav.addObject("ifAuthentictaion", false);
@@ -118,6 +118,11 @@ public class HoppingController {
         mav.addObject("seckillInfoList", seckillInfoList);
         mav.addObject("ifAuthentication", true);
         return mav;
+    }
+
+
+    private boolean authenticateToken(String token) {
+        return !StringUtils.isEmpty(token) && jwtAuthService.validateTokenFromHeader(token);
     }
 
 }

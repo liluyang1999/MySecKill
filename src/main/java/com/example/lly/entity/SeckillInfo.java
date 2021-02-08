@@ -44,8 +44,11 @@ public class SeckillInfo implements Serializable {
     @Column(name = "remaining_number")
     protected Integer remainingNumber;    //剩余数量
 
-    @Column(name = "price")
-    protected Integer price;
+    @Column(name = "seckill_price")
+    protected Integer seckillPrice;
+
+    @Column(name = "original_price")
+    protected Integer originalPrice;
 
     @OneToOne
     @JoinColumn(referencedColumnName = "id")

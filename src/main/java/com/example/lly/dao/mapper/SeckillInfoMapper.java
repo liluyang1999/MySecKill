@@ -21,7 +21,8 @@ public interface SeckillInfoMapper extends BaseMapper<SeckillInfo> {
             @Result(property = "startTime", column = "start_time"),
             @Result(property = "endTime", column = "end_time"),
             @Result(property = "version", column = "version"),
-            @Result(property = "price", column = "price"),
+            @Result(property = "seckillPrice", column = "seckill_price"),
+            @Result(property = "originalPrice", column = "original_price"),
             @Result(property = "product", column = "product_id",
                     one = @One(select = "com.example.lly.dao.mapper.ProductMapper.queryById",
                             fetchType = FetchType.EAGER))

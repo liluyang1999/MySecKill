@@ -23,13 +23,13 @@ public interface SeckillService {
 
     List<SeckillInfo> getAllSeckillInfoInFuture();
 
-    //得到秒杀活动售卖的所有商品
-    List<Product> getAllProductInSeckillInfo(Integer secKillInfoId);
-
     StateExposer getCorrespondingStateExposer(Integer seckillInfoId);
 
     ExecutedResult executeSeckillTask(Integer userId, Integer seckillInfo, String encodedValue);
 
+
+    //得到秒杀活动售卖的所有商品
+    List<Product> getAllProductInSeckillInfo(Integer secKillInfoId);
 
     //得到秒杀活动售卖的商品的剩余数量
     int getRemainingNumberInSeckill(Integer secKillInfoId);
@@ -39,6 +39,7 @@ public interface SeckillService {
 
     //放入秒杀商品队列，成功返回0，失败返回-1
     boolean insertProductToSeckill(Integer id);
+
     boolean insertProductToSeckill(Product product);
 
     //从秒杀商品队列中移除该商品，成功返回0，失败返回-1

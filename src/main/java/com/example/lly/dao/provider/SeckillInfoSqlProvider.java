@@ -55,16 +55,19 @@ public class SeckillInfoSqlProvider {
                 " LIMIT " + index + " " + limit;
     }
 
-    public String queryAllSeckillInProgress(Timestamp now) {
+    //Timestamp要加单引号, 在开始时间与结束时间之间
+    public String queryAllSeckillInfoInProgress(Timestamp now) {
         return "SELECT * " +
                 " FROM " + seckillInfoTableName +
-                " WHERE start_time <= " + now;
+                " WHERE start_time <= '" + now.toString() + "'" +
+                " AND end_time >= '" + now.toString() + "'";
     }
 
-    public String queryAllSeckillInFuture(Timestamp now) {
+    public String queryAllSeckillInfoInFuture(Timestamp now) {
         return "SELECT * " +
                 " FROM " + seckillInfoTableName +
-                " WHERE start_time > " + now;
+                " WHERE start_time > '" + now.toString() + "'";
     }
+
 
 }
