@@ -55,5 +55,16 @@ public class SeckillInfoSqlProvider {
                 " LIMIT " + index + " " + limit;
     }
 
+    public String queryAllSeckillInProgress(Timestamp now) {
+        return "SELECT * " +
+                " FROM " + seckillInfoTableName +
+                " WHERE start_time <= " + now;
+    }
+
+    public String queryAllSeckillInFuture(Timestamp now) {
+        return "SELECT * " +
+                " FROM " + seckillInfoTableName +
+                " WHERE start_time > " + now;
+    }
 
 }

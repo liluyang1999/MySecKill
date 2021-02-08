@@ -6,4 +6,6 @@ public interface JwtAuthService {
 
     String refreshLogin(String token);
 
+    Boolean validateTokenFromHeader(String token);
+
 }

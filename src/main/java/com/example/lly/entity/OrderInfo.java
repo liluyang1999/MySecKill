@@ -1,6 +1,7 @@
 package com.example.lly.entity;
 
 import com.example.lly.util.BaseUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class OrderInfo implements Serializable {
     @Column(name = "state")
     private Short state;            //活动状态
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "order_time")
     private Timestamp orderTime;    //订单创建时间，与数据库交互尽量用TimeStamp
 

@@ -1,40 +1,23 @@
 package com.example.lly.service.impl;
 
-import com.example.lly.dao.mapper.rbac.PermissionMapper;
 import com.example.lly.dao.mapper.rbac.RoleMapper;
 import com.example.lly.dao.mapper.rbac.UserMapper;
 import com.example.lly.entity.rbac.Permission;
 import com.example.lly.entity.rbac.Role;
 import com.example.lly.entity.rbac.User;
-import com.example.lly.exception.TamperSeckillException;
-import com.example.lly.module.security.JwtTokenUtil;
-import com.example.lly.service.SeckillService;
 import com.example.lly.service.UserSecurityService;
-import com.example.lly.util.BaseUtil;
 import com.example.lly.util.encryption.MD5Util;
-import io.netty.util.internal.StringUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,19 +37,18 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     private RedisTemplate<String, Serializable> redisTemplate;
 
 //    @Cacheable(key = "#{username}", value = "userDetailsCache")
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("在这里loadUserByUsername了!");
-        User user = userMapper.queryByUsername((username));
-        if(user == null) {
-            throw new UsernameNotFoundException("**********该账号不存在**********");
-        }
-
-        //数据库中存储的是二次加密的密码, 需要先解密
-        String decodedPassword = MD5Util.secondDecode(user.getPassword());
-        user.setPassword(decodedPassword);
-        return user;
+@Override
+public UserDetails loadUserByUsername(String username) {
+    User user = userMapper.queryByUsername((username));
+    if (user == null) {
+//            throw new UsernameNotFoundException("**********该账号不存在**********");
+        return null;
     }
+    //数据库中存储的是二次加密的密码, 需要先解密
+    String decodedPassword = MD5Util.secondDecode(user.getPassword());
+    user.setPassword(decodedPassword);
+    return user;
+}
 
 
     @Override

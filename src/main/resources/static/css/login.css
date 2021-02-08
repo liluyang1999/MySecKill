@@ -19,8 +19,11 @@ body{font-size: 14px; color: #666;}
 
 
 /* 粒子背景 */
-.zyl_login_cont{width: 100%; height: 100%; background-color: #4E5465}
-
+.zyl_login_cont {
+  width: 100%;
+  height: 100%;
+  background-color: #009688;
+}
 
 /* 背景虚影 -- 虚影样式源于网络  */
 .background {

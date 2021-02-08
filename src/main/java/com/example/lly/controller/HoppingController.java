@@ -1,62 +1,123 @@
 package com.example.lly.controller;
 
 import com.example.lly.entity.SeckillInfo;
-import com.example.lly.entity.rbac.User;
+import com.example.lly.module.security.JwtTokenUtil;
+import com.example.lly.service.JwtAuthService;
+import com.example.lly.service.SeckillService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.List;
 
 @Controller
 public class HoppingController {
 
-    //登录页面
-    @RequestMapping("/login_page")
+    @Autowired
+    private JwtAuthService jwtAuthService;
+
+    @Autowired
+    private SeckillService seckillService;
+
+    @Autowired
+    private RedisTemplate<String, Serializable> redisTemplate;
+
+    @RequestMapping(value = {"/login_page", "/login"})
     public ModelAndView goToLoginPage() {
         return new ModelAndView("login");
     }
 
-    //个人主页
-    @RequestMapping("/login_page/home_page")
+
+    //先进行token
+    @RequestMapping(value = {"/login_page/home_page", "/login/home"})
     public ModelAndView goToHomePage(HttpServletRequest request) {
-        String userStr = request.getParameter("login_username");
-        System.out.println("userStr + " + userStr);
-        String userstr2 = (String) request.getSession().getAttribute("login_username");
-        System.out.println("userStr2 + " + userstr2);
-        User user = (User) request.getSession().getAttribute("user");
-        ModelAndView mav = new ModelAndView("home");
-        mav.addObject("user", user);
+        String token = request.getParameter("authorization");
+        ModelAndView mav;
+        if (StringUtils.isEmpty(token) || !jwtAuthService.validateTokenFromHeader(token)) {
+            mav = new ModelAndView("login");
+            mav.addObject("ifAuthentictaion", false);
+            return mav;
+        }
+        List<SeckillInfo> seckillInfoInProgressList = seckillService.getAllSeckillInfoInProgress();
+        List<SeckillInfo> seckillInfoInFutureList = seckillService.getAllSeckillInfoInFuture();
+        //ModelAndView mav;
+        mav = new ModelAndView("home");
+        mav.addObject("token", token);
+        mav.addObject("username", JwtTokenUtil.getUsernameFromToken(token));
+        mav.addObject("user", redisTemplate.opsForHash().get("users", JwtTokenUtil.getUsernameFromToken(token)));
+        mav.addObject("ifAuthentication", true);
+        mav.addObject("seckillInfoInProgressList", seckillInfoInProgressList);
+        mav.addObject("seckillInfoInFutureList", seckillInfoInFutureList);
+        System.out.println("验证通过了");
         return mav;
     }
 
-    //注册页面
-    @RequestMapping("/register_page")
+
+    @RequestMapping(value = {"/register_page", "/register"})
     public ModelAndView goToRegisterPage() {
         return new ModelAndView("register");
     }
 
-    //秒杀活动列表
-    @RequestMapping("/seckill_list_page")
-    public ModelAndView goToSeckillListPage() {
-        return new ModelAndView("seckill_list");
-    }
 
-    //秒杀下单列表
-    @RequestMapping("/login_page/home_page/seckill_execution_page")
-    public ModelAndView goToExecuteSeckillPage(HttpServletRequest request) {
-        User user = (User) request.getSession().getAttribute("user");
-        SeckillInfo seckillInfo = (SeckillInfo) request.getSession().getAttribute("seckillInfo");
-        ModelAndView mav = new ModelAndView("seckill_execution");
-        mav.addObject("user", user);
-        mav.addObject("seckillInfo", seckillInfo);
+    @RequestMapping(value = {"/seckill_list_page", "/seckill_list"})
+    public ModelAndView goToSeckillListPage(HttpServletRequest request) {
+        String token = request.getParameter(JwtTokenUtil.TOKEN_HEADER);
+        String username;
+        ModelAndView mav = new ModelAndView("seckill_list");
+        if (token != null) {
+            username = JwtTokenUtil.getUsernameFromToken(token);
+            mav.addObject("username", username);
+            mav.addObject("hasLogin", true);
+        } else {
+            mav.addObject("hasLogin", false);
+        }
         return mav;
     }
 
-    //管理秒杀活动, (新增活动)
+
+    //秒杀详情下单
+    @RequestMapping(value = "/login_page/home_page/seckill_execution_page")
+    public ModelAndView goToExecuteSeckillPage(HttpServletRequest request, @RequestBody SeckillInfo seckillInfo) {
+        String token = request.getParameter(JwtTokenUtil.TOKEN_HEADER);
+        ModelAndView mav;
+        if (StringUtils.isEmpty(token) || !jwtAuthService.validateTokenFromHeader(token)) {
+            mav = new ModelAndView("login");
+            mav.addObject("ifAuthentictaion", false);
+            return mav;
+        }
+        mav = new ModelAndView("seckill_execution");
+        mav.addObject("token", token);
+        mav.addObject("username", JwtTokenUtil.getUsernameFromToken(token));
+        mav.addObject("seckillInfo", seckillInfo);
+        mav.addObject("ifAuthentication", true);
+        return mav;
+    }
+
+
+    //管理秒杀活动, (新增活动), 获取秒杀活动列表
     @RequestMapping("/login_page/home_page/seckill_management_page")
-    public String goToManegeSeckillPage() {
-        return "seckill_management";
+    public ModelAndView goToManegeSeckillPage(HttpServletRequest request) {
+        String token = request.getParameter(JwtTokenUtil.TOKEN_HEADER);
+        ModelAndView mav;
+        if (StringUtils.isEmpty(token) || !jwtAuthService.validateTokenFromHeader(token)) {
+            //验证不通过, 跳回登录页面
+            mav = new ModelAndView("login");
+            mav.addObject("ifAuthentictaion", false);
+            return mav;
+        }
+
+        List<SeckillInfo> seckillInfoList = seckillService.getAllSeckillInfo();
+        mav = new ModelAndView("seckill_management");
+        mav.addObject("username", JwtTokenUtil.getUsernameFromToken(token));
+        mav.addObject("seckillInfoList", seckillInfoList);
+        mav.addObject("ifAuthentication", true);
+        return mav;
     }
 
 }

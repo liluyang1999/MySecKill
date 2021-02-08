@@ -28,7 +28,7 @@ public class MyExceptionHandler {
     }
 
     @ExceptionHandler(BaseSeckillException.class)
-    public MsgResult handleException(BaseSeckillException exception){
+    public MsgResult handleException(BaseSeckillException exception) {
         MsgResult msgResult = new MsgResult();
         msgResult.put("code", exception.getCode());
         msgResult.put("msg", exception.getMessage());
@@ -38,13 +38,19 @@ public class MyExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public MsgResult handleException(DuplicateKeyException exception) {
         logger.error(exception.getMessage());
-        return MsgResult.error("检测到数据库中存在着重复记录");
+        return MsgResult.error(exception.getMessage());
+    }
+
+    @ExceptionHandler(FailedSeckillException.class)
+    public MsgResult handleException(FailedSeckillException exception) {
+        logger.error(exception.getMessage());
+        return MsgResult.error(exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     public MsgResult handleException(Exception exception) {
         logger.error(exception.getMessage());
-        return MsgResult.error();
+        return MsgResult.error(exception.getMessage());
     }
 
 

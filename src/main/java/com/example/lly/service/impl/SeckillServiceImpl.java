@@ -30,8 +30,6 @@ import java.util.List;
 @Service
 public class SeckillServiceImpl implements SeckillService {
 
-    private Logger logger = LoggerFactory.getLogger(SeckillServiceImpl.class);
-
     @Autowired
     private SeckillInfoMapper seckillInfoMapper;
 
@@ -40,7 +38,6 @@ public class SeckillServiceImpl implements SeckillService {
 
     @Autowired
     private RedisTemplate<String, Serializable> redisTemplate;
-
     @Override
     public SeckillInfo getSeckillInfoById(Integer id) {
         return seckillInfoMapper.queryById(id);
@@ -135,7 +132,13 @@ public class SeckillServiceImpl implements SeckillService {
         }
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(SeckillServiceImpl.class);
 
+    @Override
+    public List<SeckillInfo> getAllSeckillInfoInProgress() {
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        return seckillInfoMapper.queryAllSeckillInfoInProgress(now);
+    }
 
     @Override
     public List<Product> getAllProductInSeckillInfo(Integer secKillInfoId) {
@@ -188,5 +191,10 @@ public class SeckillServiceImpl implements SeckillService {
         return MD5Util.encodeString(url);
     }
 
+    @Override
+    public List<SeckillInfo> getAllSeckillInfoInFuture() {
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+        return seckillInfoMapper.queryAllSeckillInfoInFuture(now);
+    }
 
 }

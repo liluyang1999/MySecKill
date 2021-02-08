@@ -1,11 +1,12 @@
 package com.example.lly.controller.login;
 
 import com.example.lly.dao.mapper.rbac.UserMapper;
-import com.example.lly.dto.ResponseResult;
 import com.example.lly.entity.rbac.User;
 import com.example.lly.module.security.JwtTokenUtil;
 import com.example.lly.service.JwtAuthService;
 import com.example.lly.service.UserSecurityService;
+import com.example.lly.util.result.ResponseEnum;
+import com.example.lly.util.result.ResponseResult;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,44 +38,28 @@ public class LoginController {
     public ResponseResult<String> requestLogin(@RequestBody Map<String, String> params) {
         String username = params.get("username");
         String password = params.get("password");
-        Boolean rememberMe = Boolean.valueOf(params.get("rememeberMe"));
-        if(StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            return new ResponseResult<>(false, "错误,账号或密码为空!");
+        Boolean rememberMe = Boolean.valueOf(params.get("rememberMe"));
+        if (StringUtils.isEmpty(username)) {
+            return ResponseResult.error(ResponseEnum.EMPTY_USERNAME);
+        } else if (StringUtils.isEmpty(password)) {
+            return ResponseResult.error(ResponseEnum.EMPTY_PASSWORD);
         }
-
         String newToken = jwtAuthService.requestLogin(username, password, rememberMe);
-        return new ResponseResult<>(true, newToken);
-//        if(!userSecurityService.hasUsername(request, authentication)) {
-//          return new ResponseResult<>(false, "账号不存在!");
-//        } else if(!userSecurityService.hasPassword(request, authentication)) {
-//            return new ResponseResult<>(false, "账号或密码出错!");
-//        } else if(!userSecurityService.hasPermission(request, authentication)) {
-//            return new ResponseResult<>(false, "账号无权限!");
-//        }
-    }
-
-
-    @RequestMapping(value = "/refreshLogin", method = RequestMethod.POST)
-    public ResponseResult<String> refreshLogin(@RequestHeader("${jwt.header}") String token) {
-        if(StringUtils.isEmpty(token)) {
-            String message = "错误, token值为空!";
-            return new ResponseResult<>(false, message);
-        } else if(JwtTokenUtil.isExpiration(token)) {
-            String message = "错误, token令牌已失效!";
-            return new ResponseResult<>(false, message);
+        if (newToken == null) {
+            System.out.println("账号或密码错误");
+            return ResponseResult.error(ResponseEnum.USERNAME_OR_PASSWORD_ERROR);
         }
-        String newToken = jwtAuthService.refreshLogin(token);
-        return new ResponseResult<>(true, newToken);
+        return ResponseResult.success(newToken);
     }
 
 
     //localhost:8080/login/registerUser
     @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
-    public ResponseResult<User> registerUser(User user, List<String> rolesNames) {
+    public ResponseResult<?> registerUser(User user, List<String> rolesNames) {
         try {
             User userByName = userSecurityService.findUserByUsername(user.getUsername());
-            if(userByName != null) {
-                return new ResponseResult<>(false, "该账号已被使用!");
+            if (userByName != null) {
+                return ResponseResult.error(ResponseEnum.HAS_USERNAME);
             }
 
             //给user的密码加密
@@ -82,11 +67,22 @@ public class LoginController {
             user.setPassword(encoder.encode(user.getPassword()));
             user.setRoles(userSecurityService.findRolesByNames(rolesNames));
             userMapper.insert(user);
-            return new ResponseResult<>(true, user);
+            return ResponseResult.success();
         } catch (Exception e) {
             logger.error("注册用户发生错误!");
-            return new ResponseResult<>(false, "用户注册发生错误!");
+            return ResponseResult.error(ResponseEnum.SERVER_ERROR);
         }
+    }
+
+    @RequestMapping(value = "/refreshLogin", method = RequestMethod.POST)
+    public ResponseResult<String> refreshLogin(@RequestHeader("${jwt.header}") String token) {
+        if (StringUtils.isEmpty(token)) {
+            return ResponseResult.error(ResponseEnum.TOKEN_EMPTY);
+        } else if (JwtTokenUtil.isExpiration(token)) {
+            return ResponseResult.error(ResponseEnum.TOKEN_EXPIRED);
+        }
+        String newToken = jwtAuthService.refreshLogin(token);
+        return ResponseResult.success(newToken);
     }
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);

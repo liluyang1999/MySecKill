@@ -1,96 +1,153 @@
+<!-- 秒杀活动列表 -->
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org"
-                xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Hello World~</title>
+    <meta charset="UTF-8">
+    <link href="/static/layui/css/layui.css" media="all" rel="stylesheet" th:href="@{/static/layui/css/layui.css}"/>
+    <link href="/static/css/common.css" media="all" rel="stylesheet" th:href="@{/static/css/common.css}"/>
+    <style>
+        .layui-elem-quote {
+            background-color: inherit !important;
+        }
+
+        .layui-input, .layui-select, .layui-textarea {
+            background-color: inherit;
+            padding-left: 30px
+        }
+    </style>
 </head>
-<body>
-This
-<script th:src="@{/js/vue.min.js}"></script>
-<script th:src="@{js/webSocket.js}"></script>
-<script th:src="@{js/jquery.min.js}"></script>
-<script>
-    var tableTitle = [{
-        key : "name",
-        title : "商品名称"
-    }, {
-        key : "number",
-        title : "数量"
-    }, {
-        key : "startTime",
-        title : "秒杀时间",
-        render : function(h, params) {
-            return h('div', new Date(params.row.startTime).Format('yyyy-MM-dd hh:mm:ss'));
-        }
-    }, {
-        title : '操作',
-        key : 'action',
-        width : 500,
-        align : 'center',
-        render : function(h, params) {
-            var functionList = [];
-            var showH = h('Button', {
-                props : {
-                    type : 'primary',
-                    size : 'small',
-                    icon : 'ios-infinite'
-                },
-                style : {
-                    marginRight : '8px'
-                },
-                on : {
-                    click : function() {
-                        window.open(params.row.seckillId+".shtml");
-                    }
-                }
-            }, '购买');
-            functionList.push(showH);
-            return h('div', functionList);
-        }
-    }];
-    var vueMethod = new Vue({
-        el: '#app',
-        data : {
-            seckillData : [],
-        },
-        methods : {
-            listSeckill: function() {
-                $.ajax({
-                    url: "seckill_page/listSeckill", //Url发过去请求得到秒杀商品列表
-                    type: "POST",
-                    dataType: "JSON",
-                    data: { },
-                    success: function(result) {
-                        vueMethod.seckillData = result.msg;
-                    }
-                });
-            },
-            initFormatter : function(){
-                Date.prototype.Format = function(fmt) { //
-                    let o = {
-                        "M+" : this.getMonth()+1,                 //月份
-                        "d+" : this.getDate(),                    //日
-                        "h+" : this.getHours(),                   //小时
-                        "m+" : this.getMinutes(),                 //分
-                        "s+" : this.getSeconds(),                 //秒
-                        "q+" : Math.floor((this.getMonth()+3)/3), //季度
-                        "S"  : this.getMilliseconds()             //毫秒
-                    };
-                    if(/(y+)/.test(fmt))
-                        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-                    for(var k in o)
-                        if(new RegExp("("+ k +")").test(fmt))
-                            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
-                    return fmt;
-                }
+<body class="background">
+
+<div style="background-color: #4E5465; color: white">
+    <div class="layui-container">
+        <div class="layui-row" th:if="${hasLogin == true}">
+            <div class="layui-col-md9 com_center">
+                <strong style="font-size: 40px">活动列表</strong>
+            </div>
+            <!--已登录则显示用户信息-->
+            <div class="layui-col-md3 com_right">
+                <span id="displayName">用户名</span>
+                <span id="username">账号</span>
+                <button class="layui-btn-normal">注销</button>
+            </div>
+        </div>
+
+        <div class="layui-row" th:if="${hasLogin == false}">
+            <div class="layui-col-md9 com_center">
+                <strong style="font-size: 40px; text-align: center">活动列表</strong>
+            </div>
+            <!--未登录显示链接-->
+            <div class="layui-col-md3">
+                <a href="/login_page" style="text-align: right">
+                    <strong style="font-size: 30px">点击登录</strong>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<!-- Javascript引入 -->
+<script src="/static/js/jquery.min.js" th:src="@{/static/js/jquery.min.js}" type="text/javascript"></script>
+<script src="/static/layui/layui.js" th:src="@{/static/layui/layui.js}" type="text/javascript"></script>
+<script src="/static/js/vue.min.js" th:src="@{/static/js/vue.min.js}" type="text/javascript"></script>
+<script src="/static/js/util.js" th:src="@{/static/js/util.js}" type="text/javascript"></script>
+<script src="/static/css/login.css" th:src="@{/static/css/login.css}" type="text/javascript"></script>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        var hasLogin = [[${hasLogin}]];
+        if (hasLogin === true) {
+            var token = window.localStorage.getItem("token");
+            if (token == null) {
+                token = getCookie("token");
             }
-        },
-        created : function() {
-            this.listSeckill();
-            this.initFormatter();
+            var userInfo = requestUserInfo(token);
         }
     });
 </script>
-</body>
 </html>
+
+<!--<script>-->
+<!--var tableTitle = [{-->
+<!--        key : "name",-->
+<!--        title : "商品名称"-->
+<!--    }, {-->
+<!--        key : "number",-->
+<!--        title : "数量"-->
+<!--    }, {-->
+<!--        key : "startTime",-->
+<!--        title : "秒杀时间",-->
+<!--        render : function(h, params) {-->
+<!--            return h('div', new Date(params.row.startTime).Format('yyyy-MM-dd hh:mm:ss'));-->
+<!--        }-->
+<!--    }, {-->
+<!--        title : '操作',-->
+<!--        key : 'action',-->
+<!--        width : 500,-->
+<!--        align : 'center',-->
+<!--        render : function(h, params) {-->
+<!--            var functionList = [];-->
+<!--            var showH = h('Button', {-->
+<!--                props : {-->
+<!--                    type : 'primary',-->
+<!--                    size : 'small',-->
+<!--                    icon : 'ios-infinite'-->
+<!--                },-->
+<!--                style : {-->
+<!--                    marginRight : '8px'-->
+<!--                },-->
+<!--                on : {-->
+<!--                    click : function() {-->
+<!--                        window.open(params.row.seckillId+".shtml");-->
+<!--                    }-->
+<!--                }-->
+<!--            }, '购买');-->
+<!--            functionList.push(showH);-->
+<!--            return h('div', functionList);-->
+<!--        }-->
+<!--    }];-->
+<!--    var vueMethod = new Vue({-->
+<!--        el: '#app',-->
+<!--        data : {-->
+<!--            seckillData : [],-->
+<!--        },-->
+<!--        methods : {-->
+<!--            listSeckill: function() {-->
+<!--                $.ajax({-->
+<!--                    url: "seckill_page/listSeckill", //Url发过去请求得到秒杀商品列表-->
+<!--                    type: "POST",-->
+<!--                    dataType: "JSON",-->
+<!--                    data: { },-->
+<!--                    success: function(result) {-->
+<!--                        vueMethod.seckillData = result.msg;-->
+<!--                    }-->
+<!--                });-->
+<!--            },-->
+<!--            initFormatter : function(){-->
+<!--                Date.prototype.Format = function(fmt) { //-->
+<!--                    let o = {-->
+<!--                        "M+" : this.getMonth()+1,                 //月份-->
+<!--                        "d+" : this.getDate(),                    //日-->
+<!--                        "h+" : this.getHours(),                   //小时-->
+<!--                        "m+" : this.getMinutes(),                 //分-->
+<!--                        "s+" : this.getSeconds(),                 //秒-->
+<!--                        "q+" : Math.floor((this.getMonth()+3)/3), //季度-->
+<!--                        "S"  : this.getMilliseconds()             //毫秒-->
+<!--                    };-->
+<!--                    if(/(y+)/.test(fmt))-->
+<!--                        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));-->
+<!--                    for(var k in o)-->
+<!--                        if(new RegExp("("+ k +")").test(fmt))-->
+<!--                            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));-->
+<!--                    return fmt;-->
+<!--                }-->
+<!--            }-->
+<!--        },-->
+<!--        created : function() {-->
+<!--            this.listSeckill();-->
+<!--            this.initFormatter();-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->

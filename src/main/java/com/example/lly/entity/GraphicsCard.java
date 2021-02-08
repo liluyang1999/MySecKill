@@ -1,6 +1,7 @@
 package com.example.lly.entity;
 
 import com.example.lly.util.BaseUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,6 +28,7 @@ public class GraphicsCard implements Serializable, Cloneable {
     
     private int type;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createTime;
 
     @Version

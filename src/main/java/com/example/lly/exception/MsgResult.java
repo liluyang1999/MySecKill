@@ -14,6 +14,14 @@ public class MsgResult extends HashMap<String, Object> implements Serializable, 
 
     public static MsgResult okay(Object msg) {
         MsgResult msgResult = new MsgResult();
+        msgResult.put("code", 200);
+        msgResult.put("msg", msg);
+        return msgResult;
+    }
+
+    public static MsgResult error(Object msg) {
+        MsgResult msgResult = new MsgResult();
+        msgResult.put("code", 1000);
         msgResult.put("msg", msg);
         return msgResult;
     }
@@ -21,12 +29,6 @@ public class MsgResult extends HashMap<String, Object> implements Serializable, 
     public static MsgResult error(int code, String msg) {
         MsgResult msgResult = new MsgResult();
         msgResult.put("code", code);
-        msgResult.put("msg", msg);
-        return msgResult;
-    }
-
-    public static MsgResult error(Object msg) {
-        MsgResult msgResult = new MsgResult();
         msgResult.put("msg", msg);
         return msgResult;
     }

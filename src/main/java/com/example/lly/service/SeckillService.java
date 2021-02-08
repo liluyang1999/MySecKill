@@ -3,8 +3,8 @@ package com.example.lly.service;
 import com.example.lly.dto.ExecutedResult;
 import com.example.lly.dto.StateExposer;
 import com.example.lly.entity.Product;
-import com.example.lly.exception.MsgResult;
 import com.example.lly.entity.SeckillInfo;
+import com.example.lly.exception.MsgResult;
 
 import java.util.List;
 
@@ -18,6 +18,10 @@ public interface SeckillService {
 
     //所有秒杀
     List<SeckillInfo> getAllSeckillInfo();
+
+    List<SeckillInfo> getAllSeckillInfoInProgress();
+
+    List<SeckillInfo> getAllSeckillInfoInFuture();
 
     //得到秒杀活动售卖的所有商品
     List<Product> getAllProductInSeckillInfo(Integer secKillInfoId);

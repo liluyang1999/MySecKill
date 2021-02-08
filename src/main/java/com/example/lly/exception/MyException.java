@@ -1,12 +1,12 @@
 package com.example.lly.exception;
 
-import com.example.lly.util.CodeCollection;
+import com.example.lly.util.result.ResponseEnum;
 
 public class MyException extends RuntimeException {
 
     private static final Long serialVersionUID = 1L;
 
-    private int code = CodeCollection.serverError;  //默认系统错误
+    private Integer code = ResponseEnum.SERVER_ERROR.getCode();  //默认系统错误
 
     private String message;
 

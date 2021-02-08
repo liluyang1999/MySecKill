@@ -25,7 +25,7 @@ import java.time.Duration;
 @Configuration
 public class RedisConfig extends CachingConfigurerSupport {
 
-    private final Duration livingTime = Duration.ofDays(1);
+    private final Duration livingTime = Duration.ofMinutes(30L);
     private final Jackson2JsonRedisSerializer<Serializable> jackson2JsonRedisSerializer;
     private final RedisSerializer<String> redisSerializer;
 

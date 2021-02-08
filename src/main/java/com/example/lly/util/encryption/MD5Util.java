@@ -4,7 +4,6 @@ import com.example.lly.util.BaseUtil;
 import org.springframework.util.DigestUtils;
 
 import java.security.MessageDigest;
-import java.util.Arrays;
 
 public class MD5Util {
 
@@ -71,6 +70,7 @@ public class MD5Util {
 
     }
 
+
     //二次加密
     public static String secondEncode(String input) {
         char[] inputArray = input.toCharArray();
@@ -81,6 +81,7 @@ public class MD5Util {
         }
         return stringBuilder.toString();
     }
+
 
     public static String secondDecode(String input) {
         char[] inputArray = input.toCharArray();

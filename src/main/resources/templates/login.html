@@ -3,8 +3,6 @@
 <head>
     <title>分布式秒杀系统</title>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<!--    <meta name="_csrf" th:content="${_csrf.token}" />-->
-<!--    <meta name="_csrf_header" th:content="${_csrf.headerName}" />-->
     <link rel="stylesheet" href="/static/css/login.css" th:href="@{/static/css/login.css}" media="all"/>
     <link rel="stylesheet" href="/static/layui/css/layui.css" th:href="@{/static/layui/css/layui.css}" media="all"/>
     <style>
@@ -36,7 +34,12 @@
         <div class="layui-carousel zyl_login_height" id="zyllogin" lay-filter="zyllogin">
             <div carousel-item="">
                 <div>
-                    <div class="zyl_login_cont"></div>
+                    <div class="background">
+                        <span></span><span></span><span></span>
+                        <span></span><span></span><span></span>
+                        <span></span><span></span><span></span>
+                        <span></span><span></span><span></span>
+                    </div>
                 </div>
                 <div>
                     <img src = "/static/images/01.jpg" th:src="@{/static/images/01.jpg}"/>
@@ -47,14 +50,9 @@
                 <div>
                     <img src="/static/images/03.jpg" th:src="@{/static/images/03.jpg}"/>
                 </div>
-                <div>
-                    <div class="background">
-                        <span></span><span></span><span></span>
-                        <span></span><span></span><span></span>
-                        <span></span><span></span><span></span>
-                        <span></span><span></span><span></span>
-                    </div>
-                </div>
+                <!--                <div>-->
+                <!--                    <div class="zyl_login_cont"></div>-->
+                <!--                </div>-->
             </div>
         </div>
     </div>
@@ -95,24 +93,28 @@
         </legend>
     </fieldset>
     <div class="layui-row layui-col-space14">
-        <form class="layui-form zyl_pad_01" action="" method="post">
+        <form action="/login_page/home_page" class="layui-form zyl_pad_01" method="post" onsubmit="requestLogin()">
             <div class="layui-col-sm12 layui-col-md12">
                 <div class="layui-form-item">
-                    <input type="text" id="login_username" name="login_username" lay-verify="required|userName" autocomplete="off" placeholder="账号" class="layui-input">
+                    <input autocomplete="off" class="layui-input" id="username" lay-verify="required|userName"
+                           name="username" placeholder="账号" type="text">
                     <i class="layui-icon layui-icon-username zyl_lofo_icon"></i>
                 </div>
             </div>
             <div class="layui-col-sm12 layui-col-md12">
                 <div class="layui-form-item">
-                    <input type="password" id="login_password" name="login_password" lay-verify="required|pass" autocomplete="off" placeholder="密码" class="layui-input">
+                    <input autocomplete="off" class="layui-input" id="password" lay-verify="required|pass"
+                           name="password" placeholder="密码" type="password">
                     <i class="layui-icon layui-icon-password zyl_lofo_icon"></i>
                 </div>
             </div>
+
             <div class="layui-col-sm12 layui-col-md12">
                 <div class="layui-row">
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
                         <div class="layui-form-item">
-                            <input type="text" id="login_vercode" name="login_vercode" lay-verify="required|vercodes" autocomplete="off" placeholder="验证码" class="layui-input" maxlength="4">
+                            <input autocomplete="off" class="layui-input" id="vercode" lay-verify="required|vercodes"
+                                   maxlength="4" name="vercode" placeholder="验证码" type="text">
                             <i class="layui-icon layui-icon-vercode zyl_lofo_icon"></i>
                         </div>
                     </div>
@@ -120,127 +122,135 @@
                         <div class="zyl_lofo_vercode zylVerCode" onclick="getRandomVerCode()"></div>
                     </div>
                     <div class="layui-col-xs4 layui-col-sm4 layui-col-md4">
-                        记住账号&nbsp;<input type="checkbox" id="login_rememberMe" name="login_rememberMe" class="layui-form-checked"/>
+                        记住账号&nbsp;<input class="layui-form-checked" id="rememberMe" name="rememberMe" type="checkbox"/>
                     </div>
                 </div>
             </div>
             <div class="layui-col-sm12 layui-col-md12">
-                <button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="demo1">登录</button>
-<!--                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                <input class="layui-btn layui-btn-fluid" lay-filter="demo1" lay-submit="" type="submit" value="登录"/>
+                <input id="authorization" name="authorization" type="hidden"/>
             </div>
         </form>
     </div>
 </div>
 <!-- 登录表单 结束 -->
-
+</body>
 
 <!-- JavaScript引入 -->
 <!-- Jquery Js -->
 <script type="text/javascript" src="/static/js/jquery.min.js" th:src="@{/static/js/jquery.min.js}"></script>
 <!-- Layui Js -->
 <script type="text/javascript" src="/static/layui/layui.js" th:src="@{/static/layui/layui.js}"></script>
-<!-- Jqarticle Js -->
-<script type="text/javascript" src="/static/js/jparticle.min.js" th:src="@{/static/js/jparticle.min.js}"></script>
 <!-- ZylVerificationCode Js-->
-<script type="text/javascript" src="/static/js/VerificationCode.js" th:src="@{/static/js/VerificationCode.js}"></script>
+<script src="/static/js/verification_code.js" th:src="@{/static/js/verification_code.js}"
+        type="text/javascript"></script>
+<!-- Util Js-->
+<script src="/static/js/util.js" th:src="@{/static/js/util.js}" type="text/javascript"></script>
 <script>
-    layui.use(['carousel', 'form'], function(){
+    layui.use(['carousel', 'form'], function () {
         var carousel = layui.carousel
-            ,form = layui.form;
+            , form = layui.form;
 
         //自定义验证规则
         form.verify({
-            userName: function(value){
-                if(value.length < 6){
+            userName: function (value) {
+                if (value.length < 6) {
                     return '账号至少得6个字符';
                 }
             }
-            ,pass: [/^[\S]{6,16}$/,'密码必须6到16位，且不能出现空格']
-            ,vercodes: function(value){
+            , pass: [/^[\S]{6,18}$/, '密码必须6到18位，且不能出现空格']
+            , vercodes: function (value) {
                 //获取验证码
                 var randomVerCode = $(".zylVerCode").html();
-                if(value !== randomVerCode){
-                    return '验证码错误（区分大小写）';
+                if (value !== randomVerCode) {
+                    return '验证码错误(区分大小写)';
                 }
             }
-            ,content: function(value){
+            , content: function (value) {
                 layedit.sync(editIndex);
             }
         });
-
-        //监听提交
-        form.on("submit(demo1)", function(data){
-            layer.alert(JSON.stringify(data.field),{
-                title: '最终的提交信息'
-            })
-            return false;
-        });
-
 
         //轮播主体高度
         var zyl_login_height = $(window).height()/1.3;
         var zyl_car_height = $(".zyl_login_height").css("cssText","height:" + zyl_login_height + "px!important");
 
-
         //login轮播样式
         carousel.render({
             elem: '#zyllogin'//指向容器选择器
-            ,width: '100%' //设置容器宽度
-            ,height:'zyl_car_height'
-            ,arrow: 'always' //始终显示箭头
-            ,anim: 'fade' //切换动画方式
-            ,autoplay: true //是否自动切换false true
-            ,arrow: 'hover' //切换箭头默认显示状态||不显示：none||悬停显示：hover||始终显示：always
-            ,indicator: 'none' //指示器位置||外部：outside||内部：inside||不显示：none
-            ,interval: '5000' //自动切换时间:单位：ms（毫秒）
+            , width: '100%' //设置容器宽度
+            , height: 'zyl_car_height'
+            , anim: 'fade' //切换动画方式
+            , autoplay: true //是否自动切换false true
+            , arrow: 'hover' //切换箭头默认显示状态||不显示：none||悬停显示：hover||始终显示：always
+            , indicator: 'none' //指示器位置||外部：outside||内部：inside||不显示：none
+            , interval: '5000' //自动切换时间:单位：ms（毫秒）
         });
 
         //粒子线条
-        $(".zyl_login_cont").jParticle({
-            background: "rgba(0,0,0,0)",//背景颜色
-            color: "#fff",//粒子和连线的颜色
-            particlesNumber:100,//粒子数量
-            //disableLinks:true,//禁止粒子间连线
-            //disableMouse:true,//禁止粒子间连线(鼠标)
-            particle: {
-                minSize: 1,//最小粒子
-                maxSize: 3,//最大粒子
-                speed: 30,//粒子的动画速度
-            }
-        });
+        // $(".zyl_login_cont").jparticle({
+        //     background: "rgba(0,0,0,0)",//背景颜色
+        //     color: "#fff",//粒子和连线的颜色
+        //     particlesNumber:100,//粒子数量
+        //     //disableLinks:true,//禁止粒子间连线
+        //     //disableMouse:true,//禁止粒子间连线(鼠标)
+        //     particle: {
+        //         minSize: 1,//最小粒子
+        //         maxSize: 3,//最大粒子
+        //         speed: 30,//粒子的动画速度
+        //     }
+        // });
 
-        //监听轮播--案例暂未使用
-        carousel.on('change(zyllogin)', function(obj){
-            var loginCarousel = obj.index;
-        });
+        // //监听提交
+        // form.on("submit(demo1)", function(data){
+        //     layer.alert(JSON.stringify(data.field),{
+        //         title: '最终的提交信息'
+        //     })
+        //     return false;
+        // });
 
+        // //监听轮播--案例暂未使用
+        // carousel.on('change(zyllogin)', function(obj){
+        //     var loginCarousel = obj.index;
+        // });
     });
 
     function requestLogin() {
-        let username = $("#login_username").val();
-        let password = $("#login_password").val();
-        let verCode  = $("#login_vercode").val();
-        let rememberMe = $("#login_rememberMe").val();
+        var returnData;
+        let username = $("#username").val();
+        let password = $("#password").val();
+        let verCode = $("#vercode").val();
+        let rememberMe = $("#rememberMe").val();
         $.ajax({
             url: "/login_page/requestLogin",
             method: "post",
             cache: false,
             async: false,
-            data: {
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify({
                 "username": username,
                 "password": password,
                 "verCode": verCode,
                 "rememberMe": rememberMe
+            }),
+            success: function (data) {
+                const jsonStr = JSON.stringify(data);
+                const jsonObject = JSON.parse(jsonStr);
+                const tokenStr = jsonObject.data.toString();
+                setCookie("token", tokenStr, 7);
+                window.localStorage.setItem("token", tokenStr);
+                $("#authorization").val(tokenStr);
+                returnData = true;
+                // postToPage("http://localhost:8080/login_page/home_page", jsonObject.data.toString());
             },
-            success: function(data) {
-                window.location.href = "http://localhost:8080/login_page/home_page";
-            },
-            error: function(data) {
-                console.log("data");
+            error: function (data) {
                 alert("账号或密码错误, 请检查!");
+                returnData = false;
             }
-        })
+        });
+        return returnData;
     }
 </script>
-</body>
+<!-- Javascript引入 结束 -->
 </html>
