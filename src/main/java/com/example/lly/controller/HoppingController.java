@@ -64,11 +64,17 @@ public class HoppingController {
     }
 
 
+    //公用seckill_list页面
     @RequestMapping(value = {"/seckill_list_page", "/seckill_list"})
-    public ModelAndView goToSeckillListPage(HttpServletRequest request) {
+    public ModelAndView goToPublicSeckillListPage(HttpServletRequest request) {
         String token = request.getParameter(JwtTokenUtil.TOKEN_HEADER);
         String username;
-        ModelAndView mav = new ModelAndView("seckill_list");
+        List<SeckillInfo> seckillInfoInProgressList = seckillService.getAllSeckillInfoInProgress();
+        List<SeckillInfo> seckillInfoInFutureList = seckillService.getAllSeckillInfoInFuture();
+
+        ModelAndView mav = new ModelAndView("public_seckill_list");
+        mav.addObject("seckillInfoInProgressList", seckillInfoInProgressList);
+        mav.addObject("seckillInfoInFutureList", seckillInfoInFutureList);
         if (token != null) {
             username = JwtTokenUtil.getUsernameFromToken(token);
             mav.addObject("username", username);
@@ -79,6 +85,15 @@ public class HoppingController {
         return mav;
     }
 
+
+    //登录后的seckill_list_page
+    @RequestMapping(value = "/login_page_home_page/seckill_list/page")
+    public ModelAndView goToPrivateSeckillListPage(HttpServletRequest request) {
+        ModelAndView mav = new ModelAndView("private_seckill_list");
+
+
+        return mav;
+    }
 
     //秒杀详情下单
     @RequestMapping(value = "/login_page/home_page/seckill_execution_page")

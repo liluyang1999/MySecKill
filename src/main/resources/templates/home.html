@@ -10,6 +10,18 @@
             width: 100%;
             height: 100%;
         }
+
+        .item-background {
+            background-image: linear-gradient(80deg, #43e97b, #38f9d7);
+            width: 100%;
+            height: 100%
+        }
+
+        .item-background2 {
+            background-image: linear-gradient(80deg, #e97243, #f9d938);
+            width: 100%;
+            height: 100%
+        }
     </style>
 </head>
 <body class="linear-background">
@@ -18,6 +30,7 @@
 <div class="layui-row layui-bg-black">
     <div class="layui-col-md8">
         <div style="text-align: center; padding: 5px">
+            <i class="layui-icon" style="color: antiquewhite">&#xe68e;</i>
             <strong style="font-size: 35px; color: antiquewhite">
                 个人主页
             </strong>
@@ -44,9 +57,11 @@
                 </span>
                 <dl class="layui-nav-child layui-bg-blue">
                     <dd style="text-align: center">
+                        <i class="layui-icon layui-bg-green">&#xe770;</i>
                         <button class="layui-btn-lg layui-bg-green" onclick="">个人信息</button>
                     </dd>
                     <dd style="text-align: center">
+                        <i class="layui-icon layui-bg-orange">&#xe682;</i>
                         <button class="layui-btn-lg layui-bg-orange" onclick="">注销账号</button>
                     </dd>
                 </dl>
@@ -74,121 +89,126 @@
 <!-- 主页面标题 -->
 <div class="layui-row">
     <div class="layui-col-md6">
-        <div style="text-align: center">
+        <div class="layui-col-md11" style="text-align: center">
             <strong style="font-size: 25px">限时抢购</strong>
         </div>
+        <br/>
     </div>
     <div class="layui-col-md6">
-        <div style="text-align: center">
+        <div class="layui-col-md11" style="text-align: center">
             <strong style="font-size: 25px">尽情期待</strong>
         </div>
+        <br/>
     </div>
 </div>
 <!-- 主页面标题 -->
 
-<!-- 列表 -->
+
 <div class="layui-row">
-    <!-- 限时抢购列表 -->
     <div class="layui-col-md6">
-        <div class="layui-row">
-            <div th:each="seckillInfoInProgress: ${seckillInfoInProgressList}">
-                <!-- 开始遍历 -->
-                <div class="layui-col-md6">
+        <!-- iterator -->
+        <div class="layui-col-md4 layui-col-md-offset1" th:each="seckillInfoInProgress: ${seckillInfoInProgressList}">
 
-                    <!-- each -->
-                    <div class="layui-row">
-                        <div class="layui-col-md6">
-                            <strong th:text="${seckillInfoInProgress.getName()}">活动名称</strong>
-                        </div>
-                    </div>
-                    <div class="layui-row">
-                        <div class="layui-col-md3">
-                            <img alt="活动图片" height="100px" src="/static/image/404.jpg"
-                                 th:src="@{${seckillInfoInProgress.getProduct().getFilePath()}}" width="100px"/>
-                        </div>
-                        <div class="layui-col-md3">
-                            <div class="layui-row">
-                                <div class="layui-col-md3">
-                                    <strong th:text="${seckillInfoInProgress.getExpectedNumber()}">发送数量</strong>
-                                </div>
-                            </div>
-                            <div class="layui-row">
-                                <div class="layui-col-md3">
-                                    <strong th:text="'距离结束:' + ${seckillInfoInProgress.getProductId()}">倒计时:</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-row">
-                        <div class="layui-col-md1">
-                            <strong th:text="${seckillInfoInProgress.getSeckillPrice()}">秒杀价格</strong>
-                        </div>
-                        <div class="layui-col-md1">
-                            <strong th:text="${seckillInfoInProgress.getOriginalPrice()}">原价</strong>
-                        </div>
-                        <div class="layui-col-md1">
-                            <button class="layui-btn-normal" th:onclick="requestSeckillInfoDetail()" th:text="详情">详情
-                            </button>
-                        </div>
-                    </div>
-                    <!-- each -->
-
+            <div class="layui-col-md12">
+                <br/>
+                <div class="item-background" style="text-align: center">
+                    <strong style="font-size: 15px" th:text="${seckillInfoInProgress.getName()}">活动名称</strong>
                 </div>
-                <!-- 结束遍历 -->
+            </div>
+
+            <div class="layui-col-md5" style="text-align: right">
+                <br/>
+                <img alt="活动图片" height="100px" src="/static/image/404.png"
+                     th:src="@{${seckillInfoInProgress.getProduct().getFilePath()}}" width="100px"/>
+            </div>
+
+            <div class="layui-col-md6 layui-col-md-offset1">
+                <br/>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'开始时间:' + ${seckillInfoInProgress.getStartTime()}">开始时间</strong>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'预期放送:' + ${seckillInfoInProgress.getExpectedNumber()}">预期放送</strong>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'剩余数量:' + ${seckillInfoInProgress.getRemainingNumber()}">剩余数量</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-md12" style="text-align: center">
+                <br/>
+                <strong>秒杀价:</strong>
+                <span th:text="${seckillInfoInProgress.getSeckillPrice()}"></span>&nbsp;
+
+                <strong>原价:</strong>
+                <span th:text="${seckillInfoInProgress.getOriginalPrice()}"></span>&nbsp;
+
+                <button class="layui-btn-radius layui-bg-orange" onclick="" style="width: 70px; height: 40px">详情
+                </button>
             </div>
         </div>
+        <!-- iterator -->
     </div>
-    <!-- 限时抢购列表 -->
 
-    <!-- 尽情期待列表 -->
     <div class="layui-col-md6">
-        <div class="layui-row">
-            <div th:each="seckillInfoInFuture: ${seckillInfoInFutureList}">
-                <!-- 开始遍历 -->
-                <div class="layui-col-md3">
+        <!-- iterator -->
+        <div class="layui-col-md4 layui-col-md-offset1" th:each="seckillInfoInFuture: ${seckillInfoInFutureList}">
 
-                    <!-- each -->
-                    <div class="layui-row">
-                        <div class="layui-col-md6">
-                            <strong th:text="${seckillInfoInFuture.getName()}">活动名称</strong>
-                        </div>
-                    </div>
-                    <div class="layui-row">
-                        <div class="layui-col-md3">
-                            <img alt="活动图片" height="100px" src="/static/image/404.jpg"
-                                 th:src="@{${seckillInfoInFuture.getProduct().getFilePath()}}" width="100px"/>
-                        </div>
-                        <div class="layui-col-md3">
-                            <div class="layui-row">
-                                <div class="layui-col-md3">
-                                    <strong th:text="${seckillInfoInFuture.getExpectedNumber()}">发送数量</strong>
-                                </div>
-                            </div>
-                            <div class="layui-row">
-                                <div class="layui-col-md3">
-                                    <strong th:text="'倒计时:' + ${seckillInfoInFuture.getProductId()}">倒计时:</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-row">
-                        <div class="layui-col-md3">
-                            <strong th:text="${seckillInfoInFuture.getSeckillPrice()}">秒杀价格</strong>
-                        </div>
-                        <div class="layui-col-md3">
-                            <strong th:text="${seckillInfoInFuture.getOriginalPrice()}">原价</strong>
-                        </div>
-                    </div>
-                    <!-- each -->
-
+            <div class="layui-col-md12">
+                <br/>
+                <div class="item-background2" style="text-align: center">
+                    <strong style="font-size: 15px" th:text="${seckillInfoInFuture.getName()}">活动名称</strong>
                 </div>
-                <!-- 结束遍历 -->
             </div>
+
+            <div class="layui-col-md5">
+                <br/>
+                <div style="text-align: right">
+                    <img alt="活动图片" height="100px" src="/static/image/404.png"
+                         th:src="@{${seckillInfoInFuture.getProduct().getFilePath()}}" width="100px"/>
+                </div>
+            </div>
+
+            <div class="layui-col-md6 layui-col-md-offset1">
+                <br/>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'放送时间:' + ${seckillInfoInFuture.getStartTime()}">开始时间</strong>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'预期放送:' + ${seckillInfoInFuture.getExpectedNumber()}">预期放送</strong>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'倒计时:' + ${seckillInfoInFuture.getRemainingNumber()}">剩余数量</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-md12" style="text-align: center">
+                <br/>
+                <strong>秒杀价:</strong>
+                <span th:text="${seckillInfoInFuture.getSeckillPrice()}"></span>&nbsp;
+
+                <strong>原价:</strong>
+                <span th:text="${seckillInfoInFuture.getOriginalPrice()}"></span>&nbsp;
+
+                <button class="layui-btn-radius layui-bg-gray" disabled style="width: 70px; height: 40px">尽情期待</button>
+            </div>
+
         </div>
+        <!-- iterator -->
     </div>
-    <!-- 尽情期待列表 -->
 </div>
-<!-- 列表 -->
 </body>
 
 

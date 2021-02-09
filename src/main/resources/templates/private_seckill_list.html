@@ -21,9 +21,10 @@
 
 <div style="background-color: #4E5465; color: white">
     <div class="layui-container">
-        <div class="layui-row" th:if="${hasLogin == true}">
+        <!-- 已登录 -->
+        <div class="layui-row" style="padding: 17px" th:if="${hasLogin == true}">
             <div class="layui-col-md9 com_center">
-                <strong style="font-size: 40px">活动列表</strong>
+                <strong style="font-size: 20px">活动列表</strong>
             </div>
             <!--已登录则显示用户信息-->
             <div class="layui-col-md3 com_right">
@@ -33,27 +34,136 @@
             </div>
         </div>
 
-        <div class="layui-row" th:if="${hasLogin == false}">
+        <!-- 未登录 -->
+        <div class="layui-row" style="padding: 17px" th:if="${hasLogin == false}">
             <div class="layui-col-md9 com_center">
-                <strong style="font-size: 40px; text-align: center">活动列表</strong>
+                <strong style="font-size: 30px; text-align: center">活动列表</strong>
             </div>
             <!--未登录显示链接-->
             <div class="layui-col-md3">
                 <a href="/login_page" style="text-align: right">
-                    <strong style="font-size: 30px">点击登录</strong>
+                    <button class="layui-btn" style="width: 80px; height: 40px">登录</button>
                 </a>
             </div>
         </div>
     </div>
 </div>
+
+<div class="layui-row">
+    <div class="layui-col-md6">
+        <!-- iterator -->
+        <div class="layui-col-md4 layui-col-md-offset1" th:each="seckillInfoInProgress: ${seckillInfoInProgressList}">
+
+            <div class="layui-col-md12">
+                <br/>
+                <div class="item-background" style="text-align: center">
+                    <strong style="font-size: 15px" th:text="${seckillInfoInProgress.getName()}">活动名称</strong>
+                </div>
+            </div>
+
+            <div class="layui-col-md5" style="text-align: right">
+                <br/>
+                <img alt="活动图片" height="100px" src="/static/image/404.png"
+                     th:src="@{${seckillInfoInProgress.getProduct().getFilePath()}}" width="100px"/>
+            </div>
+
+            <div class="layui-col-md6 layui-col-md-offset1">
+                <br/>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'开始时间:' + ${seckillInfoInProgress.getStartTime()}">开始时间</strong>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'预期放送:' + ${seckillInfoInProgress.getExpectedNumber()}">预期放送</strong>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'剩余数量:' + ${seckillInfoInProgress.getRemainingNumber()}">剩余数量</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-md12" style="text-align: center" th:if="${hasLogin} == true">
+                <br/>
+                <strong>秒杀价:</strong>
+                <span th:text="${seckillInfoInProgress.getSeckillPrice()}"></span>&nbsp;
+
+                <strong>原价:</strong>
+                <span th:text="${seckillInfoInProgress.getOriginalPrice()}"></span>&nbsp;
+
+                <button class="layui-btn-radius layui-bg-orange" onclick="" style="width: 70px; height: 40px">详情
+                </button>
+            </div>
+        </div>
+        <!-- iterator -->
+    </div>
+
+    <div class="layui-col-md6">
+        <!-- iterator -->
+        <div class="layui-col-md4 layui-col-md-offset1" th:each="seckillInfoInFuture: ${seckillInfoInFutureList}">
+
+            <div class="layui-col-md12">
+                <br/>
+                <div class="item-background2" style="text-align: center">
+                    <strong style="font-size: 15px" th:text="${seckillInfoInFuture.getName()}">活动名称</strong>
+                </div>
+            </div>
+
+            <div class="layui-col-md5">
+                <br/>
+                <div style="text-align: right">
+                    <img alt="活动图片" height="100px" src="/static/image/404.png"
+                         th:src="@{${seckillInfoInFuture.getProduct().getFilePath()}}" width="100px"/>
+                </div>
+            </div>
+
+            <div class="layui-col-md6 layui-col-md-offset1">
+                <br/>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'放送时间:' + ${seckillInfoInFuture.getStartTime()}">开始时间</strong>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'预期放送:' + ${seckillInfoInFuture.getExpectedNumber()}">预期放送</strong>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'倒计时:' + ${seckillInfoInFuture.getRemainingNumber()}">剩余数量</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-md12" style="text-align: center" th:if="${hasLogin} == true">
+                <br/>
+                <strong>秒杀价:</strong>
+                <span th:text="${seckillInfoInFuture.getSeckillPrice()}"></span>&nbsp;
+
+                <strong>原价:</strong>
+                <span th:text="${seckillInfoInFuture.getOriginalPrice()}"></span>&nbsp;
+
+                <button class="layui-btn-radius layui-bg-gray" disabled style="width: 70px; height: 40px">尽情期待</button>
+            </div>
+
+        </div>
+        <!-- iterator -->
+    </div>
+</div>
+
 </body>
+
 
 <!-- Javascript引入 -->
 <script src="/static/js/jquery.min.js" th:src="@{/static/js/jquery.min.js}" type="text/javascript"></script>
 <script src="/static/layui/layui.js" th:src="@{/static/layui/layui.js}" type="text/javascript"></script>
 <script src="/static/js/vue.min.js" th:src="@{/static/js/vue.min.js}" type="text/javascript"></script>
 <script src="/static/js/util.js" th:src="@{/static/js/util.js}" type="text/javascript"></script>
-<script src="/static/css/login.css" th:src="@{/static/css/login.css}" type="text/javascript"></script>
+<!-- Javascript引入 -->
 
 <script th:inline="javascript">
     $(document).ready(function () {
@@ -67,7 +177,9 @@
         }
     });
 </script>
+
 </html>
+
 
 <!--<script>-->
 <!--var tableTitle = [{-->

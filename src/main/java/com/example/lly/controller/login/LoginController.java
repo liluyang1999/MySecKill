@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
@@ -53,27 +53,6 @@ public class LoginController {
     }
 
 
-    //localhost:8080/login/registerUser
-    @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
-    public ResponseResult<?> registerUser(User user, List<String> rolesNames) {
-        try {
-            User userByName = userSecurityService.findUserByUsername(user.getUsername());
-            if (userByName != null) {
-                return ResponseResult.error(ResponseEnum.HAS_USERNAME);
-            }
-
-            //给user的密码加密
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
-            user.setRoles(userSecurityService.findRolesByNames(rolesNames));
-            userMapper.insert(user);
-            return ResponseResult.success();
-        } catch (Exception e) {
-            logger.error("注册用户发生错误!");
-            return ResponseResult.error(ResponseEnum.SERVER_ERROR);
-        }
-    }
-
     @RequestMapping(value = "/refreshLogin", method = RequestMethod.POST)
     public ResponseResult<String> refreshLogin(@RequestHeader("${jwt.header}") String token) {
         if (StringUtils.isEmpty(token)) {
@@ -83,6 +62,36 @@ public class LoginController {
         }
         String newToken = jwtAuthService.refreshLogin(token);
         return ResponseResult.success(newToken);
+    }
+
+
+    //localhost:8080/login/requestRegisterUser
+    @RequestMapping(value = "/requestRegisterUser", method = RequestMethod.POST)
+    public ResponseResult<?> registerUser(HttpServletRequest request) {
+        User user = new User();
+        user.setUsername(request.getParameter("username"));
+        request.getParameter("password");
+        user.setDisplayName(request.getParameter("displayName"));
+        user.setPhone(request.getParameter("phone"));
+        user.setEmail(request.getParameter("email"));
+        user.setEnabled(true);
+
+        try {
+            User userByName = userSecurityService.findUserByUsername(user.getUsername());
+            if (userByName != null) {
+                return ResponseResult.error(ResponseEnum.HAS_USERNAME);
+            }
+
+            //给user的密码加密
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPassword(encoder.encode(user.getPassword()));
+//            user.setRoles(userSecurityService.findRolesByNames(rolesNames));
+            userMapper.insert(user);
+            return ResponseResult.success();
+        } catch (Exception e) {
+            logger.error("注册用户发生错误!");
+            return ResponseResult.error(ResponseEnum.SERVER_ERROR);
+        }
     }
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);

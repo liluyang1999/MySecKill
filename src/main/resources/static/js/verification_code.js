@@ -12,5 +12,6 @@ function getRandomVerCode(len){
     for (i = 0; i < len; i++) {
         zylCode += $chars.charAt(Math.floor(Math.random() * maxPos));
     }
-    $(".zylVerCode").html(zylCode);
+    $(".zyl_lofo_vercode").html(zylCode);
+    $("#vercodePic").html(zylCode);
 }
