@@ -6,43 +6,34 @@
     <meta charset="UTF-8">
     <link href="/static/layui/css/layui.css" media="all" rel="stylesheet" th:href="@{/static/layui/css/layui.css}"/>
     <link href="/static/css/common.css" media="all" rel="stylesheet" th:href="@{/static/css/common.css}"/>
-    <style>
-        .layui-elem-quote {
-            background-color: inherit !important;
-        }
-
-        .layui-input, .layui-select, .layui-textarea {
-            background-color: inherit;
-            padding-left: 30px
-        }
-    </style>
 </head>
 <body class="background">
 
 <div style="background-color: #4E5465; color: white">
     <div class="layui-container">
         <!-- 已登录 -->
-        <div class="layui-row" style="padding: 17px" th:if="${hasLogin == true}">
+        <div class="layui-row" id="loginDiv" style="padding: 17px">
             <div class="layui-col-md9 com_center">
                 <strong style="font-size: 20px">活动列表</strong>
             </div>
             <!--已登录则显示主页链接-->
             <div class="layui-col-md3">
+                <label id="displayName">用户名</label>
                 <a href="/login_page/home_page" style="text-align: right">
-                    <button class="layui-btn" style="width: 80px; height: 40px">主页</button>
+                    <button class="layui-btn" onclick="goToHomePage()" style="width: 80px; height: 40px">主页</button>
                 </a>
             </div>
         </div>
 
         <!-- 未登录 -->
-        <div class="layui-row" style="padding: 17px" th:if="${hasLogin == false}">
+        <div class="layui-row" id="unloginDiv" style="padding: 17px">
             <div class="layui-col-md9 com_center">
                 <strong style="font-size: 30px; text-align: center">活动列表</strong>
             </div>
             <!--未登录显示链接-->
             <div class="layui-col-md3">
                 <a href="/login_page" style="text-align: right">
-                    <button class="layui-btn" style="width: 80px; height: 40px">登录</button>
+                    <button class="layui-btn" onclick="goToLoginPage()" style="width: 80px; height: 40px">登录</button>
                 </a>
             </div>
         </div>
@@ -85,18 +76,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="layui-col-md12" style="text-align: center" th:if="${hasLogin} == true">
-                <br/>
-                <strong>秒杀价:</strong>
-                <span th:text="${seckillInfoInProgress.getSeckillPrice()}"></span>&nbsp;
-
-                <strong>原价:</strong>
-                <span th:text="${seckillInfoInProgress.getOriginalPrice()}"></span>&nbsp;
-
-                <button class="layui-btn-radius layui-bg-orange" onclick="" style="width: 70px; height: 40px">详情
-                </button>
-            </div>
         </div>
         <!-- iterator -->
     </div>
@@ -138,18 +117,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="layui-col-md12" style="text-align: center" th:if="${hasLogin} == true">
-                <br/>
-                <strong>秒杀价:</strong>
-                <span th:text="${seckillInfoInFuture.getSeckillPrice()}"></span>&nbsp;
-
-                <strong>原价:</strong>
-                <span th:text="${seckillInfoInFuture.getOriginalPrice()}"></span>&nbsp;
-
-                <button class="layui-btn-radius layui-bg-gray" disabled style="width: 70px; height: 40px">尽情期待</button>
-            </div>
-
         </div>
         <!-- iterator -->
     </div>
@@ -167,13 +134,21 @@
 
 <script th:inline="javascript">
     $(document).ready(function () {
-        var hasLogin = [[${hasLogin}]];
-        if (hasLogin === true) {
-            var token = window.localStorage.getItem("token");
-            if (token == null) {
-                token = getCookie("token");
+        var userInfo;
+        let token = window.localStorage.getItem("token");
+        if (token == null) {
+            token = getCookie("token");
+        }
+        if (token != null) {
+            userInfo = requestUserInfo(token);
+            if (userInfo == null) {
+                $("#loginDiv").hide();
+                $("#unloginDiv").show();
+            } else {
+                $("#loginDiv").show();
+                $("#unloginDiv").hide();
+                $("#displayName").val(userInfo["displayName"]);
             }
-            var userInfo = requestUserInfo(token);
         }
     });
 </script>

@@ -1,7 +1,6 @@
 package com.example.lly.controller.login;
 
 import com.example.lly.dao.mapper.rbac.UserMapper;
-import com.example.lly.entity.rbac.User;
 import com.example.lly.module.security.JwtTokenUtil;
 import com.example.lly.service.JwtAuthService;
 import com.example.lly.service.UserSecurityService;
@@ -11,10 +10,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.Map;
 
 @RestController
@@ -24,12 +27,14 @@ public class LoginController {
     private final UserSecurityService userSecurityService;
     private final UserMapper userMapper;
     private final JwtAuthService jwtAuthService;
+    private final RedisTemplate<String, Serializable> redisTemplate;
 
     @Autowired
-    public LoginController(UserSecurityService userSecurityService, UserMapper userMapper, JwtAuthService jwtAuthService) {
+    public LoginController(UserSecurityService userSecurityService, UserMapper userMapper, JwtAuthService jwtAuthService, RedisTemplate<String, Serializable> redisTemplate) {
         this.userSecurityService = userSecurityService;
         this.userMapper = userMapper;
         this.jwtAuthService = jwtAuthService;
+        this.redisTemplate = redisTemplate;
     }
 
 
@@ -52,47 +57,29 @@ public class LoginController {
         return ResponseResult.success(newToken);
     }
 
+    //localhost:8080/login/requestLogin  请求验证, 返回JwtToken令牌
+    @RequestMapping(value = "/requestLogout", method = RequestMethod.POST)
+    public ResponseResult<String> requestLogout(HttpServletRequest request) {
+        String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
+        String username = JwtTokenUtil.getUsernameFromToken(token);
+        redisTemplate.opsForHash().delete("users", username);
+        return ResponseResult.success("服务器清空用户信息成功");
+    }
 
     @RequestMapping(value = "/refreshLogin", method = RequestMethod.POST)
-    public ResponseResult<String> refreshLogin(@RequestHeader("${jwt.header}") String token) {
+    public ResponseResult<String> refreshLogin(HttpServletRequest request) {
+        String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
+
         if (StringUtils.isEmpty(token)) {
             return ResponseResult.error(ResponseEnum.TOKEN_EMPTY);
         } else if (JwtTokenUtil.isExpiration(token)) {
             return ResponseResult.error(ResponseEnum.TOKEN_EXPIRED);
         }
+
         String newToken = jwtAuthService.refreshLogin(token);
         return ResponseResult.success(newToken);
     }
 
-
-    //localhost:8080/login/requestRegisterUser
-    @RequestMapping(value = "/requestRegisterUser", method = RequestMethod.POST)
-    public ResponseResult<?> registerUser(HttpServletRequest request) {
-        User user = new User();
-        user.setUsername(request.getParameter("username"));
-        request.getParameter("password");
-        user.setDisplayName(request.getParameter("displayName"));
-        user.setPhone(request.getParameter("phone"));
-        user.setEmail(request.getParameter("email"));
-        user.setEnabled(true);
-
-        try {
-            User userByName = userSecurityService.findUserByUsername(user.getUsername());
-            if (userByName != null) {
-                return ResponseResult.error(ResponseEnum.HAS_USERNAME);
-            }
-
-            //给user的密码加密
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
-//            user.setRoles(userSecurityService.findRolesByNames(rolesNames));
-            userMapper.insert(user);
-            return ResponseResult.success();
-        } catch (Exception e) {
-            logger.error("注册用户发生错误!");
-            return ResponseResult.error(ResponseEnum.SERVER_ERROR);
-        }
-    }
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 

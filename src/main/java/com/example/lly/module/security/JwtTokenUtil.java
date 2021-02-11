@@ -1,6 +1,5 @@
 package com.example.lly.module.security;
 
-import com.example.lly.entity.rbac.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,8 +24,7 @@ public class JwtTokenUtil implements Serializable {
     private static final String ISSUER = "liluyang1999";
     private static final String SECRET = "JwtSecret";    //加密的盐
 
-    //Key值
-    private static final String KEY_ROLES = "role";
+    public static final String errorMsg = "令牌为空、过期或错误, 请重新登录";
     private static final String KEY_USERNAME = "username";
     private static final String KEY_CREATETIME = "createTime";
     private static final String KEY_REMEMBERME = "rememberMe";
@@ -42,6 +40,8 @@ public class JwtTokenUtil implements Serializable {
 
     //前缀
     public static final String TOKEN_PREFIX = "Bearer ";
+    //Key值
+    private static final String KEY_ROLES = "role_";
 
     /**
      * 生成Token令牌
@@ -78,19 +78,19 @@ public class JwtTokenUtil implements Serializable {
             Claims claims = getClaimsFromToken(token);
             claims.put("createTime", new Date());
             refreshToken = createToken(claims, (Boolean) claims.get("rememberMe"));
-        } catch(Exception e) {
+        } catch (Exception e) {
             return null;
         }
         return refreshToken;
     }
 
 
-    //验证账号一致和是否过期
-    public static Boolean validateToken(String token, UserDetails userDetails) {
-        User user = (User) userDetails;
-        String username = getUsernameFromToken(token);
-        return (username.equals(user.getUsername()) && !isExpiration(token));
-    }
+//    //验证账号一致和是否过期
+//    public static Boolean validateToken(String token, UserDetails userDetails) {
+//        User user = (User) userDetails;
+//        String username = getUsernameFromToken(token);
+//        return (username.equals(user.getUsername()) && !isExpiration(token));
+//    }
 
     public static String getUsernameFromToken(String token) {
         String username;
@@ -103,16 +103,6 @@ public class JwtTokenUtil implements Serializable {
         return username;
     }
 
-    public static Collection<? extends GrantedAuthority> getUserRoleFromToken(String token) {
-        Collection<? extends GrantedAuthority> roles;
-        try {
-            Claims claims = getClaimsFromToken(token);
-            roles = (Collection<? extends GrantedAuthority>) claims.get(KEY_ROLES);
-        } catch (Exception e) {
-            roles = null;
-        }
-        return roles;
-    }
 
     public static boolean isExpiration(String token) {
         //和现在时间比较查看是否过期
@@ -147,6 +137,17 @@ public class JwtTokenUtil implements Serializable {
         System.out.println(JwtTokenUtil.getUsernameFromToken(token));
         System.out.println(JwtTokenUtil.getTokenBody(token));
         System.out.println(JwtTokenUtil.getTokenBody(token).getExpiration());
+    }
+
+    public static Collection<? extends GrantedAuthority> getUserRoleFromToken(String token) {
+        Collection<? extends GrantedAuthority> roles;
+        try {
+            Claims claims = getClaimsFromToken(token);
+            roles = (Collection<? extends GrantedAuthority>) claims.get(KEY_ROLES);
+        } catch (Exception e) {
+            roles = null;
+        }
+        return roles;
     }
 
 }

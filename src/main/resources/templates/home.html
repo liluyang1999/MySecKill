@@ -38,14 +38,27 @@
     </div>
     <div class="layui-col-md4">
         <ul class="layui-nav">
-            <li class="layui-nav-item">
+            <li class="layui-nav-item" th:if="${hasAdminRole} == true">
                 <span style="padding: 15px">
-                    <strong style="font-size: 22px">活动列表</strong>
+                    <strong style="font-size: 22px">
+                        系统管理
+                    </strong>
                 </span>
             </li>
             <li class="layui-nav-item">
                 <span style="padding: 15px">
-                    <strong style="font-size: 22px">我的活动</strong>
+                    <strong onclick="goToTargetPage('http://localhost:8080/login_page/home_page/seckill_list_page', getToken())"
+                            style="font-size: 22px">
+                        活动列表
+                    </strong>
+                </span>
+            </li>
+            <li class="layui-nav-item">
+                <span style="padding: 15px">
+                    <strong onclick="goToTargetPage('http://localhost:8080/login_page/home_page/myseckill_page', getToken())"
+                            style="font-size: 22px">
+                        我的秒杀
+                    </strong>
                 </span>
             </li>
             <li class="layui-nav-item">
@@ -58,11 +71,14 @@
                 <dl class="layui-nav-child layui-bg-blue">
                     <dd style="text-align: center">
                         <i class="layui-icon layui-bg-green">&#xe770;</i>
-                        <button class="layui-btn-lg layui-bg-green" onclick="">个人信息</button>
+                        <button class="layui-btn-lg layui-bg-green"
+                                onclick="goToTargetPage('http://localhost:8080/login_page/home_page/myaccount_page', getToken())">
+                            个人信息
+                        </button>
                     </dd>
                     <dd style="text-align: center">
                         <i class="layui-icon layui-bg-orange">&#xe682;</i>
-                        <button class="layui-btn-lg layui-bg-orange" onclick="">注销账号</button>
+                        <button class="layui-btn-lg layui-bg-orange" onclick="requestLogout()">注销账号</button>
                     </dd>
                 </dl>
             </li>
@@ -238,6 +254,7 @@
         });
     });
 </script>
+
 </html>
 
 

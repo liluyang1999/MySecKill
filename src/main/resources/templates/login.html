@@ -131,21 +131,20 @@
                 <input id="authorization" name="authorization" type="hidden"/>
             </div>
         </form>
+        <a href="http://localhost:8080/register_page">没有账号?去注册</a>
     </div>
 </div>
 <!-- 登录表单 结束 -->
 </body>
 
 <!-- JavaScript引入 -->
-<!-- Jquery Js -->
 <script src="/static/js/jquery.min.js" th:src="@{/static/js/jquery.min.js}" type="text/javascript"></script>
-<!-- Layui Js -->
 <script src="/static/layui/layui.js" th:src="@{/static/layui/layui.js}" type="text/javascript"></script>
-<!-- ZylVerificationCode Js-->
 <script src="/static/js/verification_code.js" th:src="@{/static/js/verification_code.js}"
         type="text/javascript"></script>
-<!-- Util Js-->
 <script src="/static/js/util.js" th:src="@{/static/js/util.js}" type="text/javascript"></script>
+<!-- Javascript引入 -->
+
 <script>
     layui.use(['carousel', 'form'], function () {
         var carousel = layui.carousel
@@ -238,8 +237,8 @@
                 const jsonStr = JSON.stringify(data);
                 const jsonObject = JSON.parse(jsonStr);
                 const tokenStr = jsonObject.data.toString();
-                setCookie("token", tokenStr, 7);
                 window.localStorage.setItem("token", tokenStr);
+                setCookie("token", tokenStr, 7);
                 $("#authorization").val(tokenStr);
                 returnData = true;
                 // postToPage("http://localhost:8080/login_page/home_page", jsonObject.data.toString());
@@ -252,5 +251,19 @@
         return returnData;
     }
 </script>
-<!-- Javascript引入 结束 -->
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        var requestParams = getRequestParams();
+        if (requestParams["username"] != null) {
+            $("#username").val(requestParams["username"]);
+        }
+
+        let returnMsg = [[${returnMsg}]];
+        if (returnMsg.length > 0) {
+            alert(returnMsg);
+        }
+    });
+</script>
+
 </html>

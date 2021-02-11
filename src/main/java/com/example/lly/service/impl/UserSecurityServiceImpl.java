@@ -36,32 +36,72 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     @Autowired
     private RedisTemplate<String, Serializable> redisTemplate;
 
-//    @Cacheable(key = "#{username}", value = "userDetailsCache")
-@Override
-public UserDetails loadUserByUsername(String username) {
-    User user = userMapper.queryByUsername((username));
-    if (user == null) {
-//            throw new UsernameNotFoundException("**********该账号不存在**********");
-        return null;
-    }
-    //数据库中存储的是二次加密的密码, 需要先解密
-    String decodedPassword = MD5Util.secondDecode(user.getPassword());
-    user.setPassword(decodedPassword);
-    return user;
-}
 
+    public User getUserByUsername(String username) {
+        User user = (User) redisTemplate.opsForHash().get("users", username);
+        if (user == null) {
+            user = userMapper.queryByUsername(username);
+        }
+        user.setPassword(MD5Util.secondDecode(user.getPassword()));
+        return user;
+    }
+
+    public boolean insertUser(String username, String password, String displayName, String phone, String email) {
+        String secondEncodedPass = MD5Util.secondEncode(password);
+        User user = new User(username, secondEncodedPass, displayName, true, phone, email);
+        return userMapper.insert(user) >= 0;
+    }
+
+    public boolean containsUserRole(List<Role> roles) {
+        for (Role role : roles) {
+            if (role.getRole().startsWith("user:")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsAdminRole(List<Role> roles) {
+        for (Role role : roles) {
+            if (role.getRole().startsWith("admin:")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Role> getRolesByNames(List<String> names) {
+        List<Role> roles = new ArrayList<>();
+        for (String each : names) {
+            roles.add(roleMapper.queryByName(each));
+        }
+        return roles;
+    }
+
+    //    @Cacheable(key = "#{username}", value = "userDetailsCache")
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        User user = userMapper.queryByUsername((username));
+        if (user == null) {
+            return null;
+        }
+        //数据库中存储的是二次加密的密码, 需要先解密
+        String decodedPassword = MD5Util.secondDecode(user.getPassword());
+        user.setPassword(decodedPassword);
+        return user;
+    }
 
     @Override
-    public Boolean hasUsername(HttpServletRequest request, Authentication authentication) {
+    public boolean hasUsername(HttpServletRequest request, Authentication authentication) {
         Object principal = authentication.getPrincipal();
         Boolean hasUsername = null;
 
-        if(principal == null) {
+        if (principal == null) {
             logger.error("**********查询不到相关用户信息！**********");
             hasUsername = false;
         }
 
-        if(principal instanceof User) {
+        if (principal instanceof User) {
             UserDetails user = (UserDetails) principal;
             String username = user.getUsername();
             if(userMapper.queryByUsername(username) == null) {
@@ -75,11 +115,11 @@ public UserDetails loadUserByUsername(String username) {
     }
 
     @Override
-    public Boolean hasPassword(HttpServletRequest request, Authentication authentication) {
+    public boolean hasPassword(HttpServletRequest request, Authentication authentication) {
         Object principal = authentication.getPrincipal();
         Boolean isCorrect = null;
 
-        if(principal == null) {
+        if (principal == null) {
             logger.error("**********查询不到相关用户信息！**********");
             isCorrect = false;
         }
@@ -99,16 +139,16 @@ public UserDetails loadUserByUsername(String username) {
 
 
     @Override
-    public Boolean hasPermission(HttpServletRequest request, Authentication authentication) {
+    public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
         Object principal = authentication.getPrincipal();
         Boolean hasPermission = null;
 
-        if(principal == null) {
+        if (principal == null) {
             logger.error("**********查询不到相关用户信息！**********");
             hasPermission = false;
         }
 
-        if(principal instanceof UserDetails) {
+        if (principal instanceof UserDetails) {
             UserDetails checkedUser = (UserDetails) principal;
             String username = checkedUser.getUsername();
 
@@ -125,24 +165,6 @@ public UserDetails loadUserByUsername(String username) {
         }
 
         return hasPermission;
-    }
-
-    public Boolean insertUserInfo(String username, String password, String displayName, String phone, String email) {
-        String secondEncodedPass = MD5Util.secondEncode(password);
-        User user = new User(username, secondEncodedPass, displayName, true, phone, email);
-        return userMapper.insert(user) >= 0;
-    }
-
-    public User findUserByUsername(String username) {
-        return userMapper.queryByUsername(username);
-    }
-
-    public List<Role> findRolesByNames(List<String> names) {
-        List<Role> roles = new ArrayList<>();
-        for(String each : names) {
-            roles.add(roleMapper.queryByName(each));
-        }
-        return roles;
     }
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

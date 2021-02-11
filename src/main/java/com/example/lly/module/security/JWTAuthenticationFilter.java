@@ -1,7 +1,9 @@
 package com.example.lly.module.security;
 
+import com.example.lly.service.JwtAuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,19 +29,21 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Resource
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private JwtAuthService jwtAuthService;
 
     //Authentication的type为UsernamePasswordAuthenticationToken
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
         String jwtToken = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
-        if(StringUtils.isNotEmpty(jwtToken)) {
+        if (StringUtils.isNotEmpty(jwtToken)) {
             String username = JwtTokenUtil.getUsernameFromToken(jwtToken);
-            if(username != null && SecurityContextHolder.getContext().getAuthentication() != null) {
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() != null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
                 //验证账号是否一直和token是否过期
-                if(JwtTokenUtil.validateToken(jwtToken, userDetails)) {
+                if (StringUtils.isEmpty(jwtToken) || jwtAuthService.validateExpiration(jwtToken) || !jwtAuthService.validateUsername(jwtToken)) {
                     System.out.println("这个页面进行验证了！");
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

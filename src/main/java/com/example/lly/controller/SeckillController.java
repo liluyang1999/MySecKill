@@ -60,10 +60,8 @@ public class SeckillController {
     @RequestMapping(method = RequestMethod.GET, value = "/requestSeckillInfoInProgressList")
     public ResponseResult<List<SeckillInfo>> requestSeckillInfoInProgressList(HttpServletRequest request) {
         String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
-//        String type = request.getHeader("Accept");
-//        System.out.println(token);
-//        System.out.println(type);
-        if (StringUtils.isEmpty(token) || !jwtAuthService.validateTokenFromHeader(token)) {
+
+        if (StringUtils.isEmpty(token) || jwtAuthService.validateExpiration(token) || !jwtAuthService.validateUsername(token)) {
             return ResponseResult.error(ResponseEnum.FAILED);
         }
         List<SeckillInfo> seckillInfoInProgressList = seckillService.getAllSeckillInfoInProgress();
@@ -74,10 +72,7 @@ public class SeckillController {
     @RequestMapping(method = RequestMethod.GET, value = "/requestSeckillInfoInFutureList")
     public ResponseResult<List<SeckillInfo>> requestSeckillInfoInFutureList(HttpServletRequest request) {
         String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
-//        String type = request.getHeader("Accept");
-//        System.out.println(token);
-//        System.out.println(type);
-        if (StringUtils.isEmpty(token) || !jwtAuthService.validateTokenFromHeader(token)) {
+        if (StringUtils.isEmpty(token) || jwtAuthService.validateExpiration(token) || !jwtAuthService.validateUsername(token)) {
             return ResponseResult.error(ResponseEnum.FAILED);
         }
         List<SeckillInfo> seckillInfoInFutureList = seckillService.getAllSeckillInfoInFuture();

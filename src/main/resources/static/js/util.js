@@ -86,37 +86,89 @@ function checkCookie() {
     }
 }
 
-
 function requestUserInfo(token) {
+    var result;
     $.ajax({
         url: "http://localhost:8080/requestUserInfo",
         method: "post",
         cache: false,
         async: false,
         dataType: "json",
+        contentType: "application/json;charset=utf-8",
         headers: {
             Accept: "application/json;charset=utf-8",
             Authorization: token
         },
-        contentType: "application/json;charset=utf-8"
+        success: function (data) {
+            result = getJsonData(data);
+        },
+        error: function (data) {
+            let msg = getJsonMsg(data);
+            alert(msg);
+            result = null;
+        }
     });
+    return result;
 }
 
 
-// function requestGoToHome2(url, params) {
-//     var temp = document.createElement("form");
-//     temp.action = url;
-//     temp.method = "post";
-//     temp.style.display = "none";
-//     for(var x in params) {
-//         var opt = document.createElement("textarea");
-//         opt.name = x;
-//         opt.value = params[x];
-//         temp.appendChild(opt);
-//     }
-//     document.body.appendChild(temp);
-//     temp.submit();
-//     return temp;
-// }
+function requestLogout() {
+    let token = getToken();
+    if (token != null) {
+        $.ajax({
+            url: "http://localhost:8080/requestLogout",
+            cache: false,
+            async: false,
+            method: "post",
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            headers: {
+                Authorization: "application/json;charset=utf-8",
+                Accept: "application/json;charset=utf-8"
+            },
+            success: function (data) {
+                let msg = getJsonData(data);
+                alert(msg);
+            }
+        });
+        window.localStorage.removeItem("token");
+        deleteCookie("token");
+    }
+    window.location.href = "http://localhost:8080/login_page";
+}
 
+
+function getRequestParams() {
+    var url = location.search;
+    var requestParams = {};
+    if (url.indexOf("?") !== -1) {
+        var str = url.substr(1);
+        strs = str.split("&");
+        for (var i = 0; i < strs.length; i++) {
+            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+        }
+    }
+    return requestParams;
+}
+
+function goToLoginPage() {
+    window.location.href = "http://localhost:8080/login_page";
+}
+
+function goToFailurePage() {
+    window.location.href = "http://localhost:8080/login_page"
+}
+
+function goToTargetPage(url, token) {
+    var tempForm = document.createElement("form");
+    tempForm.action = url;
+    tempForm.method = "post";
+    var inputParam = document.createElement("input");
+    inputParam.type = "hidden";
+    inputParam.name = "authorization";
+    inputParam.value = token;
+    tempForm.appendChild(inputParam);
+    $(document.body).append(tempForm);
+    tempForm.submit();
+}
 

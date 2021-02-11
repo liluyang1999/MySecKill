@@ -52,19 +52,21 @@ public class JwtAuthServiceImpl implements JwtAuthService {
     }
 
     @Override
-    public Boolean validateTokenFromHeader(String token) {
+    public Boolean validateUsername(String token) {
         String username = JwtTokenUtil.getUsernameFromToken(token);
-        UserDetails userDetails = (UserDetails) redisTemplate.opsForHash().get("username", username);
+        UserDetails userDetails = (UserDetails) redisTemplate.opsForHash().get("users", username);
         if (userDetails == null) {
             userDetails = userDetailsService.loadUserByUsername(username);
-            if (userDetails == null) {
-                logger.error("验证token失败, 账号为空");
+            if (userDetails == null || !username.equals(userDetails.getUsername())) {
                 return Boolean.FALSE;
             }
         }
-        redisTemplate.opsForHash().put("users", username, userDetails);
-        return JwtTokenUtil.validateToken(token, userDetails);
+        return Boolean.TRUE;
     }
 
+    @Override
+    public Boolean validateExpiration(String token) {
+        return JwtTokenUtil.isExpiration(token);
+    }
 
 }

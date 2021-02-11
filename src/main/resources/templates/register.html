@@ -165,12 +165,31 @@
 
     });
 </script>
+
 <script>
     function requestRegisterUser() {
-        $("#registerForm").form('submit', {
+        $.ajax({
             url: "http://localhost:8080/requestRegisterUser",
+            method: "post",
+            cache: false,
+            async: false,
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            data: {
+                "username": $("#username").val(),
+                "password": $("password").val(),
+                "displayName": $("#displayName").val(),
+                "phone": $("#phone").val(),
+                "email": $("#email").val()
+            },
             success: function (data) {
-                alert(data);
+                let username = getJsonData(data)["username"];
+                alert("注册成功");
+                window.location.href = "http://localhost:8080/login_page?username = " + username;
+            },
+            error: function (data) {
+                let msg = getJsonMsg(data);
+                alert(msg);
             }
         });
     }
