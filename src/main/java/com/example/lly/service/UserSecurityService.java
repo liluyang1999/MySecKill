@@ -17,7 +17,7 @@ public interface UserSecurityService {
 
     boolean hasPassword(HttpServletRequest request, Authentication authentication);
 
-    boolean insertUser(String username, String password, String displayName, String phone, String email);
+    boolean insertUser(HttpServletRequest request) throws Exception;
 
     boolean containsUserRole(List<Role> roles);
 

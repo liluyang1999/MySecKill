@@ -1,6 +1,8 @@
 package com.example.lly.dao.provider;
 
+import com.example.lly.entity.rbac.User;
 import com.example.lly.util.BaseUtil;
+import org.apache.ibatis.jdbc.SQL;
 
 import java.util.Map;
 
@@ -33,6 +35,19 @@ public class UserSqlProvider {
         String password = (String) params.get("password");
         return "SELECT * FROM " + userTableName + " WHERE username = " + BaseUtil.addQuotationMark(username) +
                 " AND password = " + BaseUtil.addQuotationMark(password);
+    }
+
+
+    public String insert(User user) {
+        SQL sql = new SQL();
+        sql.INSERT_INTO(userTableName);
+        sql.VALUES("username", "'" + user.getUsername() + "'");
+        sql.VALUES("password", "'" + user.getPassword() + "'");
+        sql.VALUES("display_name", "'" + user.getDisplayName() + "'");
+        sql.VALUES("enabled", user.getEnabled().toString());
+        sql.VALUES("phone", "'" + user.getPhone() + "'");
+        sql.VALUES("email", "'" + user.getEmail() + "'");
+        return sql.toString();
     }
 
 

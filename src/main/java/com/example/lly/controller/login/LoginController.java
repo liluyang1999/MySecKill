@@ -43,13 +43,14 @@ public class LoginController {
     public ResponseResult<String> requestLogin(@RequestBody Map<String, String> params) {
         String username = params.get("username");
         String password = params.get("password");
-        Boolean rememberMe = Boolean.valueOf(params.get("rememberMe"));
+
         if (StringUtils.isEmpty(username)) {
             return ResponseResult.error(ResponseEnum.EMPTY_USERNAME);
         } else if (StringUtils.isEmpty(password)) {
             return ResponseResult.error(ResponseEnum.EMPTY_PASSWORD);
         }
-        String newToken = jwtAuthService.requestLogin(username, password, rememberMe);
+
+        String newToken = jwtAuthService.requestLogin(username, password);
         if (newToken == null) {
             System.out.println("账号或密码错误");
             return ResponseResult.error(ResponseEnum.USERNAME_OR_PASSWORD_ERROR);
@@ -57,14 +58,16 @@ public class LoginController {
         return ResponseResult.success(newToken);
     }
 
+
     //localhost:8080/login/requestLogin  请求验证, 返回JwtToken令牌
     @RequestMapping(value = "/requestLogout", method = RequestMethod.POST)
     public ResponseResult<String> requestLogout(HttpServletRequest request) {
         String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
         String username = JwtTokenUtil.getUsernameFromToken(token);
         redisTemplate.opsForHash().delete("users", username);
-        return ResponseResult.success("服务器清空用户信息成功");
+        return ResponseResult.success("清空Token令牌");
     }
+
 
     @RequestMapping(value = "/refreshLogin", method = RequestMethod.POST)
     public ResponseResult<String> refreshLogin(HttpServletRequest request) {
@@ -77,6 +80,7 @@ public class LoginController {
         }
 
         String newToken = jwtAuthService.refreshLogin(token);
+        System.out.println("Token令牌刷新成功");
         return ResponseResult.success(newToken);
     }
 

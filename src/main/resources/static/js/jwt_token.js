@@ -1,11 +1,3 @@
-// document.write("<script type='text/javascript' src='/static/js/jquery.min.js' th:src='@{/static/js/jquery.min.js}'></script>");
-var token = null;
-
-$(document).ready(function () {
-    var token = getJwtToken();
-    alert("token" + token);
-});
-
 function getToken() {
     let tokenKey = "token";
     let token = getCookie(tokenKey);
@@ -15,13 +7,14 @@ function getToken() {
     return token;
 }
 
-function setToken(token) {
-    setCookie("token");
+function setToken(token, days) {
+    setCookie("token", token, days);
     window.localStorage.setItem("token", token);
 }
 
 function removeToken() {
     deleteCookie("token");
+    window.localStorage.removeItem("token");
 }
 
 //申请刷新token, 服务端返回后存入cookie中

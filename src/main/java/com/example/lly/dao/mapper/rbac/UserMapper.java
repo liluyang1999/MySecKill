@@ -45,5 +45,7 @@ public interface UserMapper extends BaseMapper<User> {
     @SelectProvider(type = UserSqlProvider.class, method = "queryByUsernameAndPassword")
     User queryByUsernameAndPassword(@Param("account") String account, @Param("password") String password);
 
+    @InsertProvider(type = UserSqlProvider.class, method = "insert")
+    int insert(User user);
 
 }

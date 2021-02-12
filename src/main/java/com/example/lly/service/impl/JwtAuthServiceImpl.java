@@ -2,7 +2,6 @@ package com.example.lly.service.impl;
 
 import com.example.lly.module.security.JwtTokenUtil;
 import com.example.lly.service.JwtAuthService;
-import com.example.lly.util.encryption.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,19 +35,21 @@ public class JwtAuthServiceImpl implements JwtAuthService {
         return JwtTokenUtil.refreshToken(token);
     }
 
-    public String requestLogin(String username, String password, Boolean rememberMe) {
+    public String requestLogin(String username, String password) {
         //发现错误返回空值
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        if (userDetails == null || !userDetails.getPassword().equals(MD5Util.encodeString(password))) {
+        if (userDetails == null || !userDetails.getPassword().equals(password)) {
             return null;
         }
+
         //账号和密码进行验证, 三步走, Token -> Manager -> SecurityContextHolder
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(username, password);
         Authentication authentication = authenticationManager.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         redisTemplate.opsForHash().put("users", username, userDetails);
-        return JwtTokenUtil.createToken(userDetails, rememberMe);
+
+        return JwtTokenUtil.createToken(userDetails);
     }
 
     @Override

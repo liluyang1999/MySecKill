@@ -1,4 +1,4 @@
-var URL = {
+const URL = {
 
     executeSeckill: function () {
         return "http://localhost:8080/seckill/executeSeckill";
@@ -20,7 +20,7 @@ var URL = {
         return "http://localhost:8080/seckill/requetSeckillInfoDetail/" + seckillInfoId;
     }
 
-}
+};
 
 
 //请求seckillInfoList

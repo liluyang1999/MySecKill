@@ -24,46 +24,41 @@ public class JwtTokenUtil implements Serializable {
     private static final String ISSUER = "liluyang1999";
     private static final String SECRET = "JwtSecret";    //加密的盐
 
-    public static final String errorMsg = "令牌为空、过期或错误, 请重新登录";
     private static final String KEY_USERNAME = "username";
     private static final String KEY_CREATETIME = "createTime";
-    private static final String KEY_REMEMBERME = "rememberMe";
+
+    public static final String errorMsg = "令牌为空、过期或错误, 请重新登录";
 
     //过期时间, 设定为30分钟
     private static final long EXPIRATION = 1800L;
 
-    //如果选择 "记住账号", 过期时间则延长为一个星期
-    private static final long EXPIRATION_REMEMBER = 1800L * 2 * 24 * 7;
-
-    //头部
+    //Token的Key值
     public static final String TOKEN_HEADER = "Authorization";
+    public static final String BODY_KEY = "authorization";
 
     //前缀
     public static final String TOKEN_PREFIX = "Bearer ";
     //Key值
-    private static final String KEY_ROLES = "role_";
+    private static final String KEY_ROLES = "Role ";
 
     /**
      * 生成Token令牌
      *
      * @param userDetails 用户信息
-     * @param rememberMe  是否记住账号
      * @return Token令牌
      */
-    public static String createToken(UserDetails userDetails, Boolean rememberMe) {
+    public static String createToken(UserDetails userDetails) {
         String username = userDetails.getUsername();
         Collection<? extends GrantedAuthority> roles = userDetails.getAuthorities();
         Map<String, Object> claims = new HashMap<>();
         claims.put(KEY_USERNAME, username);       //我是谁
         claims.put(KEY_CREATETIME, new Date());   //什么时候创立的
-        claims.put(KEY_REMEMBERME, rememberMe); //要不要记住我
         claims.put(KEY_ROLES, roles);              //拥有什么权限
-        return createToken(claims, rememberMe);
+        return createToken(claims);
     }
 
-    public static String createToken(Map<String, Object> claims, Boolean rememberMe) {
-        long expirationTime = rememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
-        Date expiration = new Date(System.currentTimeMillis() + expirationTime * 1000L);
+    public static String createToken(Map<String, Object> claims) {
+        Date expiration = new Date(System.currentTimeMillis() + EXPIRATION * 1000L);
         return Jwts.builder().setClaims(claims)
                 .setExpiration(expiration)
                 .signWith(SignatureAlgorithm.HS512, SECRET)
@@ -76,8 +71,8 @@ public class JwtTokenUtil implements Serializable {
         String refreshToken;
         try {
             Claims claims = getClaimsFromToken(token);
-            claims.put("createTime", new Date());
-            refreshToken = createToken(claims, (Boolean) claims.get("rememberMe"));
+            claims.put("createTime", new Date().toString());
+            refreshToken = createToken(claims);
         } catch (Exception e) {
             return null;
         }

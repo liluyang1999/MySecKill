@@ -13,6 +13,7 @@ public enum ResponseEnum {
     NOT_LOGIN(1007, "用户没有登录"),
     VERCODE_ERROR(1008, "验证码错误"),
     UNMATCHED_USERNAME(1009, "账号不匹配"),
+    INSERT_ERROR(1010, "插入数据失败"),
     SERVER_ERROR(999, "服务器内部错误！");
 
     private final Integer code;

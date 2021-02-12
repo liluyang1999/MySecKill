@@ -22,13 +22,12 @@ public class AuthenticationSuccessHandler extends SavedRequestAwareAuthenticatio
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        request.setCharacterEncoding("UTF-8");
-        boolean isRememberMe = (boolean) request.getAttribute("isRememberMe");
+        request.setCharacterEncoding("utf-8");
 
         if(principal instanceof UserDetails) {
             UserDetails user = (UserDetails) principal;
             request.getSession().setAttribute("userDetails", user);
-            String token = JwtTokenUtil.createToken(user, isRememberMe);
+            String token = JwtTokenUtil.createToken(user);
 
             response.setHeader("token", JwtTokenUtil.TOKEN_PREFIX + token);
             response.setContentType("application/json;charset=utf-8");

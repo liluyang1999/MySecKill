@@ -30,11 +30,13 @@ public class JwtWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public UserSecurityService userSecurityService;
 
+
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
 
     @Override
     public void configure(WebSecurity web) {
@@ -45,7 +47,9 @@ public class JwtWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //访问权限
+        http.csrf().disable();
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //stateless禁用session
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 //        http.authorizeRequests()
 //                .antMatchers("/login_page/requestLogin").permitAll()
 //                .antMatchers("/login_page/refreshLogin").permitAll()
@@ -54,9 +58,6 @@ public class JwtWebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/login_page/home_page/seckill_management_page").hasRole("ADMIN")
 //                .antMatchers("/login_page/home_page/seckill_execution_page").hasAnyRole("ADMIN", "USER")
 //                .anyRequest().authenticated();
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //stateless禁用session
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 
@@ -71,7 +72,7 @@ public class JwtWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
             @Override
             public boolean matches(CharSequence charSequence, String s) {
-                return s.equals(MD5Util.encodeString(charSequence.toString()));
+                return s.equals(charSequence.toString());
             }
         });
     }

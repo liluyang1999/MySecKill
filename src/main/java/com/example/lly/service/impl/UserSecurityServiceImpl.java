@@ -6,6 +6,7 @@ import com.example.lly.entity.rbac.Permission;
 import com.example.lly.entity.rbac.Role;
 import com.example.lly.entity.rbac.User;
 import com.example.lly.service.UserSecurityService;
+import com.example.lly.util.BaseUtil;
 import com.example.lly.util.encryption.MD5Util;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,14 +43,26 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         if (user == null) {
             user = userMapper.queryByUsername(username);
         }
-        user.setPassword(MD5Util.secondDecode(user.getPassword()));
+        if (user != null) {
+            user.setPassword(MD5Util.secondDecode(user.getPassword()));
+        }
         return user;
     }
 
-    public boolean insertUser(String username, String password, String displayName, String phone, String email) {
-        String secondEncodedPass = MD5Util.secondEncode(password);
-        User user = new User(username, secondEncodedPass, displayName, true, phone, email);
-        return userMapper.insert(user) >= 0;
+    public boolean insertUser(HttpServletRequest request) throws Exception {
+        User user = new User();
+        user.setId(null);
+        user.setEnabled(true);
+        user.setUsername(request.getParameter("username"));
+        user.setDisplayName(request.getParameter("displayName"));
+        user.setPhone(request.getParameter("phone"));
+        user.setEmail(request.getParameter("email"));
+        String password = request.getParameter("password");
+        System.out.println("password: " + password);
+        user.setPassword(BaseUtil.handlePassword(MD5Util.secondEncode(password)));
+        System.out.println("spassword: " + user.getPassword());
+        userMapper.insert(user);   //插入失败会抛出异常, 没有返回值, 切记
+        return true;
     }
 
     public boolean containsUserRole(List<Role> roles) {

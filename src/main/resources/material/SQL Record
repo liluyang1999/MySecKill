@@ -1,0 +1,20 @@
+return "INSERT INTO " + userTableName +
+        " (username, password, display_name, enabled, phone, email)" +
+        " VALUES (" +
+        "'" + user.getUsername() + "'," +
+        "'" + user.getPassword() + "'," +
+        "'" + user.getDisplayName() + "'," +
+        "" + user.getEnabled() + "," +
+        "'" + user.getPhone() + "'," +
+        "'" + user.getEmail() + "'" +
+        ")";
+
+
+
+
+
+
+
+
+
+

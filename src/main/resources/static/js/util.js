@@ -64,7 +64,7 @@ function getCookie(key) {
             return eachCache.substring(name.length, eachCache.length);
         }
     }
-    return "";
+    return null;
 }
 
 function deleteCookie(key) {
@@ -74,16 +74,9 @@ function deleteCookie(key) {
 
 
 //检测有无当前username, 有就显示欢迎, 没有就存储
-function checkCookie() {
-    var username = getCookie("username");
-    if (username !== "") {
-        alert("Welcome again " + username);
-    } else {
-        username = prompt("Please enter here: ", "");
-        if (username !== "" && username !== null) {
-            setCookie("username", username, 7);
-        }
-    }
+function checkCookie(key) {
+    let username = getCookie(key);
+    return username !== "";
 }
 
 function requestUserInfo(token) {
@@ -117,13 +110,12 @@ function requestLogout() {
     if (token != null) {
         $.ajax({
             url: "http://localhost:8080/requestLogout",
+            method: "post",
             cache: false,
             async: false,
-            method: "post",
             dataType: "json",
-            contentType: "application/json;charset=utf-8",
             headers: {
-                Authorization: "application/json;charset=utf-8",
+                Authorization: token,
                 Accept: "application/json;charset=utf-8"
             },
             success: function (data) {
@@ -131,8 +123,7 @@ function requestLogout() {
                 alert(msg);
             }
         });
-        window.localStorage.removeItem("token");
-        deleteCookie("token");
+        removeToken();
     }
     window.location.href = "http://localhost:8080/login_page";
 }
@@ -172,3 +163,10 @@ function goToTargetPage(url, token) {
     tempForm.submit();
 }
 
+function isEmpty(obj) {
+    return typeof obj == "undefined" || obj == null || obj === "";
+}
+
+function refreshPage() {
+    window.location.reload();
+}

@@ -7,7 +7,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Random;
 
 @Component
@@ -48,7 +47,21 @@ public class BaseUtil {
     }
 
     public static Boolean notNullAndBlank(String str) {
-        return (str != null ) && (!"".equals(str));
+        return (str != null) && (!"".equals(str));
+    }
+
+    public static String handlePassword(String input) {
+        StringBuffer oldStringBuffer = new StringBuffer(input);
+        StringBuffer newStringBuffer = new StringBuffer();
+        for (int index = 0; index < oldStringBuffer.length(); index++) {
+            char each = oldStringBuffer.charAt(index);
+            if (each != '\\') {
+                newStringBuffer.append(each);
+            } else {
+                newStringBuffer.append("\\\\");
+            }
+        }
+        return newStringBuffer.toString();
     }
 
     //复制一份
@@ -105,12 +118,8 @@ public class BaseUtil {
 
 
     public static void main(String[] args) {
-        Integer joker = 3;
-        Integer joker2 = null;
-        joker2 = BaseUtil.copyFrom(joker);
-        Date date = new Date();
-        date.setTime(System.currentTimeMillis());
-        System.out.println(BaseUtil.generateRandomSalt(10));
+        String joker = "\\\\";
+        System.out.println(handlePassword(joker));
     }
 
 }
