@@ -17,7 +17,6 @@
     </style>
 </head>
 <body class="background">
-<div style="background-color: #00b2ff"></div>
 <!-- 抬头 -->
 <div class="layui-row layui-bg-black">
     <div class="layui-col-md7">
@@ -81,6 +80,58 @@
 </div>
 <!-- 抬头 -->
 <br/><br/>
+
+<div class="layui-collapse">
+    <div class="layui-colla-item layui-col-md12">
+        <h2 class="layui-colla-title">正在进行</h2>
+        <div class="layui-colla-content layui-show">
+            <!-- 卡片面板 -->
+            <div class="layui-col-md9 layui-col-md-offset2">
+                <div class="layui-card layui-col-md5" style="margin: 10px"
+                     th:each="seckillInfoInProgress: ${seckillInfoInProgressList}">
+                    <div class="layui-card-header" th:text="${seckillInfoInProgress.getName()}">活动名称</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row" style="text-align: center">
+                            <div class="layui-col-md8">
+                                你好
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 卡片面板 -->
+        </div>
+    </div>
+    <br>
+
+    <div class="layui-colla-item layui-col-md12">
+        <h2 class="layui-colla-title">即将开始</h2>
+        <div class="layui-colla-content layui-show">
+            <!-- 卡片面板 -->
+            <div class="layui-col-md9 layui-col-md-offset2">
+                <div class="layui-card layui-col-md5" style="margin: 10px"
+                     th:each="seckillInfoInFuture: ${seckillInfoInFutureList}">
+                    <div class="layui-card-header" th:text="${seckillInfoInFuture.getName()}">活动名称</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row" style="text-align: center">
+                            <div class="layui-col-md8">
+                                你好
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 卡片面板 -->
+        </div>
+    </div>
+
+
+    <div class="layui-colla-item layui-col-md12">
+        <h2 class="layui-colla-title">秒杀结果</h2>
+        <div class="layui-colla-content layui-show"></div>
+    </div>
+</div>
+
 
 </body>
 

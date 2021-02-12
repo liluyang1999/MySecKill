@@ -5,25 +5,81 @@
     <title>活动列表</title>
     <meta charset="UTF-8">
     <link href="/static/layui/css/layui.css" media="all" rel="stylesheet" th:href="@{/static/layui/css/layui.css}"/>
-    <link href="/static/css/common.css" media="all" rel="stylesheet" th:href="@{/static/css/common.css}"/>
+    <style type="text/css">
+        .background {
+            background-image: url("/static/image/cool-background2.png");
+            background-size: cover;
+        }
+
+        .item-style {
+            font-size: 22px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body class="background">
 
-<!-- 已登录 -->
-<div style="background-color: #4E5465; color: white">
-    <div class="layui-container">
-        <div class="layui-row" style="padding: 17px">
-            <div class="layui-col-md7" style="text-align: center">
-                <strong style="font-size: 20px">活动列表</strong>
-            </div>
-            <div class="layui-col-md5" style="text-align: right">
-                <span id="displayName">用户名</span>
-                <span id="username">账号</span>
-                <button class="layui-btn-normal">注销</button>
-            </div>
+<!-- 抬头 -->
+<div class="layui-row layui-bg-black">
+    <div class="layui-col-md7">
+        <div style="text-align: center; padding: 5px">
+            <i class="layui-icon" style="color: antiquewhite; font-size: 35px">&#xe68e;</i>
+            <strong style="font-size: 35px; color: antiquewhite; cursor: pointer">
+                个人主页
+            </strong>
         </div>
     </div>
+    <div class="layui-col-md5">
+        <ul class="layui-nav">
+            <li class="layui-nav-item" th:if="${hasAdminRole} == true">
+                <span style="padding: 15px">
+                    <strong class="item-style"
+                            onclick="goToTargetPage(systemMangementHtml, getToken())">
+                        系统管理
+                    </strong>
+                </span>
+            </li>
+            <li class="layui-nav-item">
+                <span style="padding: 15px">
+                    <strong class="item-style">
+                        活动列表
+                    </strong>
+                </span>
+            </li>
+            <li class="layui-nav-item">
+                <span style="padding: 15px">
+                    <strong class="item-style"
+                            onclick="goToTargetPage(mySeckillHtml, getToken())">
+                        我的秒杀
+                    </strong>
+                </span>
+            </li>
+            <li class="layui-nav-item">
+                <span style="padding: 15px">
+                    <strong class="item-style">
+                        我的账号
+                    </strong>
+                </span>
+                <dl class="layui-nav-child">
+                    <dd style="text-align: center">
+                        <strong onclick="goToTargetPage(myAccountHtml, getToken())"
+                                style="color: #0C0C0C; cursor:pointer">
+                            个人信息
+                        </strong>
+                    </dd>
+                    <dd style="text-align: center">
+                        <strong onclick="requestLogout()"
+                                style="color: #0C0C0C; cursor:pointer">
+                            注销账号
+                        </strong>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
 </div>
+<!-- 抬头 -->
+
 
 <div class="layui-row">
     <div class="layui-col-md6">
@@ -100,17 +156,17 @@
                 <br/>
                 <div class="layui-col-md12">
                     <div style="text-align: left">
-                        <strong th:text="'放送时间:' + ${seckillInfoInFuture.getStartTime()}">开始时间</strong>
+                        <strong th:text="'开始时间:' + ${seckillInfoInFuture.getStartTime()}">开始时间</strong>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'结束时间:' + ${seckillInfoInFuture.getEndTime()}">剩余数量</strong>
                     </div>
                 </div>
                 <div class="layui-col-md12">
                     <div style="text-align: left">
                         <strong th:text="'预期放送:' + ${seckillInfoInFuture.getExpectedNumber()}">预期放送</strong>
-                    </div>
-                </div>
-                <div class="layui-col-md12">
-                    <div style="text-align: left">
-                        <strong th:text="'倒计时:' + ${seckillInfoInFuture.getRemainingNumber()}">剩余数量</strong>
                     </div>
                 </div>
             </div>
@@ -133,29 +189,43 @@
 
 </body>
 
-
 <!-- Javascript引入 -->
 <script src="/static/js/jquery.min.js" th:src="@{/static/js/jquery.min.js}" type="text/javascript"></script>
 <script src="/static/layui/layui.js" th:src="@{/static/layui/layui.js}" type="text/javascript"></script>
-<script src="/static/js/vue.min.js" th:src="@{/static/js/vue.min.js}" type="text/javascript"></script>
+<script src="/static/js/seckill.js" th:src="@{/static/js/seckill.js}" type="text/javascript"></script>
+<script src="/static/js/variable.js" th:src="@{/static/js/variable.js}" type="text/javascript"></script>
 <script src="/static/js/util.js" th:src="@{/static/js/util.js}" type="text/javascript"></script>
+<script src="/static/js/jwt_token.js" th:src="@{/static/js/jwt_token.js}" type="text/javascript"></script>
 <!-- Javascript引入 -->
 
-<script th:inline="javascript">
-    $(document).ready(function () {
-        var hasLogin = [[${hasLogin}]];
-        if (hasLogin === true) {
-            var token = window.localStorage.getItem("token");
-            if (token == null) {
-                token = getCookie("token");
-            }
-            var userInfo = requestUserInfo(token);
-        }
+<script>
+    layui.use(['element'], function () {
+        var element = layui.element;
     });
+</script>
+
+<script th:inline="javascript">
+    window.onload = function () {
+        let token = [[${token}]];
+        setToken(token, 7);
+    }
 </script>
 
 </html>
 
+
+<!--<script th:inline="javascript">-->
+<!--    $(document).ready(function () {-->
+<!--        var hasLogin = [[${hasLogin}]];-->
+<!--        if (hasLogin === true) {-->
+<!--            var token = window.localStorage.getItem("token");-->
+<!--            if (token == null) {-->
+<!--                token = getCookie("token");-->
+<!--            }-->
+<!--            var userInfo = requestUserInfo(token);-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
 
 <!--<script>-->
 <!--var tableTitle = [{-->

@@ -151,10 +151,10 @@ function goToFailurePage() {
 }
 
 function goToTargetPage(url, token) {
-    var tempForm = document.createElement("form");
+    let tempForm = document.createElement("form");
     tempForm.action = url;
     tempForm.method = "post";
-    var inputParam = document.createElement("input");
+    let inputParam = document.createElement("input");
     inputParam.type = "hidden";
     inputParam.name = "authorization";
     inputParam.value = token;
@@ -170,3 +170,4 @@ function isEmpty(obj) {
 function refreshPage() {
     window.location.reload();
 }
+

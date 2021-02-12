@@ -30,13 +30,13 @@
     </style>
 </head>
 <body class="linear-background">
-<div style="background-color: #00b2ff"></div>
+
 <!-- 抬头 -->
 <div class="layui-row layui-bg-black">
     <div class="layui-col-md7">
         <div style="text-align: center; padding: 5px">
             <i class="layui-icon" style="color: antiquewhite; font-size: 35px">&#xe68e;</i>
-            <strong onclick="refreshPage()" style="font-size: 35px; color: antiquewhite; cursor: pointer">
+            <strong style="font-size: 35px; color: antiquewhite; cursor: pointer">
                 个人主页
             </strong>
         </div>
@@ -54,7 +54,7 @@
             <li class="layui-nav-item">
                 <span style="padding: 15px">
                     <strong class="item-style"
-                            onclick="goToTargetPage(publicSeckillListHtml, getToken())">
+                            onclick="goToTargetPage(privateSeckillListHtml, getToken())">
                         活动列表
                     </strong>
                 </span>
@@ -201,17 +201,17 @@
                 <br/>
                 <div class="layui-col-md12">
                     <div style="text-align: left">
-                        <strong th:text="'放送时间:' + ${seckillInfoInFuture.getStartTime()}">开始时间</strong>
+                        <strong th:text="'开始时间:' + ${seckillInfoInFuture.getStartTime()}">开始时间</strong>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div style="text-align: left">
+                        <strong th:text="'结束时间:' + ${seckillInfoInFuture.getEndTime()}">剩余数量</strong>
                     </div>
                 </div>
                 <div class="layui-col-md12">
                     <div style="text-align: left">
                         <strong th:text="'预期放送:' + ${seckillInfoInFuture.getExpectedNumber()}">预期放送</strong>
-                    </div>
-                </div>
-                <div class="layui-col-md12">
-                    <div style="text-align: left">
-                        <strong th:text="'倒计时:' + ${seckillInfoInFuture.getRemainingNumber()}">剩余数量</strong>
                     </div>
                 </div>
             </div>
@@ -263,6 +263,12 @@
     });
 </script>
 
+<script th:inline="javascript">
+    window.onload = function () {
+        let token = [[${token}]];
+        setToken(token, 7);
+    }
+</script>
 
 </html>
 

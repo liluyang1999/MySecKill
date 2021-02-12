@@ -18,7 +18,7 @@ function removeToken() {
 }
 
 //申请刷新token, 服务端返回后存入cookie中
-function refreshToken(token) {
+function requestRefreshToken(token) {
     $.ajax({
         url: "http://localhost:8080/requestRefreshToken",
         method: "get",

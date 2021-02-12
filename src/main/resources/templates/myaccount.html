@@ -17,7 +17,6 @@
     </style>
 </head>
 <body class="background">
-<div style="background-color: #00b2ff"></div>
 <!-- 抬头 -->
 <div class="layui-row layui-bg-black">
     <div class="layui-col-md7">
@@ -42,7 +41,7 @@
             <li class="layui-nav-item">
                 <span style="padding: 15px">
                     <strong class="item-style"
-                            onclick="goToTargetPage(publicSeckillListHtml, getToken())">
+                            onclick="goToTargetPage(privateSeckillListHtml, getToken())">
                         活动列表
                     </strong>
                 </span>
@@ -63,8 +62,7 @@
                 </span>
                 <dl class="layui-nav-child">
                     <dd style="text-align: center">
-                        <strong onclick="goToTargetPage(myAccountHtml, getToken())"
-                                style="color: #0C0C0C; cursor:pointer">
+                        <strong style="color: #0C0C0C; cursor:pointer">
                             个人信息
                         </strong>
                     </dd>
@@ -90,43 +88,63 @@
                 基本资料
             </legend>
             <br/>
-            <div class="layui-col-md4" style="text-align: center">
-                <div class="layui-col-md1" style="text-align: center">
-                    <strong><label style="font-size: 20px">账号:</label></strong>
-                </div>
-                <div class="layui-col-md3" style="text-align: center">
-                    <strong id="password" th:value="${user.getUsername()}">12345678</strong>
-                </div>
 
-                <div class="layui-col-md1" style="text-align: center">
-                    <strong><label style="font-size: 20px">密码:</label></strong>
-                </div>
-                <div class="layui-col-md3" style="text-align: center">
-                    <strong th:value="${user.getPassword()}">
-                        ********
-                        <i class="layui-icon" onclick="" style="font-size: 10px">&#xe683;</i>
-                    </strong>
-                </div>
+            <div class="layui-card layui-col-md10 layui-col-md-offset1"
+                 style="background-image: url('/static/image/cool-background3.png'); background-size: cover; padding: 20px">
+                <div class="layui-card-body">
 
-                <div class="layui-col-md1" style="text-align: center">
-                    <strong><label style="font-size: 20px">用户名:</label></strong>
-                </div>
-                <div class="layui-col-md3" style="text-align: center">
-                    <strong th:value="${user.getDisplayName()}">用户1</strong>
-                </div>
+                    <div class="layui-col-md3 layui-col-md-offset2" style="text-align: right">
+                        <label>
+                            <strong style="font-size: 20px">
+                                账号:
+                            </strong>
+                        </label>
+                    </div>
+                    <div class="layui-col-md5 layui-col-md-offset1" style="text-align: left">
+                        <strong id="username" style="font-size: 20px" th:text="${user.getUsername()}">
+                            12345678
+                        </strong>
+                    </div>
 
-                <div class="layui-col-md1" style="text-align: center">
-                    <strong><label style="font-size: 20px">电话:</label></strong>
-                </div>
-                <div class="layui-col-md3" style="text-align: center">
-                    <strong th:value="${user.getPhone()}">18817659063</strong>
-                </div>
+                    <div class="layui-col-md3 layui-col-md-offset2" style="text-align: right">
+                        <label>
+                            <strong style="font-size: 20px">密码:</strong>
+                        </label>
+                    </div>
+                    <div class="layui-col-md5 layui-col-md-offset1" style="text-align: left">
+                        <strong id="password" style="font-size: 20px">
+                            ********
+                            <i class="layui-icon" onclick="invertPasswordState()" style="font-size: 10px">&#xe683;</i>
+                        </strong>
+                    </div>
 
-                <div class="layui-col-md1" style="text-align: center">
-                    <strong><label style="font-size: 20px">邮箱:</label></strong>
-                </div>
-                <div class="layui-col-md3" style="text-align: center">
-                    <strong th:value="${user.getEmail()}">******@gmail.com</strong>
+                    <div class="layui-col-md3 layui-col-md-offset2" style="text-align: right">
+                        <label>
+                            <strong style="font-size: 20px">用户名:</strong>
+                        </label>
+                    </div>
+                    <div class="layui-col-md5 layui-col-md-offset1" style="text-align: left">
+                        <strong style="font-size: 20px" th:text="${user.getDisplayName()}">用户1</strong>
+                    </div>
+
+                    <div class="layui-col-md3 layui-col-md-offset2" style="text-align: right">
+                        <label>
+                            <strong style="font-size: 20px">电话:</strong>
+                        </label>
+                    </div>
+                    <div class="layui-col-md5 layui-col-md-offset1" style="text-align: left">
+                        <strong style="font-size: 20px" th:text="${user.getPhone()}">18817659063</strong>
+                    </div>
+
+                    <div class="layui-col-md3 layui-col-md-offset2" style="text-align: right">
+                        <label>
+                            <strong style="font-size: 20px">邮箱:</strong>
+                        </label>
+                    </div>
+                    <div class="layui-col-md5 layui-col-md-offset1" style="text-align: left">
+                        <strong style="font-size: 20px" th:text="${user.getEmail()}">******@gmail.com</strong>
+                    </div>
+
                 </div>
             </div>
         </fieldset>
@@ -158,6 +176,13 @@
         } else {
             $("#password").val("********");
         }
+    }
+</script>
+
+<script th:inline="javascript">
+    window.onload = function () {
+        let token = [[${token}]];
+        setToken(token, 7);
     }
 </script>
 
