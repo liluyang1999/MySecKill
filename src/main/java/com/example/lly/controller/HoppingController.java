@@ -1,5 +1,6 @@
 package com.example.lly.controller;
 
+import com.example.lly.entity.Product;
 import com.example.lly.entity.SeckillInfo;
 import com.example.lly.entity.rbac.User;
 import com.example.lly.module.security.JwtTokenUtil;
@@ -60,7 +61,7 @@ public class HoppingController {
         User user = userSecurityService.getUserByUsername(JwtTokenUtil.getUsernameFromToken(token));
         mav = new ModelAndView();
         if (!userSecurityService.containsUserRole(user.getRoles())) {
-            mav.setViewName("seckill_management");
+            mav.setViewName("system_management");
             mav.addObject("hasUserRole", false);
         } else {
             mav.setViewName("home");
@@ -99,7 +100,7 @@ public class HoppingController {
     //个人的seckill_list_page
     @RequestMapping({"/login_page/seckill_list_page", "/login/seckill_list"})
     public ModelAndView goToPrivateSeckillListPage(HttpServletRequest request) {
-        String token = request.getHeader(JwtTokenUtil.BODY_KEY);
+        String token = request.getParameter(JwtTokenUtil.BODY_KEY);
         ModelAndView mav;
         if (!authenticateToken(token)) {
             mav = new ModelAndView("login");
@@ -115,6 +116,9 @@ public class HoppingController {
 
         User user = userSecurityService.getUserByUsername(JwtTokenUtil.getUsernameFromToken(token));
         mav.addObject("user", user);
+
+        checkRole(user, mav);
+
         String newToken = jwtAuthService.refreshLogin(token);
         mav.addObject("token", newToken);
         return mav;
@@ -196,9 +200,9 @@ public class HoppingController {
 
 
     //管理秒杀活动, (新增活动), 获取秒杀活动列表
-    @RequestMapping({"/login_page/seckill_management_page", "/login/seckill_management"})
+    @RequestMapping({"/login_page/system_management_page", "/login/system_management"})
     public ModelAndView goToManegeSeckillPage(HttpServletRequest request) {
-        String token = request.getHeader(JwtTokenUtil.BODY_KEY);
+        String token = request.getParameter(JwtTokenUtil.BODY_KEY);
         ModelAndView mav;
         if (!authenticateToken(token)) {
             mav = new ModelAndView("login");
@@ -206,28 +210,16 @@ public class HoppingController {
             return mav;
         }
 
-        mav = new ModelAndView("seckill_management");
+        mav = new ModelAndView("system_management");
         User user = userSecurityService.getUserByUsername(JwtTokenUtil.getUsernameFromToken(token));
         mav.addObject("user", user);
-        String newToken = jwtAuthService.refreshLogin(token);
-        mav.addObject("token", newToken);
-        return mav;
-    }
+        checkRole(user, mav);
 
+        List<User> userList = userSecurityService.getAllUsers();
+        List<Product> productList = seckillService.getAllProduct();
+        mav.addObject("userList", userList);
+        mav.addObject("productList", productList);
 
-    @RequestMapping("/login_page/user_management")
-    public ModelAndView goToUserManagementPage(HttpServletRequest request) {
-        String token = request.getHeader(JwtTokenUtil.BODY_KEY);
-        ModelAndView mav;
-        if (!authenticateToken(token)) {
-            mav = new ModelAndView("login");
-            mav.addObject("returnMsg", JwtTokenUtil.errorMsg);
-            return mav;
-        }
-
-        mav = new ModelAndView("user_management");
-        User user = userSecurityService.getUserByUsername(JwtTokenUtil.getUsernameFromToken(token));
-        mav.addObject("user", user);
         String newToken = jwtAuthService.refreshLogin(token);
         mav.addObject("token", newToken);
         return mav;
@@ -255,6 +247,23 @@ public class HoppingController {
         }
     }
 
-
-
 }
+
+
+//    @RequestMapping("/login_page/user_management")
+//    public ModelAndView goToUserManagementPage(HttpServletRequest request) {
+//        String token = request.getHeader(JwtTokenUtil.BODY_KEY);
+//        ModelAndView mav;
+//        if (!authenticateToken(token)) {
+//            mav = new ModelAndView("login");
+//            mav.addObject("returnMsg", JwtTokenUtil.errorMsg);
+//            return mav;
+//        }
+//
+//        mav = new ModelAndView("user_management");
+//        User user = userSecurityService.getUserByUsername(JwtTokenUtil.getUsernameFromToken(token));
+//        mav.addObject("user", user);
+//        String newToken = jwtAuthService.refreshLogin(token);
+//        mav.addObject("token", newToken);
+//        return mav;
+//    }

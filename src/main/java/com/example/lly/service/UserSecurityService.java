@@ -27,4 +27,6 @@ public interface UserSecurityService {
 
     List<Role> getRolesByNames(List<String> name);
 
+    List<User> getAllUsers();
+
 }

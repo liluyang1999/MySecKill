@@ -4,6 +4,8 @@ import com.example.lly.dao.provider.ProductSqlProvider;
 import com.example.lly.entity.Product;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface ProductMapper extends BaseMapper<Product> {
 
@@ -19,5 +21,9 @@ public interface ProductMapper extends BaseMapper<Product> {
     @ResultMap("productMap")
     @SelectProvider(type = ProductSqlProvider.class, method = "queryByName")
     Product queryByName(@Param("name") String name);
+
+    @ResultMap("productMap")
+    @SelectProvider(type = ProductSqlProvider.class, method = "queryAll")
+    List<Product> queryAll();
 
 }

@@ -1,7 +1,5 @@
 package com.example.lly.dao.provider;
 
-import org.apache.ibatis.annotations.Param;
-
 public class ProductSqlProvider {
 
     private final String productTableName = "t_product";
@@ -14,5 +12,7 @@ public class ProductSqlProvider {
         return "SELECT * FROM " + productTableName + " WHERE name = " + name;
     }
 
-
+    public String queryAll() {
+        return "SELECT * FROM " + productTableName;
+    }
 }

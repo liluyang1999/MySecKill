@@ -16,7 +16,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addViewController("/register_page").setViewName("register");
         registry.addViewController("/seckill_list_page").setViewName("public_seckill_list");
         registry.addViewController("/login_page/home_page").setViewName("home");
-        registry.addViewController("/login_page/home_page/seckill_management_page").setViewName("seckill_management");
+        registry.addViewController("/login_page/home_page/seckill_management_page").setViewName("system_management");
         registry.addViewController("/login_page/home_page/seckill_execution_page").setViewName("seckill_execution");
         registry.addViewController("/login_page/home_page/seckill_list_page").setViewName("private_seckill_list");
         registry.addViewController("/failure_page").setViewName("failure");

@@ -59,7 +59,7 @@
                     </strong>
                 </span>
             </li>
-            <li class="layui-nav-item">
+            <li class="layui-nav-item" th:if="${hasUserRole} == true">
                 <span style="padding: 15px">
                     <strong class="item-style"
                             onclick="goToTargetPage(mySeckillHtml, getToken())">
@@ -171,7 +171,8 @@
                 <strong>原价:</strong>
                 <span th:text="${seckillInfoInProgress.getOriginalPrice()}"></span>&nbsp;
 
-                <button class="layui-btn-radius layui-bg-orange" onclick="" style="width: 70px; height: 40px">详情
+                <button class="layui-btn-radius layui-bg-orange" onclick="" style="width: 70px; height: 40px">
+                    详情
                 </button>
             </div>
         </div>
@@ -241,6 +242,7 @@
 <script src="/static/js/util.js" th:src="@{/static/js/util.js}" type="text/javascript"></script>
 <script src="/static/js/jwt_token.js" th:src="@{/static/js/jwt_token.js}" type="text/javascript"></script>
 <!-- Javascript引入 -->
+
 <script>
     layui.use(['carousel', 'form', 'element'], function () {
         var carousel = layui.carousel, form = layui.form, element = layui.element;

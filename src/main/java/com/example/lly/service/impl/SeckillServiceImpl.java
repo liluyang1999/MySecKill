@@ -3,6 +3,7 @@ package com.example.lly.service.impl;
 import com.example.lly.aop.SeckillLimit;
 import com.example.lly.aop.SeckillLock;
 import com.example.lly.dao.mapper.OrderInfoMapper;
+import com.example.lly.dao.mapper.ProductMapper;
 import com.example.lly.dao.mapper.SeckillInfoMapper;
 import com.example.lly.dto.ExecutedResult;
 import com.example.lly.dto.StateExposer;
@@ -37,7 +38,11 @@ public class SeckillServiceImpl implements SeckillService {
     private OrderInfoMapper orderInfoMapper;
 
     @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
     private RedisTemplate<String, Serializable> redisTemplate;
+
     @Override
     public SeckillInfo getSeckillInfoById(Integer id) {
         return seckillInfoMapper.queryById(id);
@@ -48,13 +53,16 @@ public class SeckillServiceImpl implements SeckillService {
         return seckillInfoMapper.queryAll();
     }
 
+    @Override
+    public List<Product> getAllProduct() {
+        return productMapper.queryAll();
+    }
 
     /**
-     *
-     * @param userId   该用户的id
-     * @param seckillInfoId  参加的秒杀活动的id
-     * @param checkedEncodedUrl  用户早前拿到的md5加密过的url，用以验证真实性
-     * @return  返回秒杀处理结果，成功与否
+     * @param userId            该用户的id
+     * @param seckillInfoId     参加的秒杀活动的id
+     * @param checkedEncodedUrl 用户早前拿到的md5加密过的url，用以验证真实性
+     * @return 返回秒杀处理结果，成功与否
      */
     @Override
     @SeckillLimit

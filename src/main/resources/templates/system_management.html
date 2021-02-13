@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>系统管理</title>
+    <meta charset="UTF-8">
+    <link href="/static/layui/css/layui.css" media="all" rel="stylesheet" th:href="@{/static/layui/css/layui.css}"/>
+    <style type="text/css">
+        .cool-background {
+            background-image: url("/static/image/cool-background4.png");
+            background-size: cover;
+        }
+
+        .item-style {
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .tab-background {
+            /*background: url("/static/image/cool-background5.png");*/
+            /*background-size: cover;*/
+            background-color: ghostwhite;
+        }
+    </style>
+</head>
+<body class="cool-background">
+<!-- 抬头 -->
+<div class="layui-row layui-bg-black">
+    <div class="layui-col-md7">
+        <div style="text-align: center; padding: 5px">
+            <i class="layui-icon" style="color: antiquewhite; font-size: 35px">&#xe68e;</i>
+            <strong onclick="goToTargetPage(homeHtml, getToken())"
+                    style="font-size: 35px; color: antiquewhite; cursor: pointer">
+                个人主页
+            </strong>
+        </div>
+    </div>
+    <div class="layui-col-md5">
+        <ul class="layui-nav">
+            <li class="layui-nav-item" th:if="${hasAdminRole} == true">
+                <span style="padding: 15px">
+                    <strong class="item-style"
+                            onclick="goToTargetPage(systemMangementHtml, getToken())">
+                        系统管理
+                    </strong>
+                </span>
+            </li>
+            <li class="layui-nav-item">
+                <span style="padding: 15px">
+                    <strong class="item-style"
+                            onclick="goToTargetPage(privateSeckillListHtml, getToken())">
+                        活动列表
+                    </strong>
+                </span>
+            </li>
+            <li class="layui-nav-item">
+                <span style="padding: 15px">
+                    <strong class="item-style" onclick="goToTargetPage(mySeckillHtml, getToken())"
+                            th:if="${hasUserRole} == true">
+                        我的秒杀
+                    </strong>
+                </span>
+            </li>
+            <li class="layui-nav-item">
+                <span style="padding: 15px">
+                    <strong class="item-style">
+                        我的账号
+                    </strong>
+                </span>
+                <dl class="layui-nav-child">
+                    <dd style="text-align: center">
+                        <strong onclick="goToTargetPage(myAccountHtml, getToken())"
+                                style="color: #0C0C0C; cursor:pointer">
+                            个人信息
+                        </strong>
+                    </dd>
+                    <dd style="text-align: center">
+                        <strong onclick="requestLogout()"
+                                style="color: #0C0C0C; cursor:pointer">
+                            注销账号
+                        </strong>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- 抬头 -->
+<br/><br/>
+
+<!-- 分三模块, 用户权限分配, 商品管理, 秒杀活动管理 -->
+<div class="layui-row">
+    <div class="layui-col-md6 layui-col-md-offset3" style="text-align: center">
+        <div class="layui-tab layui-tab-card" style="background-color: antiquewhite">
+            <ul class="layui-tab-title">
+                <li class="layui-this">用户权限</li>
+                <li>商品管理</li>
+                <li>秒杀管理</li>
+            </ul>
+
+            <div class="layui-tab-content">
+                <div class="layui-tab-item" id="userAuthorization">
+
+                </div>
+
+                <div class="layui-tab-item" id="productManagement">
+
+                </div>
+
+                <div class="layui-tab-item" id="seckillManagement">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 分三模块, 用户权限分配, 商品管理, 秒杀活动管理 -->
+
+
+</body>
+
+<!-- Javascript引入 -->
+<script src="/static/js/jquery.min.js" th:src="@{/static/js/jquery.min.js}" type="text/javascript"></script>
+<script src="/static/layui/layui.js" th:src="@{/static/layui/layui.js}" type="text/javascript"></script>
+<script src="/static/js/variable.js" th:src="@{/static/js/variable.js}" type="text/javascript"></script>
+<script src="/static/js/util.js" th:src="@{/static/js/util.js}" type="text/javascript"></script>
+<script src="/static/js/jwt_token.js" th:src="@{/static/js/jwt_token.js}" type="text/javascript"></script>
+<!-- Javascript引入 -->
+
+<script th:inline="javascript">
+    window.onload = function () {
+        let token = [[${token}]];
+        setToken(token, 7);
+    }
+</script>
+<script>
+    layui.use(["element", "form"], function () {
+        var form = layui.form;
+        var element = layui.element;
+    });
+</script>
+</html>

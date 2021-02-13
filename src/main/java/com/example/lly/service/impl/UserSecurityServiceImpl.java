@@ -105,6 +105,11 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     }
 
     @Override
+    public List<User> getAllUsers() {
+        return userMapper.queryAll();
+    }
+
+    @Override
     public boolean hasUsername(HttpServletRequest request, Authentication authentication) {
         Object principal = authentication.getPrincipal();
         Boolean hasUsername = null;

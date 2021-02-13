@@ -19,6 +19,8 @@ public interface SeckillService {
     //所有秒杀
     List<SeckillInfo> getAllSeckillInfo();
 
+    List<Product> getAllProduct();
+
     List<SeckillInfo> getAllSeckillInfoInProgress();
 
     List<SeckillInfo> getAllSeckillInfoInFuture();
