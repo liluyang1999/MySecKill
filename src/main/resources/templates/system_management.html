@@ -15,10 +15,9 @@
             cursor: pointer;
         }
 
-        .tab-background {
-            /*background: url("/static/image/cool-background5.png");*/
-            /*background-size: cover;*/
-            background-color: ghostwhite;
+        .btn-style {
+            background-color: #b2b2b2;
+            color: #0C0C0C;
         }
     </style>
 </head>
@@ -29,22 +28,27 @@
         <div style="text-align: center; padding: 5px">
             <i class="layui-icon" style="color: antiquewhite; font-size: 35px">&#xe68e;</i>
             <strong onclick="goToTargetPage(homeHtml, getToken())"
+                    th:if="${hasUserRole} == true"
                     style="font-size: 35px; color: antiquewhite; cursor: pointer">
                 个人主页
             </strong>
+            <strong style="font-size: 35px; color: antiquewhite; cursor: pointer"
+                    th:if="${hasUserRole} == false">
+                管理页面
+            </strong>
         </div>
     </div>
+
     <div class="layui-col-md5">
         <ul class="layui-nav">
             <li class="layui-nav-item" th:if="${hasAdminRole} == true">
                 <span style="padding: 15px">
-                    <strong class="item-style"
-                            onclick="goToTargetPage(systemMangementHtml, getToken())">
+                    <strong class="item-style">
                         系统管理
                     </strong>
                 </span>
             </li>
-            <li class="layui-nav-item">
+            <li class="layui-nav-item" th:if="${hasUserRole} == true">
                 <span style="padding: 15px">
                     <strong class="item-style"
                             onclick="goToTargetPage(privateSeckillListHtml, getToken())">
@@ -52,7 +56,7 @@
                     </strong>
                 </span>
             </li>
-            <li class="layui-nav-item">
+            <li class="layui-nav-item" th:if="${hasUserRole} == true">
                 <span style="padding: 15px">
                     <strong class="item-style" onclick="goToTargetPage(mySeckillHtml, getToken())"
                             th:if="${hasUserRole} == true">
@@ -89,26 +93,116 @@
 
 <!-- 分三模块, 用户权限分配, 商品管理, 秒杀活动管理 -->
 <div class="layui-row">
-    <div class="layui-col-md6 layui-col-md-offset3" style="text-align: center">
+    <div class="layui-col-md10 layui-col-md-offset1" style="text-align: center">
+
         <div class="layui-tab layui-tab-card" style="background-color: antiquewhite">
             <ul class="layui-tab-title">
-                <li class="layui-this">用户权限</li>
-                <li>商品管理</li>
-                <li>秒杀管理</li>
+                <li class="layui-this" th:if="${userSecurityService.hasPermission(user, 'item:manage')} == true">用户权限
+                </li>
+                <li th:if="${userSecurityService.hasPermission(user, 'user:manage')} == true">商品管理</li>
+                <li th:if="${userSecurityService.hasPermission(user, 'seckill:manage')} == true">秒杀管理</li>
             </ul>
 
             <div class="layui-tab-content">
-                <div class="layui-tab-item" id="userAuthorization">
-
+                <div class="layui-tab-item layui-show" id="userAuthorization">
+                    <table class="layui-table" lay-size="lg" lay-skin="row">
+                        <thead>
+                        <tr>
+                            <th>用户名</th>
+                            <th>账号</th>
+                            <th>密码</th>
+                            <th>电话</th>
+                            <th>邮箱</th>
+                            <th>是否可用</th>
+                            <th>权限</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user: ${userList}">
+                            <td th:text="${user.getDisplayName()}">
+                                用户名称
+                            </td>
+                            <td th:text="${user.getUsername()}">
+                                账号
+                            </td>
+                            <td th:text="${user.getPassword()}">
+                                密码
+                            </td>
+                            <td th:text="${user.getPhone()}">
+                                电话
+                            </td>
+                            <td th:text="${user.getEmail()}">
+                                邮箱
+                            </td>
+                            <td style="text-align: center">
+                                <input disabled="disabled" style="zoom: 150%"
+                                       th:checked="${user.getEnabled()}" th:id="'checkbox' + ${userList.indexOf(user)}"
+                                       type="checkbox"/>
+                            </td>
+                            <td>
+                                <ul class="layui-nav layui-bg-gray">
+                                    <li class="layui-nav-item">
+                                        <strong style="text-align: center;font-size: small;cursor: pointer">查看角色</strong>
+                                        <dl class="layui-nav-child">
+                                            <dd style="color: #0C0C0C" th:each="role: ${user.getRoles()}"
+                                                th:text="${role.getName()}"></dd>
+                                        </dl>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="layui-tab-item" id="productManagement">
-
+                    <table class="layui-table" lay-size="lg">
+                        <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>价格￥</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <button>新增商品</button>
+                        <button>删除商品</button>
+                        <tr th:each="product: ${productList}">
+                            <td th:text="${product.getName()}">
+                                商品名称
+                            </td>
+                            <td th:text="${product.getPrice()}">
+                                商品价格
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="layui-tab-item" id="seckillManagement">
-
+                    <table class="layui-table" lay-size="lg" lay-skin="line">
+                        <thead>
+                        <tr>
+                            <th>活动名称</th>
+                            <th>秒杀商品</th>
+                            <th>发放数量</th>
+                            <th>开始时间</th>
+                            <th>结束时间</th>
+                            <th>秒杀价￥</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="seckillInfo: ${seckillInfoList}">
+                            <td th:text="${seckillInfo.getName()}">活动名称</td>
+                            <td th:text="${seckillInfo.getProduct().getName()}">秒杀商品</td>
+                            <td th:text="${seckillInfo.getExpectedNumber()}">发放数量</td>
+                            <td th:text="${seckillInfo.getStartTime()}">开始时间</td>
+                            <td th:text="${seckillInfo.getEndTime()}">结束时间</td>
+                            <td th:text="${seckillInfo.getSeckillPrice()}">秒杀价</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
+
             </div>
         </div>
     </div>
@@ -132,10 +226,12 @@
         setToken(token, 7);
     }
 </script>
+
 <script>
-    layui.use(["element", "form"], function () {
+    layui.use(["element", "form", "layer"], function () {
         var form = layui.form;
         var element = layui.element;
+        var layer = layui.layer;
     });
 </script>
 </html>

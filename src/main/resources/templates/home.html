@@ -41,7 +41,7 @@
             </strong>
         </div>
     </div>
-    <div class="layui-col-md5">
+    <div class="layui-col-md5" style="text-align: right">
         <ul class="layui-nav">
             <li class="layui-nav-item" th:if="${hasAdminRole} == true">
                 <span style="padding: 15px">
@@ -59,7 +59,7 @@
                     </strong>
                 </span>
             </li>
-            <li class="layui-nav-item" th:if="${hasUserRole} == true">
+            <li class="layui-nav-item">
                 <span style="padding: 15px">
                     <strong class="item-style"
                             onclick="goToTargetPage(mySeckillHtml, getToken())">
@@ -171,7 +171,10 @@
                 <strong>原价:</strong>
                 <span th:text="${seckillInfoInProgress.getOriginalPrice()}"></span>&nbsp;
 
-                <button class="layui-btn-radius layui-bg-orange" onclick="" style="width: 70px; height: 40px">
+                <button class="layui-btn-radius layui-bg-orange"
+                        style="width: 70px; height: 40px"
+                        th:if="${userSecurityService.hasPermission(user, 'seckill:query')}"
+                        th:onclick="'javascript:goToOrderPage(seckillExecutionHtml, getToken(), \''+${seckillInfoInProgress.getId()}+'\', 1);'">
                     详情
                 </button>
             </div>
@@ -264,7 +267,6 @@
         });
     });
 </script>
-
 <script th:inline="javascript">
     window.onload = function () {
         let token = [[${token}]];

@@ -13,10 +13,10 @@ public interface SeckillService {
     String seckillInfoGeneralCacheName = "seckillInfoCache";
     String stateExposerGeneralCacheName = "stateExposer";
 
-    //单个秒杀
     SeckillInfo getSeckillInfoById(Integer id);
 
-    //所有秒杀
+    Product getProductById(Integer id);
+
     List<SeckillInfo> getAllSeckillInfo();
 
     List<Product> getAllProduct();

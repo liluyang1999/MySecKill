@@ -14,4 +14,6 @@ function getRandomVerCode(len){
     }
     $(".zyl_lofo_vercode").html(zylCode);
     $("#vercodePic").html(zylCode);
+    $("#order_vercodePic").html(zylCode);
 }
+

@@ -19,7 +19,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @RestController
-@RequestMapping("/login")
 public class TestingController {
 
     @Autowired
@@ -39,6 +38,7 @@ public class TestingController {
 
     @Autowired
     private SeckillService seckillService;
+
 
     private final Product product = new Product("雀巢奶昔", 30);
 
@@ -72,6 +72,5 @@ public class TestingController {
     public StateExposer queryUrl() {
         return seckillService.getCorrespondingStateExposer(123);
     }
-
 
 }

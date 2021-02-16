@@ -11,6 +11,7 @@ import com.example.lly.entity.OrderInfo;
 import com.example.lly.entity.Product;
 import com.example.lly.entity.SeckillInfo;
 import com.example.lly.exception.*;
+import com.example.lly.module.redis.RedisComponent;
 import com.example.lly.service.SeckillService;
 import com.example.lly.util.BaseUtil;
 import com.example.lly.util.encryption.MD5Util;
@@ -43,20 +44,47 @@ public class SeckillServiceImpl implements SeckillService {
     @Autowired
     private RedisTemplate<String, Serializable> redisTemplate;
 
+    @Autowired
+    private RedisComponent redisComponent;
+
     @Override
     public SeckillInfo getSeckillInfoById(Integer id) {
-        return seckillInfoMapper.queryById(id);
+        SeckillInfo seckillInfo = (SeckillInfo) redisTemplate.opsForHash().get("seckillInfos", id);
+        if (seckillInfo == null) {
+            seckillInfo = seckillInfoMapper.queryById(id);
+        }
+        return seckillInfo;
     }
+
+
+    @Override
+    public Product getProductById(Integer id) {
+        Product product = (Product) redisTemplate.opsForHash().get("products", id);
+        if (product == null) {
+            product = productMapper.queryById(id);
+        }
+        return product;
+    }
+
 
     @Override
     public List<SeckillInfo> getAllSeckillInfo() {
-        return seckillInfoMapper.queryAll();
+        List<SeckillInfo> seckillInfoList = redisComponent.getAllSeckillInfos();
+        if (seckillInfoList == null) {
+            seckillInfoList = seckillInfoMapper.queryAll();
+        }
+        return seckillInfoList;
     }
 
     @Override
     public List<Product> getAllProduct() {
-        return productMapper.queryAll();
+        List<Product> productList = redisComponent.getAllProducts();
+        if (productList == null) {
+            productList = productMapper.queryAll();
+        }
+        return productList;
     }
+
 
     /**
      * @param userId            该用户的id

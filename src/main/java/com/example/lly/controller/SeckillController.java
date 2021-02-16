@@ -36,13 +36,45 @@ import java.util.concurrent.*;
 @RestController
 public class SeckillController {
 
-    private final SeckillService seckillService;
     private static final int corePoolScale = Runtime.getRuntime().availableProcessors();   //JVM可用的核心数量
-    private final RedisTemplate<String, Serializable> redisTemplate;
     private static final ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolScale, corePoolScale + 1, 101, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(1500));
-    private final JwtAuthService jwtAuthService;
 
+    /**
+     * 当前时间数值一定从服务器端获取, 防止提前参与秒杀
+     *
+     * @return 包含当前时间的封装类, 时间以秒数表示
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/getCurrentTime")
+    public ResponseResult<Long> getCurrentTime() {
+        Long currentTime = System.currentTimeMillis();
+        return ResponseResult.success(currentTime);
+    }
+
+
+    /**
+     * 用来返回秒杀状态
+     * @param seckillInfoId   对应的秒杀活动
+     * @return  包含秒杀状态实体的封装类
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/{seckillInfoId}/stateExposer")
+    public ResponseResult<StateExposer> showStateExpoer(@PathVariable("seckillInfoId") Integer seckillInfoId) {
+        ResponseResult<StateExposer> result;
+        try {
+            StateExposer exposer = seckillService.getCorrespondingStateExposer(seckillInfoId);
+            result = ResponseResult.success(exposer);
+        } catch (Exception e) {
+            logger.error("**********发生异常！**********");
+            e.printStackTrace();
+            result = ResponseResult.error(ResponseEnum.FAILED);
+        }
+        return result;
+    }
+
+
+    private final SeckillService seckillService;
+    private final JwtAuthService jwtAuthService;
+    private final RedisTemplate<String, Serializable> redisTemplate;
 
     @Autowired
     public SeckillController(SeckillService seckillService, JwtAuthService jwtAuthService, RedisTemplate<String, Serializable> redisTemplate) {
@@ -51,6 +83,64 @@ public class SeckillController {
         this.redisTemplate = redisTemplate;
     }
 
+    @ApiOperation(value = "Lock with AOP")
+    @RequestMapping(method = RequestMethod.GET, value = "/{seckillInfoId}/{encodedUrl}/executeSeckillWithAopLock")
+    public ResponseResult<ExecutedResult> executeSeckillWithAopLock(@PathVariable("seckillInfoId") Integer seckillInfoId, @PathVariable("encodedUrl") String encodedUrl) {
+        //先从缓存中查询用户, 空值则先让用户登录
+        User user = (User) redisTemplate.opsForValue().get("user");
+
+        if (user == null) {
+            logger.error("**********用户未登录, 请先登录！**********");
+            throw new MyException("请先登录！");
+        }
+
+        try {
+            Callable<ExecutedResult> callable = () -> seckillService.executeSeckillTask(user.getId(), seckillInfoId, encodedUrl);
+            ExecutedResult executedResult = executor.submit(callable).get();
+            return ResponseResult.success(executedResult);
+        } catch (FailedSeckillException e) {
+            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.FINISH);
+            return ResponseResult.error(ResponseEnum.FAILED);
+        } catch (RepeatSeckillException e) {
+            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.DUPLICATE);
+            return ResponseResult.error(ResponseEnum.FAILED);
+        } catch (BaseSeckillException | InterruptedException | ExecutionException e) {
+            //unknown Exception
+            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.SYSTEM_ERROR);
+            return ResponseResult.error(ResponseEnum.FAILED);
+        }
+    }
+
+    /**
+     * 用户点击按钮后发送到此接口，开启秒杀执行过程
+     *
+     * @param seckillInfoId 对应的活动Id
+     * @param encodedUrl    需要检验的md5加密Url值
+     * @return 包含执行结果的封装类
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/{seckillInfoId}/{encodedUrl}/startExecution")
+    public ResponseResult<ExecutedResult> startExecution(@PathVariable("seckillInfoId") Integer seckillInfoId,
+                                                         @PathVariable("encodedUrl") String encodedUrl) {
+        User user = (User) redisTemplate.opsForValue().get("user");
+        if(user == null) {
+            return ResponseResult.error(ResponseEnum.NOT_LOGIN);
+        }
+
+        try {
+            ExecutedResult executedResult = seckillService.executeSeckillTask(user.getId(), seckillInfoId, encodedUrl);
+            return ResponseResult.success(executedResult);
+        } catch (FailedSeckillException e) {
+            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.FINISH);
+            return ResponseResult.error(ResponseEnum.FAILED);
+        } catch (RepeatSeckillException e) {
+            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.DUPLICATE);
+            return ResponseResult.error(ResponseEnum.FAILED);
+        } catch (BaseSeckillException e) {
+            //unknown Exception
+            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.SYSTEM_ERROR);
+            return ResponseResult.error(ResponseEnum.FAILED);
+        }
+    }
 
     /**
      * 获得秒杀活动的列表
@@ -93,98 +183,6 @@ public class SeckillController {
 
         model.addAttribute("seckillInfo", seckillInfo);
         return "detail";
-    }
-
-
-    /**
-     * 当前时间数值一定从服务器端获取, 防止提前参与秒杀
-     *
-     * @return 包含当前时间的封装类, 时间以秒数表示
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/getCurrentTime")
-    public ResponseResult<Long> getCurrentTime() {
-        Long currentTime = System.currentTimeMillis();
-        return ResponseResult.success(currentTime);
-    }
-
-
-    /**
-     * 用来返回秒杀状态
-     * @param seckillInfoId   对应的秒杀活动
-     * @return  包含秒杀状态实体的封装类
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/{seckillInfoId}/stateExposer")
-    public ResponseResult<StateExposer> showStateExpoer(@PathVariable("seckillInfoId") Integer seckillInfoId) {
-        ResponseResult<StateExposer> result;
-        try {
-            StateExposer exposer = seckillService.getCorrespondingStateExposer(seckillInfoId);
-            result = ResponseResult.success(exposer);
-        } catch (Exception e) {
-            logger.error("**********发生异常！**********");
-            e.printStackTrace();
-            result = ResponseResult.error(ResponseEnum.FAILED);
-        }
-        return result;
-    }
-
-
-    @ApiOperation(value = "Lock with AOP")
-    @RequestMapping(method = RequestMethod.GET, value = "/{seckillInfoId}/{encodedUrl}/executeSeckillWithAopLock")
-    public ResponseResult<ExecutedResult> executeSeckillWithAopLock(@PathVariable("seckillInfoId") Integer seckillInfoId, @PathVariable("encodedUrl") String encodedUrl) {
-        //先从缓存中查询用户, 空值则先让用户登录
-        User user = (User) redisTemplate.opsForValue().get("user");
-
-        if(user == null) {
-            logger.error("**********用户未登录, 请先登录！**********");
-            throw new MyException("请先登录！");
-        }
-
-        try {
-            Callable<ExecutedResult> callable = () -> seckillService.executeSeckillTask(user.getId(), seckillInfoId, encodedUrl);
-            ExecutedResult executedResult = executor.submit(callable).get();
-            return ResponseResult.success(executedResult);
-        } catch(FailedSeckillException e) {
-            ExecutedResult executedResult =  new ExecutedResult(seckillInfoId, SeckillStateType.FINISH);
-            return ResponseResult.error(ResponseEnum.FAILED);
-        } catch(RepeatSeckillException e) {
-            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.DUPLICATE);
-            return ResponseResult.error(ResponseEnum.FAILED);
-        } catch(BaseSeckillException | InterruptedException | ExecutionException e) {
-            //unknown Exception
-            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.SYSTEM_ERROR);
-            return ResponseResult.error(ResponseEnum.FAILED);
-        }
-    }
-
-
-    /**
-     * 用户点击按钮后发送到此接口，开启秒杀执行过程
-     * @param seckillInfoId  对应的活动Id
-     * @param encodedUrl   需要检验的md5加密Url值
-     * @return   包含执行结果的封装类
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/{seckillInfoId}/{encodedValue}/startExecution")
-    public ResponseResult<ExecutedResult> startExecution(@PathVariable("seckillInfoId") Integer seckillInfoId,
-                                                         @PathVariable("encodedUrl") String encodedUrl) {
-        User user = (User) redisTemplate.opsForValue().get("user");
-        if(user == null) {
-            return ResponseResult.error(ResponseEnum.NOT_LOGIN);
-        }
-
-        try {
-            ExecutedResult executedResult = seckillService.executeSeckillTask(user.getId(), seckillInfoId, encodedUrl);
-            return ResponseResult.success(executedResult);
-        } catch(FailedSeckillException e) {
-            ExecutedResult executedResult =  new ExecutedResult(seckillInfoId, SeckillStateType.FINISH);
-            return ResponseResult.error(ResponseEnum.FAILED);
-        } catch(RepeatSeckillException e) {
-            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.DUPLICATE);
-            return ResponseResult.error(ResponseEnum.FAILED);
-        } catch(BaseSeckillException e) {
-            //unknown Exception
-            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.SYSTEM_ERROR);
-            return ResponseResult.error(ResponseEnum.FAILED);
-        }
     }
 
     private static final Logger logger = LoggerFactory.getLogger(SeckillController.class);

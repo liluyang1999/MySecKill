@@ -1,4 +1,4 @@
-package com.example.lly.module.queue;
+package com.example.lly.module.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -14,6 +14,5 @@ public class RedisProducer {
     public void sendMessageToTunnel(String channel, String message) {
         stringRedisTemplate.convertAndSend(channel, message);
     }
-
 
 }

@@ -163,9 +163,38 @@ function goToTargetPage(url, token) {
     tempForm.submit();
 }
 
+
+function goToOrderPage(url, token, orderId, type) {
+    let tempForm = document.createElement("form");
+    tempForm.action = url;
+    tempForm.method = "post";
+    let tokenParam = document.createElement("input");
+    tokenParam.type = "hidden";
+    tokenParam.name = "authorization";
+    tokenParam.value = token;
+    tempForm.appendChild(tokenParam);
+    if (type === 1) {
+        let seckillInfoParam = document.createElement("input");
+        seckillInfoParam.type = "hidden";
+        seckillInfoParam.name = "seckillInfoId";
+        seckillInfoParam.value = orderId;
+        tempForm.appendChild(seckillInfoParam);
+    } else {
+        let productParam = document.createElement("input");
+        productParam.type = "hidden";
+        productParam.name = "productId";
+        productParam.value = orderId
+        tempForm.appendChild(productParam);
+    }
+    $(document.body).append(tempForm);
+    tempForm.submit();
+}
+
+
 function isEmpty(obj) {
     return typeof obj == "undefined" || obj == null || obj === "";
 }
+
 
 function refreshPage() {
     window.location.reload();

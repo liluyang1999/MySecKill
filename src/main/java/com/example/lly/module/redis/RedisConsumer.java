@@ -1,4 +1,4 @@
-package com.example.lly.module.queue;
+package com.example.lly.module.redis;
 
 import com.example.lly.service.SeckillService;
 import com.example.lly.util.RedisUtil;

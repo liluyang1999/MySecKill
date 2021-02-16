@@ -60,7 +60,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
 
     private UsernamePasswordAuthenticationToken getAuthentication(String token) {
-//        String token = tokenHeader.replace(JwtTokenUtil.TOKEN_PREFIX, "");
         String username = JwtTokenUtil.getUsernameFromToken(token);
         Collection<? extends GrantedAuthority> roles = JwtTokenUtil.getUserRoleFromToken(token);
         if (username != null) {

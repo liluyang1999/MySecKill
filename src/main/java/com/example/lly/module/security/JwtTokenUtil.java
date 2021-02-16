@@ -31,15 +31,16 @@ public class JwtTokenUtil implements Serializable {
 
     //过期时间, 设定为30分钟
     private static final long EXPIRATION = 1800L;
+    //前缀
+    public static final String TOKEN_PREFIX = "Bearer ";
 
     //Token的Key值
     public static final String TOKEN_HEADER = "Authorization";
     public static final String BODY_KEY = "authorization";
 
-    //前缀
-    public static final String TOKEN_PREFIX = "Bearer ";
     //Key值
     private static final String KEY_ROLES = "Role ";
+    private static final String KEY_EXPIRATION = "expirationTime";
 
     /**
      * 生成Token令牌
@@ -50,17 +51,18 @@ public class JwtTokenUtil implements Serializable {
     public static String createToken(UserDetails userDetails) {
         String username = userDetails.getUsername();
         Collection<? extends GrantedAuthority> roles = userDetails.getAuthorities();
+        Date expiration = new Date(System.currentTimeMillis() + EXPIRATION * 1000L);
         Map<String, Object> claims = new HashMap<>();
         claims.put(KEY_USERNAME, username);       //我是谁
         claims.put(KEY_CREATETIME, new Date());   //什么时候创立的
         claims.put(KEY_ROLES, roles);              //拥有什么权限
+        claims.put(KEY_EXPIRATION, expiration);
         return createToken(claims);
     }
 
     public static String createToken(Map<String, Object> claims) {
-        Date expiration = new Date(System.currentTimeMillis() + EXPIRATION * 1000L);
         return Jwts.builder().setClaims(claims)
-                .setExpiration(expiration)
+                .setIssuer(ISSUER)
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
     }
@@ -71,7 +73,7 @@ public class JwtTokenUtil implements Serializable {
         String refreshToken;
         try {
             Claims claims = getClaimsFromToken(token);
-            claims.put("createTime", new Date().toString());
+            claims.put(KEY_CREATETIME, new Date().toString());
             refreshToken = createToken(claims);
         } catch (Exception e) {
             return null;
@@ -101,7 +103,7 @@ public class JwtTokenUtil implements Serializable {
 
     public static boolean isExpiration(String token) {
         //和现在时间比较查看是否过期
-        return getTokenBody(token).getExpiration().before(new Date());
+        return getTokenBody(token).get(KEY_EXPIRATION, Date.class).before(new Date());
     }
 
     /**

@@ -21,14 +21,16 @@
 <div class="layui-row layui-bg-black">
     <div class="layui-col-md7">
         <div style="text-align: center; padding: 5px">
-            <i class="layui-icon" style="color: antiquewhite; font-size: 35px">&#xe68e;</i>
-            <strong onclick="goToTargetPage(homeHtml, getToken())"
-                    style="font-size: 35px; color: antiquewhite; cursor: pointer">
-                个人主页
-            </strong>
+            <div th:if="${hasUserRole} == true">
+                <i class="layui-icon" style="color: antiquewhite; font-size: 35px">&#xe68e;</i>
+                <strong onclick="goToTargetPage(homeHtml, getToken())"
+                        style="font-size: 35px; color: antiquewhite; cursor: pointer">
+                    个人主页
+                </strong>
+            </div>
         </div>
     </div>
-    <div class="layui-col-md5">
+    <div class="layui-col-md5" style="text-align: right">
         <ul class="layui-nav">
             <li class="layui-nav-item" th:if="${hasAdminRole} == true">
                 <span style="padding: 15px">
@@ -38,7 +40,7 @@
                     </strong>
                 </span>
             </li>
-            <li class="layui-nav-item">
+            <li class="layui-nav-item" th:if="${hasUserRole} == true">
                 <span style="padding: 15px">
                     <strong class="item-style"
                             onclick="goToTargetPage(privateSeckillListHtml, getToken())">
@@ -46,7 +48,7 @@
                     </strong>
                 </span>
             </li>
-            <li class="layui-nav-item">
+            <li class="layui-nav-item" th:if="${hasUserRole} == true">
                 <span style="padding: 15px">
                     <strong class="item-style"
                             onclick="goToTargetPage(mySeckillHtml, getToken())">

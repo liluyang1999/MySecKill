@@ -9,6 +9,7 @@ import com.example.lly.util.result.ResponseEnum;
 import com.example.lly.util.result.ResponseResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,15 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class UserSecurityController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     private final UserSecurityService userSecurityService;
     private final JwtAuthService jwtAuthService;
 
-
-    public UserSecurityController(UserSecurityService userSecurityService, JwtAuthService jwtAuthService) {
-        this.userSecurityService = userSecurityService;
-        this.jwtAuthService = jwtAuthService;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     //localhost:8080/login/requestRegisterUser
     @RequestMapping(value = "/requestRegisterUser", method = RequestMethod.POST)
@@ -61,4 +57,9 @@ public class UserSecurityController {
         return ResponseResult.success(user);
     }
 
+    @Autowired
+    public UserSecurityController(UserSecurityService userSecurityService, JwtAuthService jwtAuthService) {
+        this.userSecurityService = userSecurityService;
+        this.jwtAuthService = jwtAuthService;
+    }
 }

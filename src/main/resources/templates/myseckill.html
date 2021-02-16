@@ -129,7 +129,8 @@
                                 <span th:text="${seckillInfoInProgress.getOriginalPrice()}"></span>&nbsp;
 
                                 <button class="layui-btn-radius layui-bg-orange" onclick=""
-                                        style="width: 70px; height: 40px">
+                                        style="width: 70px; height: 40px"
+                                        th:disabled="${userSecurityService.hasPermission(user, 'seckill:query')}">
                                     详情
                                 </button>
                             </div>

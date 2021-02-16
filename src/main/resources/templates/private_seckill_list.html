@@ -81,7 +81,11 @@
 </div>
 <!-- 抬头 -->
 
-
+<fieldset class="layui-elem-field layui-field-title layui-col-md12" style="margin-top: 20px">
+    <legend style="font-size: 25px;text-align: center">
+        活动列表
+    </legend>
+</fieldset>
 <div class="layui-row">
     <div class="layui-col-md6">
         <!-- iterator -->
@@ -127,7 +131,11 @@
                 <strong>原价:</strong>
                 <span th:text="${seckillInfoInProgress.getOriginalPrice()}"></span>&nbsp;
 
-                <button class="layui-btn-radius layui-bg-orange" onclick="" style="width: 70px; height: 40px">详情
+                <button class="layui-btn-radius layui-bg-orange"
+                        style="width: 70px; height: 40px"
+                        th:disabled="${userSecurityService.hasPermission(user, 'seckill:query')} == false"
+                        th:onclick="'javascript:goToOrderPage(seckillExecutionHtml, getToken(), \''+${seckillInfoInProgress.getId()}+'\', 1);'">
+                    详情
                 </button>
             </div>
         </div>
@@ -180,9 +188,37 @@
                 <strong>原价:</strong>
                 <span th:text="${seckillInfoInFuture.getOriginalPrice()}"></span>&nbsp;
 
-                <button class="layui-btn-radius layui-bg-gray" disabled style="width: 70px; height: 40px">尽情期待</button>
+                <button class="layui-btn-radius layui-bg-gray" disabled
+                        style="width: 70px; height: 40px">尽情期待
+                </button>
             </div>
 
+        </div>
+        <!-- iterator -->
+    </div>
+
+
+    <fieldset class="layui-elem-field layui-field-title layui-col-md12" style="margin-top: 20px">
+        <legend style="font-size: 25px;text-align: center">
+            商品列表
+        </legend>
+    </fieldset>
+    <div class="layui-col-md12">
+        <!-- iterator -->
+        <div class="layui-col-md4" style="padding-bottom: 30px"
+             th:each="product: ${productList}">
+            <div class="layui-col-md6" style="text-align: right">
+                <img alt="活动图片" height="100px" src="/static/image/404.png"
+                     th:src="@{${product.getFilePath()}}" width="100px"/>
+            </div>
+            <div class="layui-col-md5 layui-col-md-offset1" style="text-align: left">
+                <strong th:text="'现价:' + ${product.getPrice()} + '￥'">现价:0￥</strong>
+                <button class="layui-btn-radius layui-bg-orange"
+                        style="width: 70px; height: 40px"
+                        th:onclick="'javascript:goToOrderPage(productExecutionHtml, getToken(), \''+${product.getId()}+'\', 2);'">
+                    购买
+                </button>
+            </div>
         </div>
         <!-- iterator -->
     </div>

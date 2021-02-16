@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 @Component
@@ -110,16 +111,19 @@ public class BaseUtil {
     public static String generateRandomSalt(int number) {
         StringBuilder code = new StringBuilder();
         Random random = new Random();
-        for(int i = 0; i < number; i++) {
+        for (int i = 0; i < number; i++) {
             code.append(random.nextInt(10));
         }
         return code.toString();
     }
 
+    public static String convertDateFormat(Timestamp date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒");
+        return date.toLocalDateTime().format(dateTimeFormatter);
+    }
 
     public static void main(String[] args) {
-        String joker = "\\\\";
-        System.out.println(handlePassword(joker));
+        System.out.println(convertDateFormat(Timestamp.valueOf(LocalDateTime.now())));
     }
 
 }

@@ -54,15 +54,15 @@ public class SeckillInfo implements Serializable {
     @JoinColumn(referencedColumnName = "id")
     protected Product product;   //秒杀的商品
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "create_time")
     protected Timestamp createTime;  //活动创建时间
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "start_time")
     protected Timestamp startTime;   //活动开始时间
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "end_time")
     protected Timestamp endTime;     //活动结束时间
 

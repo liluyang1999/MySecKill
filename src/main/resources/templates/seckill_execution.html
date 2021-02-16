@@ -1,13 +1,241 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title th:text="${seckillInfo.getName()}">购买商品</title>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <link href="/static/layui/css/layui.css" media="all" rel="stylesheet" th:href="@{/static/layui/css/layui.css}"/>
+    <style type="text/css">
+        .background-style {
+            background-image: url("/static/image/decorative-background2.png");
+            background-size: cover;
+        }
+
+        .item-background {
+            background-image: url("/static/image/decorative-background3.png");
+            background-size: cover;
+        }
+
+        .validation_icon {
+            position: absolute;
+            left: 5px;
+            top: 8px;
+            font-size: 20px;
+        }
+
+        .validation_vercode {
+            line-height: 35px;
+            padding-left: 30px;
+            font-size: 24px;
+        }
+
+        .item-style {
+            font-size: 22px;
+            cursor: pointer;
+        }
+    </style>
 </head>
-<body>
+<body class="background-style">
+<!-- 抬头 -->
+<div class="layui-row layui-bg-black">
+    <div class="layui-col-md7">
+        <div style="text-align: center; padding: 5px">
+            <i class="layui-icon" style="color: antiquewhite; font-size: 35px">&#xe68e;</i>
+            <strong onclick="goToTargetPage(homeHtml, getToken())"
+                    style="font-size: 35px; color: antiquewhite; cursor: pointer">
+                个人主页
+            </strong>
+        </div>
+    </div>
+    <div class="layui-col-md5">
+        <ul class="layui-nav">
+            <li class="layui-nav-item" th:if="${hasAdminRole} == true">
+                <span style="padding: 15px">
+                    <strong class="item-style"
+                            onclick="goToTargetPage(systemMangementHtml, getToken())">
+                        系统管理
+                    </strong>
+                </span>
+            </li>
+            <li class="layui-nav-item">
+                <span style="padding: 15px">
+                    <strong class="item-style"
+                            onclick="goToTargetPage(privateSeckillListHtml, getToken())">
+                        活动列表
+                    </strong>
+                </span>
+            </li>
+            <li class="layui-nav-item" th:if="${hasUserRole} == true">
+                <span style="padding: 15px">
+                    <strong class="item-style"
+                            onclick="goToTargetPage(mySeckillHtml, getToken())">
+                        我的秒杀
+                    </strong>
+                </span>
+            </li>
+            <li class="layui-nav-item">
+                <span style="padding: 15px">
+                    <strong class="item-style">
+                        我的账号
+                    </strong>
+                </span>
+                <dl class="layui-nav-child">
+                    <dd style="text-align: center">
+                        <strong onclick="goToTargetPage(myAccountHtml, getToken())"
+                                style="color: #0C0C0C; cursor:pointer">
+                            个人信息
+                        </strong>
+                    </dd>
+                    <dd style="text-align: center">
+                        <strong onclick="requestLogout()"
+                                style="color: #0C0C0C; cursor:pointer">
+                            注销账号
+                        </strong>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- 抬头 -->
+<div style="padding-bottom: 80px"></div>
+
+<div class="layui-row">
+    <div class="layui-col-md8 layui-col-md-offset2 item-background">
+        <div class="layui-col-md6" style="text-align: left;padding: 80px 50px">
+            <img alt="秒杀商品" style="width: 450px;height: 350px" th:src="@{${seckillInfo.getProduct().getFilePath()}}"/>
+        </div>
+        <div class="layui-col-md6" style="padding: 50px 40px">
+            <div class="layui-col-md10 layui-col-md-offset1" style="padding-bottom: 20px;text-align: center">
+                <strong style="font-size: 30px" th:text="${seckillInfo.getName()}">秒杀活动名称</strong>
+            </div>
+            <div class="layui-col-md11 layui-col-md-offset1" style="padding-bottom: 20px">
+                <div class="layui-col-md6" style="text-align: center">
+                    <strong style="font-size: 30px;color: red"
+                            th:text="'秒杀价￥:' + ${seckillInfo.getSeckillPrice()}"></strong>
+                </div>
+                <div class="layui-col-md4 layui-col-md-offset1" style="padding-top: 7px">
+                    <strong style="font-size: 20px">
+                        <del th:text="'原价￥:[' + ${seckillInfo.getOriginalPrice()} + ']'">原价￥:80</del>
+                    </strong>
+                </div>
+            </div>
+            <div class="layui-col-md12" style="padding: 10px;text-align: center">
+                <strong>
+                    <label class="layui-col-md4" for="startTime" style="font-size: 20px">开始时间</label>
+                    <input class="layui-input layui-col-md8" disabled id="startTime"
+                           style="width: 250px" type="text"/>
+                </strong>
+            </div>
+            <div class="layui-col-md12" style="padding: 10px;text-align: center">
+                <strong>
+                    <label class="layui-col-md4" for="remainingTime" style="font-size: 20px">距离结束</label>
+                    <input class="layui-input layui-col-md8" id="remainingTime" style="width: 250px" type="text"/>
+                </strong>
+            </div>
+            <div class="layui-col-md12" style="padding: 10px;text-align: center">
+                已售/总量
+            </div>
+            <div class="layui-col-md12" style="padding: 10px;text-align: center">
+                <span>配送至:上海市&nbsp;闵行区&nbsp;莲花路&nbsp;</span>
+                <button class="layui-btn-danger">5折优惠券</button>
+            </div>
+            <div class="layui-col-md12" style="padding: 10px;text-align: center">
+                <button class="layui-btn-radius layui-btn-lg layui-bg-orange">点击秒杀</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
 
 </body>
-</html>
-<script>
+<!-- Javascript引入 -->
+<script src="/static/js/jquery.min.js" th:src="@{/static/js/jquery.min.js}" type="text/javascript"></script>
+<script src="/static/layui/layui.js" th:src="@{/static/layui/layui.js}" type="text/javascript"></script>
+<script src="/static/js/seckill.js" th:src="@{/static/js/seckill.js}" type="text/javascript"></script>
+<script src="/static/js/variable.js" th:src="@{/static/js/variable.js}" type="text/javascript"></script>
+<script src="/static/js/util.js" th:src="@{/static/js/util.js}" type="text/javascript"></script>
+<script src="/static/js/jwt_token.js" th:src="@{/static/js/jwt_token.js}" type="text/javascript"></script>
+<script src="/static/js/verification_code.js" th:src="@{/static/js/verification_code.js}"
+        type="text/javascript"></script>
+<!-- Javascript引入 -->
+<script th:inline="javascript">
+    layui.use(['element', 'layer', 'laydate'], function () {
+        var element = layui.element;
+        var layer = layui.layer;
+        var laydate = layui.laydate;
 
+        laydate.render({
+            elem: '#startTime',
+            type: 'datetime',
+            format: 'yyyy年MM月dd日 HH时mm分ss秒',
+            value: [[${startTime}]],
+            isInitValue: true,
+            show: false,
+            lang: 'cn',
+            theme: 'molv',
+        });
+    });
 </script>
+<script th:inline="javascript">
+    window.onload = function () {
+        let token = [[${token}]];
+        setToken(token, 7);
+    }
+
+    function requestOrderProduct(id) {
+        var index = layer.open({
+            title: '请输入验证码',
+            area: ['300px', '180px'],
+            btn: ['确认', '取消'],
+            btnAlign: 'c',             //按钮布局靠中
+            closeBtn: 0,               //关闭按钮取消
+            shade: [0.8, '#393D49'],   //外层透明背景
+            time: 1000 * 60 * 2,      //两分钟没反应自动取消
+            anim: 1,
+            yes: function (index, layero) {
+                if (validateVercode()) {
+                    simulateOrder();
+                } else {
+                    layer.msg('验证码错误(区分大小写)', {icon: 2});
+                }
+            },
+            content: '<div class="layui-row">' +
+                '<label class="layui-col-md2" for="vercode">' +
+                '<strong>' +
+                '<i class="layui-icon validation_icon" style="font-size: 20px">&#xe679;</i>' +
+                '</strong>' +
+                '</label>' +
+                '<div class = "layui-col-xs5 layui-col-sm5 layui-col-md5 layui-col-md5 layui-col-md-offset2" >' +
+                '<input autoComplete = "off" class = "layui-input" id = "order_vercodeInput" lay-verify = "required|vercodes" name = "vercode" placeholder = "验证码" type = "text" maxlength="4"/>' +
+                '</div>' +
+                '<div class="layui-col-md5">' +
+                '<div class="validation_vercode" id="order_vercodePic" onClick="getRandomVerCode()"></div>' +
+                '</div>' +
+                '</div>',
+            success: function () {
+                getRandomVerCode();
+            }
+        });
+    }
+
+    function validateVercode() {
+        let randomVerCode = $("#order_vercodeInput").val();
+        let inputCode = $("#order_vercodePic").html();
+        return inputCode === randomVerCode;
+    }
+
+    function simulateSeckill() {
+        let index = layer.load();
+        setTimeout(function () {
+            layer.close(index);
+            let result = Math.random() * 2;
+            if (result >= 1) {
+                layer.msg('购买成功', {icon: 1});
+            } else {
+                layer.msg('购买失败', {icon: 2});
+            }
+        }, 5000);
+    }
+</script>
+</html>

@@ -31,16 +31,17 @@ public interface SeckillInfoMapper extends BaseMapper<SeckillInfo> {
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryById")
     SeckillInfo queryById(@Param("id") Integer id);
 
+
     @ResultMap("seckillInfoMap")
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryByName")
     SeckillInfo queryByName(@Param("name") String name);
 
-//    @ResultMap("seckillInfoMap")
-@ResultType(SeckillInfo.class)
-@SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryAll")
-List<SeckillInfo> queryAll();
 
-    //    @ResultMap("seckillInfoMap")
+    @ResultMap("seckillInfoMap")
+    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryAll")
+    List<SeckillInfo> queryAll();
+
+
     @ResultMap("seckillInfoMap")
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryAllSeckillInfoInProgress")
     List<SeckillInfo> queryAllSeckillInfoInProgress(Timestamp now);
@@ -68,7 +69,7 @@ List<SeckillInfo> queryAll();
     /**
      * 按照索引值(从零开始)最大数量来查询，对应SQL语句的LIMIT用法
      */
-    @ResultType(SeckillInfo.class)
+    @ResultMap("seckillInfoMap")
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryByLimit")
     List<SeckillInfo> queryByLimit(@Param("index") int index, @Param("limit") int limit);
 
