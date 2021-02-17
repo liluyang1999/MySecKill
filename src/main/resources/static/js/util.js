@@ -38,10 +38,17 @@ function getCurrentTime() {
         async: false,
         cache: false,
         success: function (originalData) {
-            currentTime = new Date(getJsonData(originalData)).toLocaleString();
+            let code = getJsonCode(originalData);
+            let msg = getJsonMsg(originalData);
+            let data = getJsonData(originalData);
+            if (code === 200) {
+                currentTime = new Date(getJsonData(originalData)).toLocaleString();
+            } else {
+                currentTime = (new Date().toLocaleString());
+            }
         },
         error: function () {
-            currentTime = (new Date()).toLocaleString();
+            currentTime = '服务器系统错误';
         }
     });
     return currentTime;

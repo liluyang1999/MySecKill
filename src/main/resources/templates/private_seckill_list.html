@@ -107,12 +107,12 @@
             <div class="layui-col-md6 layui-col-md-offset1">
                 <br/>
                 <div class="layui-col-md12">
-                    <div style="text-align: left">
-                        <strong th:text="'开始时间:' + ${seckillInfoInProgress.getStartTime()}">开始时间</strong>
+                    <div style="text-align: left; padding-bottom: 5px">
+                        <strong th:text="'开始:' + ${baseUtil.convertDateFormat(seckillInfoInProgress.getStartTime())}">开始时间</strong>
                     </div>
                 </div>
                 <div class="layui-col-md12">
-                    <div style="text-align: left">
+                    <div style="text-align: left; padding-bottom: 5px">
                         <strong th:text="'预期放送:' + ${seckillInfoInProgress.getExpectedNumber()}">预期放送</strong>
                     </div>
                 </div>
@@ -129,7 +129,7 @@
                 <span th:text="${seckillInfoInProgress.getSeckillPrice()}"></span>&nbsp;
 
                 <strong>原价:</strong>
-                <span th:text="${seckillInfoInProgress.getOriginalPrice()}"></span>&nbsp;
+                <del th:text="${seckillInfoInProgress.getOriginalPrice()}"></del>&nbsp;
 
                 <button class="layui-btn-radius layui-bg-orange"
                         style="width: 70px; height: 40px"
@@ -164,13 +164,13 @@
             <div class="layui-col-md6 layui-col-md-offset1">
                 <br/>
                 <div class="layui-col-md12">
-                    <div style="text-align: left">
-                        <strong th:text="'开始时间:' + ${seckillInfoInFuture.getStartTime()}">开始时间</strong>
+                    <div style="text-align: left; padding-bottom: 5px">
+                        <strong th:text="'开始:' + ${baseUtil.convertDateFormat(seckillInfoInFuture.getStartTime())}">开始时间</strong>
                     </div>
                 </div>
                 <div class="layui-col-md12">
-                    <div style="text-align: left">
-                        <strong th:text="'结束时间:' + ${seckillInfoInFuture.getEndTime()}">剩余数量</strong>
+                    <div style="text-align: left; padding-bottom: 5px">
+                        <strong th:text="'结束:' + ${baseUtil.convertDateFormat(seckillInfoInFuture.getEndTime())}">剩余数量</strong>
                     </div>
                 </div>
                 <div class="layui-col-md12">
@@ -186,7 +186,7 @@
                 <span th:text="${seckillInfoInFuture.getSeckillPrice()}"></span>&nbsp;
 
                 <strong>原价:</strong>
-                <span th:text="${seckillInfoInFuture.getOriginalPrice()}"></span>&nbsp;
+                <del th:text="${seckillInfoInFuture.getOriginalPrice()}"></del>&nbsp;
 
                 <button class="layui-btn-radius layui-bg-gray" disabled
                         style="width: 70px; height: 40px">尽情期待

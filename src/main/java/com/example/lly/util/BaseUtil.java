@@ -122,6 +122,11 @@ public class BaseUtil {
         return date.toLocalDateTime().format(dateTimeFormatter);
     }
 
+    public static String convertDateFormat(Timestamp date, String format) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+        return date.toLocalDateTime().format(dateTimeFormatter);
+    }
+
     public static void main(String[] args) {
         System.out.println(convertDateFormat(Timestamp.valueOf(LocalDateTime.now())));
     }

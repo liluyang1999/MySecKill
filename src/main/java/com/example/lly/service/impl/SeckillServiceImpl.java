@@ -86,51 +86,7 @@ public class SeckillServiceImpl implements SeckillService {
     }
 
 
-    /**
-     * @param userId            该用户的id
-     * @param seckillInfoId     参加的秒杀活动的id
-     * @param checkedEncodedUrl 用户早前拿到的md5加密过的url，用以验证真实性
-     * @return 返回秒杀处理结果，成功与否
-     */
-    @Override
-    @SeckillLimit
-    @SeckillLock
-    @Transactional(rollbackOn = Exception.class)
-    public ExecutedResult executeSeckillTask(Integer userId, Integer seckillInfoId, String checkedEncodedUrl) {
-        //缓存中拿出加密后的Url值进行比对
-        ValueOperations<String, Serializable> operation = redisTemplate.opsForValue();
-        String stateExposerCacheName = BaseUtil.addIdToName(SeckillService.stateExposerGeneralCacheName, seckillInfoId);
-        String trueEncodedUrl = (String) operation.get(stateExposerCacheName);
-        //查询结果为空或者不匹配
-        if(trueEncodedUrl != null && trueEncodedUrl.equals(checkedEncodedUrl)) {
-            logger.error("*********请勿篡改秒杀！**********");
-            throw new TamperSeckillException();
-        }
-
-        try {
-            LocalDateTime currentTime = LocalDateTime.now();
-            int reduceCount = seckillInfoMapper.decreaseNumber(seckillInfoId, Timestamp.valueOf(currentTime));
-            if (reduceCount <= 0) {
-                //秒杀失败
-                logger.error("**********没有成功减少库存, 活动已结束, 秒杀失败！**********");
-                throw new FailedSeckillException();
-            } else {
-                //扣减库存成功，继续检查是否属于重复秒杀
-                OrderInfo orderInfo = new OrderInfo(seckillInfoId, userId, Short.valueOf("1"), Timestamp.valueOf(currentTime));
-                int insertCount = orderInfoMapper.insert(orderInfo);
-                if (insertCount <= 0) {
-                    logger.error("*********请勿重复秒杀！**********");
-                    throw new RepeatSeckillException();
-                } else {
-                    //秒杀成功
-                    return new ExecutedResult(seckillInfoId, SeckillStateType.SUCCESS, orderInfo);
-                }
-            }
-        } catch(Exception e) {
-            logger.error(e.getMessage(), e);   //可能包括AOP锁中的MyException访问过于频繁异常
-            throw new BaseSeckillException();  //发生异常一定要捕获扔出去, Spring检测到RuntimeException才能回滚事务
-        }
-    }
+    public String seckillInfoGeneralCacheName = "seckillInfoCache";
 
 
     @Override
@@ -233,4 +189,51 @@ public class SeckillServiceImpl implements SeckillService {
         return seckillInfoMapper.queryAllSeckillInfoInFuture(now);
     }
 
+    public String stateExposerGeneralCacheName = "stateExposerCache";
+
+    /**
+     * @param userId            该用户的id
+     * @param seckillInfoId     参加的秒杀活动的id
+     * @param checkedEncodedUrl 用户早前拿到的md5加密过的url，用以验证真实性
+     * @return 返回秒杀处理结果，成功与否
+     */
+    @Override
+    @SeckillLimit
+    @SeckillLock
+    @Transactional(rollbackOn = Exception.class)
+    public ExecutedResult executeSeckillTask(Integer userId, Integer seckillInfoId, String checkedEncodedUrl) {
+        //缓存中拿出加密后的Url值进行比对
+        ValueOperations<String, Serializable> operation = redisTemplate.opsForValue();
+        String stateExposerCacheName = BaseUtil.addIdToName(stateExposerGeneralCacheName, seckillInfoId);
+        String trueEncodedUrl = (String) operation.get(stateExposerCacheName);
+        //查询结果为空或者不匹配
+        if (trueEncodedUrl != null && trueEncodedUrl.equals(checkedEncodedUrl)) {
+            logger.error("*********请勿篡改秒杀！**********");
+            throw new TamperSeckillException();
+        }
+
+        try {
+            LocalDateTime currentTime = LocalDateTime.now();
+            int reduceCount = seckillInfoMapper.decreaseNumber(seckillInfoId, Timestamp.valueOf(currentTime));
+            if (reduceCount <= 0) {
+                //秒杀失败
+                logger.error("**********没有成功减少库存, 活动已结束, 秒杀失败！**********");
+                throw new FailedSeckillException();
+            } else {
+                //扣减库存成功，继续检查是否属于重复秒杀
+                OrderInfo orderInfo = new OrderInfo(seckillInfoId, userId, Short.valueOf("1"), Timestamp.valueOf(currentTime));
+                int insertCount = orderInfoMapper.insert(orderInfo);
+                if (insertCount <= 0) {
+                    logger.error("*********请勿重复秒杀！**********");
+                    throw new RepeatSeckillException();
+                } else {
+                    //秒杀成功
+                    return new ExecutedResult(seckillInfoId, SeckillStateType.SUCCESS, orderInfo);
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);   //可能包括AOP锁中的MyException访问过于频繁异常
+            throw new BaseSeckillException();  //发生异常一定要捕获扔出去, Spring检测到RuntimeException才能回滚事务
+        }
+    }
 }

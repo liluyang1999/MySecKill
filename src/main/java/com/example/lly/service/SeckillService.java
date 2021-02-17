@@ -10,9 +10,6 @@ import java.util.List;
 
 public interface SeckillService {
 
-    String seckillInfoGeneralCacheName = "seckillInfoCache";
-    String stateExposerGeneralCacheName = "stateExposer";
-
     SeckillInfo getSeckillInfoById(Integer id);
 
     Product getProductById(Integer id);

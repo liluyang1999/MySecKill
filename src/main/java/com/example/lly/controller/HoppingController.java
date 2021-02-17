@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -42,14 +44,16 @@ public class HoppingController {
     private final UserSecurityService userSecurityService;
     private final PermissionMapper permissionMapper;
     private final RolePermissionService rolePermissionService;
+    private final BaseUtil baseUtil;
 
     @Autowired
-    public HoppingController(JwtAuthService jwtAuthService, SeckillService seckillService, UserSecurityService userSecurityService, PermissionMapper permissionMapper, RolePermissionService rolePermissionService) {
+    public HoppingController(JwtAuthService jwtAuthService, SeckillService seckillService, UserSecurityService userSecurityService, PermissionMapper permissionMapper, RolePermissionService rolePermissionService, BaseUtil baseUtil) {
         this.jwtAuthService = jwtAuthService;
         this.seckillService = seckillService;
         this.userSecurityService = userSecurityService;
         this.permissionMapper = permissionMapper;
         this.rolePermissionService = rolePermissionService;
+        this.baseUtil = baseUtil;
     }
 
     //公用seckill_list页面
@@ -78,11 +82,9 @@ public class HoppingController {
         user = rolePermissionService.addPermission(user);
         mav = new ModelAndView();
         if (!userSecurityService.containsUserRole(user.getRoles())) {
-//            System.out.println("没有用户权限");
             mav.setViewName("system_management");
             mav.addObject("hasUserRole", false);
         } else {
-//            System.out.println("有用户权限");
             mav.setViewName("home");
             mav.addObject("hasUserRole", true);
             List<SeckillInfo> seckillInfoInProgressList = seckillService.getAllSeckillInfoInProgress();
@@ -97,6 +99,7 @@ public class HoppingController {
             mav.addObject("hasAdminRole", false);
         }
 
+        mav.addObject("baseUtil", baseUtil);
         mav.addObject("user", user);
         mav.addObject("userSecurityService", userSecurityService);
         String newToken = jwtAuthService.refreshLogin(token);
@@ -126,6 +129,15 @@ public class HoppingController {
         }
     }
 
+    private List<Timestamp> extractEndTime(List<SeckillInfo> seckillInfoList) {
+        List<Timestamp> endTimeList = new ArrayList<>();
+        for (SeckillInfo seckillInfo : seckillInfoList) {
+            Timestamp endTime = seckillInfo.getEndTime();
+            endTimeList.add(endTime);
+        }
+        return endTimeList;
+    }
+
     //个人的seckill_list_page
     @RequestMapping({"/login_page/seckill_list_page", "/login/seckill_list"})
     public ModelAndView goToPrivateSeckillListPage(HttpServletRequest request) {
@@ -144,6 +156,7 @@ public class HoppingController {
         mav.addObject("seckillInfoInProgressList", seckillInfoInProgressList);
         mav.addObject("seckillInfoInFutureList", seckillInfoInFutureList);
         mav.addObject("productList", productList);
+        mav.addObject("baseUtil", baseUtil);
 
         User user = userSecurityService.getUserByUsername(JwtTokenUtil.getUsernameFromToken(token));
         user = rolePermissionService.addPermission(user);
@@ -177,6 +190,9 @@ public class HoppingController {
         SeckillInfo seckillInfo = seckillService.getSeckillInfoById(seckillInfoId);
         mav.addObject("seckillInfo", seckillInfo);
         mav.addObject("startTime", BaseUtil.convertDateFormat(seckillInfo.getStartTime()));
+
+        double percent = ((double) (seckillInfo.getExpectedNumber() - seckillInfo.getRemainingNumber())) / seckillInfo.getExpectedNumber() * 100;
+        mav.addObject("percent", percent + "%");
 
         checkRole(user, mav);
         String newToken = jwtAuthService.refreshLogin(token);

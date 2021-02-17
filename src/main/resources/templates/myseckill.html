@@ -130,7 +130,8 @@
 
                                 <button class="layui-btn-radius layui-bg-orange" onclick=""
                                         style="width: 70px; height: 40px"
-                                        th:disabled="${userSecurityService.hasPermission(user, 'seckill:query')}">
+                                        th:onclick="'javascript:goToOrderPage(seckillExecutionHtml, getToken(), \''+${seckillInfoInProgress.getId()}+'\', 1);'">
+                                    <!--                                th:disabled="${userSecurityService.hasPermission(user, 'seckill:query')}">-->
                                     详情
                                 </button>
                             </div>
