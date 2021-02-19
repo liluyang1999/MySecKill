@@ -16,7 +16,7 @@ public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
             @Result(property = "orderTime", column = "order_time")
     })
     @SelectProvider(type = OrderInfoSqlProvider.class, method = "queryById")
-    OrderInfo queryById(@Param("seckillinfo_id") Integer seckillInfoId, @Param("userId") Integer userId);
+    OrderInfo queryById(@Param("seckillInfoId") Integer seckillInfoId, @Param("userId") Integer userId);
 
     @ResultType(OrderInfo.class)
     @SelectProvider(type = OrderInfoSqlProvider.class, method = "queryAll")

@@ -13,10 +13,10 @@ public class OrderInfoSqlProvider {
     private final String orderInfoTableName = "t_orderinfo";
 
     public String queryById(Map<String, Object> params) {
-        Integer seckillId = (Integer) params.get("seckillId");
+        Integer seckillInfoId = (Integer) params.get("seckillInfoId");
         Integer userId = (Integer) params.get("userId");
         return "SELECT * FROM " + orderInfoTableName +
-                " WHERE seckill_id = " + seckillId +
+                " WHERE seckillinfo_id = " + seckillInfoId +
                 " AND user_id = " + userId;
     }
 

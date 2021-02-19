@@ -157,12 +157,12 @@
                 </button>
                 <button class="layui-btn-radius layui-btn-lg layui-bg-gray layui-btn-disabled"
                         disabled
-                        th:if="${hasSoldOut} == true && ${ifOrder} == false">
+                        th:if="${hasSoldOut == true && ifOrder == false}">
                     卖光了
                 </button>
                 <button class="layui-btn-radius layui-btn-lg layui-bg-gray layui-btn-disabled"
                         disabled
-                        th:if="${hasSoldOut} == false && ${ifOrder} == true">
+                        th:if="${hasSoldOut == false && ifOrder == true}">
                     卖光了
                 </button>
             </div>
@@ -294,7 +294,6 @@
                 $("#startSeckillBtn").prop("disabled", true).text("秒杀成功").attr("class", "layui-btn-disabled");
             } else {
                 layer.msg(executedResult['stateMsg'], {icon: 2});
-                window.location.reload();
                 $("#startSeckillBtn").prop("disabled", true).text("稍等片刻再试").attr("class", "layui-btn-disabled");
                 setTimeout(function () {
                     $("#startSeckillBtn").prop("disabled", false).text("点击秒杀").attr("class", "layui-btn-radius layui-btn-lg layui-bg-orange");
