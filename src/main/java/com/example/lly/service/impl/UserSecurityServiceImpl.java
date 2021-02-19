@@ -24,6 +24,7 @@ import java.util.List;
 @Service
 public class UserSecurityServiceImpl implements UserDetailsService, UserSecurityService {
 
+
     public User getUserByUsername(String username) {
         User user = (User) redisTemplate.opsForHash().get("users", username);
         if (user == null) {
@@ -34,6 +35,7 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         }
         return user;
     }
+
 
     public boolean insertUser(HttpServletRequest request) throws Exception {
         User user = new User();
@@ -51,10 +53,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         return true;
     }
 
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private RoleMapper roleMapper;
 
     public List<Role> getRolesByNames(List<String> names) {
         List<Role> roles = new ArrayList<>();
@@ -64,7 +62,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         return roles;
     }
 
-    //    @Cacheable(key = "#{username}", value = "userDetailsCache")
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userMapper.queryByUsername((username));
@@ -76,13 +73,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         user.setPassword(decodedPassword);
         return user;
     }
-
-    @Autowired
-    private RolePermissionService rolePermissionService;
-    @Autowired
-    private RedisTemplate<String, Serializable> redisTemplate;
-    @Autowired
-    private RedisComponent redisComponent;
 
     public boolean containsUserRole(List<Role> roles) {
         for (Role role : roles) {
@@ -127,5 +117,21 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     @Override
     public boolean hasRole(User user, String roleName) {
         return user.getRoles().stream().anyMatch(each -> each.getRole().equals(roleName));
+    }
+
+
+    private final UserMapper userMapper;
+    private final RoleMapper roleMapper;
+    private final RolePermissionService rolePermissionService;
+    private final RedisTemplate<String, Serializable> redisTemplate;
+    private final RedisComponent redisComponent;
+
+    @Autowired
+    public UserSecurityServiceImpl(UserMapper userMapper, RoleMapper roleMapper, RolePermissionService rolePermissionService, RedisTemplate<String, Serializable> redisTemplate, RedisComponent redisComponent) {
+        this.userMapper = userMapper;
+        this.roleMapper = roleMapper;
+        this.rolePermissionService = rolePermissionService;
+        this.redisTemplate = redisTemplate;
+        this.redisComponent = redisComponent;
     }
 }

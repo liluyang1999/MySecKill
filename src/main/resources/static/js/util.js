@@ -136,19 +136,6 @@ function requestLogout() {
 }
 
 
-function getRequestParams() {
-    var url = location.search;
-    var requestParams = {};
-    if (url.indexOf("?") !== -1) {
-        var str = url.substr(1);
-        strs = str.split("&");
-        for (var i = 0; i < strs.length; i++) {
-            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-        }
-    }
-    return requestParams;
-}
-
 function goToLoginPage() {
     window.location.href = "http://localhost:8080/login_page";
 }
@@ -204,6 +191,20 @@ function isEmpty(obj) {
 
 
 function refreshPage() {
+    requestRefreshToken(getToken());
     window.location.reload();
+}
+
+function getRequestParams() {
+    var url = location.search;
+    var requestParams = {};
+    if (url.indexOf("?") !== -1) {
+        var str = url.substr(1);
+        strs = str.split("&");
+        for (var i = 0; i < strs.length; i++) {
+            theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+        }
+    }
+    return requestParams;
 }
 

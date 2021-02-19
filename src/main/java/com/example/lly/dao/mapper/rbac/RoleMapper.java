@@ -6,7 +6,6 @@ import com.example.lly.entity.rbac.Role;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
-import javax.persistence.ManyToMany;
 import java.util.List;
 
 @Mapper

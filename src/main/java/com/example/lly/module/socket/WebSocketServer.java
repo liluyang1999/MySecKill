@@ -11,91 +11,87 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component
 @NoArgsConstructor
-@ServerEndpoint("/webSocket/{id}")
+@ServerEndpoint("/webSocket/{username}")
 public class WebSocketServer {
 
     //线程安全的WebSocket，记录每个对应客户端的服务端和当前在线数量
-    private static Map<String, WebSocketServer> socketServers = new ConcurrentSkipListMap<>();
+    private static CopyOnWriteArraySet<WebSocketServer> socketServers = new CopyOnWriteArraySet<>();
 
-    private String clientId;  //接受客户端的id
+    private String clientId;  //接受客户端的id, 这里使用账号
     private Session session;  //发送数据的会话
 
-    public static void sendMessage(WebSocketServer server, String msg) {
-        logger.info("***********向" + server.getClientId() + "发送消息: " + msg + "**********");
-        server.sendNonBlockingMessage(msg);
-        logger.info("**********消息发送成功！**********");
+
+    public static void sendMessage(String username, String msg) {
+        for (WebSocketServer socketServer : socketServers) {
+            if (username.equals(socketServer.getClientId())) {
+                logger.info("WebSocket向" + username + "发送消息: " + msg);
+                socketServer.sendNonBlockingMessage(msg);
+                logger.info("消息发送成功");
+            }
+        }
     }
 
+
     public static void sendMessageToAll(String msg) {
-        logger.info("**********群发消息**********");
-        for(Map.Entry<String, WebSocketServer> serverEntry: socketServers.entrySet()) {
-            serverEntry.getValue().sendNonBlockingMessage(msg);
+        logger.info("群发消息");
+        for (WebSocketServer server : socketServers) {
+            server.sendNonBlockingMessage(msg);
         }
-        logger.info("**********群发完毕**********");
+        logger.info("群发完毕");
+    }
+
+    public static CopyOnWriteArraySet<WebSocketServer> getSocketServers() {
+        return socketServers;
+    }
+
+    public static void setSocketServers(CopyOnWriteArraySet<WebSocketServer> socketServers) {
+        WebSocketServer.socketServers = socketServers;
     }
 
     @OnMessage
-    public void onMessage(Session session, String message) {
+    public void onMessage(String message, Session session) {
         JsonObject jsonObject = JsonParser.parseString(message).getAsJsonObject();
         String msg = jsonObject.get("msg").getAsString();
         String target = jsonObject.get("to").getAsString();
-        if("all".equals(target)) {
+        if ("all".equals(target)) {
             //群发
             sendMessageToAll(msg);
         } else {
             //搜索指定的对象发送
-            for(Map.Entry<String, WebSocketServer> serverEntry: socketServers.entrySet()) {
-                if(target.equals(serverEntry.getValue().getClientId())) {
-                    sendMessage(serverEntry.getValue(), msg);
+            for (WebSocketServer socketServer : socketServers) {
+                if (target.equals(socketServer.getClientId())) {
+                    sendMessage(socketServer.getClientId(), msg);
                 }
             }
         }
     }
 
     @OnOpen
-    public void onOpen(@PathParam("id") String clientId, Session session) {
+    public void onOpen(Session session, @PathParam("username") String clientId) {
         WebSocketServer server = new WebSocketServer();
         server.setClientId(clientId);
         server.setSession(session);
         increaseCurrentOnlineNumber();
-        WebSocketServer.socketServers.put(clientId, server);
+        WebSocketServer.socketServers.add(server);
         try {
-            this.sendBlockingMessage("**********建立成功!**********");
-        } catch (IOException e){
-            logger.error("**********连接建立异常！**********");
-        }
-        logger.info("**********id: " + clientId + "的WebSocket服务端已建立！**********");
-        logger.info("**********当前在线人数: " + currentOnlineNumber);
-    }
-
-    @OnClose
-    public void onClose() {
-        socketServers.remove(this.getClientId());
-        try {
-            this.session.close();
+            this.sendBlockingMessage("建立成功");
         } catch (IOException e) {
-            logger.error("***********服务端会话关闭异常！**********", e);
+            logger.error("连接建立异常");
         }
-        decreaseCurrentOnlineNumber();
-        logger.info("**********服务端正常关闭！**********");
-        logger.info("**********当前剩余人数: " + currentOnlineNumber + "**********");
+        logger.info("id: " + clientId + "的WebSocket服务端已建立");
+        logger.info("当前在线人数: " + currentOnlineNumber);
     }
 
-    @OnError
-    public void onError(Session session, Throwable throwable) {
-        logger.error("**********消息推送发生错误！**********");
-        throwable.printStackTrace();
-    }
 
     //阻塞式发送
     private void sendBlockingMessage(String message) throws IOException {
         this.getSession().getBasicRemote().sendText(message);
     }
+
 
     //非阻塞式发送
     private void sendNonBlockingMessage(String message) {
@@ -132,12 +128,20 @@ public class WebSocketServer {
         this.session = session;
     }
 
-    public static Map<String, WebSocketServer> getSocketServerSet() {
-        return socketServers;
+    @OnClose
+    public void onClose() {
+        System.out.println(this.getClientId());
+        socketServers.remove(this);
+        decreaseCurrentOnlineNumber();
+        logger.info("服务端正常关闭");
+        logger.info("当前剩余人数: " + currentOnlineNumber);
     }
 
-    public static void setSocketServerSet(Map<String, WebSocketServer> socketServerSet) {
-        WebSocketServer.socketServers = socketServerSet;
+    @OnError
+    public void onError(Session session, Throwable throwable) {
+        logger.error("连接发生错误");
+//        throwable.printStackTrace();
+        session.getAsyncRemote().sendText("Hello World~");
     }
 
     private final static Logger logger = LoggerFactory.getLogger(WebSocketServer.class);

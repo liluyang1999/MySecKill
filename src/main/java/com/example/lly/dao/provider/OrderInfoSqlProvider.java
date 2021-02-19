@@ -1,6 +1,9 @@
 package com.example.lly.dao.provider;
 
+import com.example.lly.entity.OrderInfo;
+import com.example.lly.util.BaseUtil;
 import com.example.lly.util.enumeration.When;
+import org.apache.ibatis.jdbc.SQL;
 
 import java.sql.Timestamp;
 import java.util.Map;
@@ -53,9 +56,16 @@ public class OrderInfoSqlProvider {
             default:
                 return "SELECT TOP 100 * FROM " + orderInfoTableName;
         }
-
     }
 
-
+    public String insert(OrderInfo orderInfo) {
+        SQL sql = new SQL();
+        sql.INSERT_INTO(orderInfoTableName);
+        sql.VALUES("seckillinfo_id", "'" + orderInfo.getSeckillInfoId() + "'");
+        sql.VALUES("user_id", "'" + orderInfo.getUserId() + "'");
+        sql.VALUES("state", "'" + orderInfo.getState() + "'");
+        sql.VALUES("order_time", "'" + BaseUtil.convertDateFormat(orderInfo.getOrderTime(), "yyyy-MM-dd HH:mm:ss") + "'");
+        return sql.toString();
+    }
 
 }

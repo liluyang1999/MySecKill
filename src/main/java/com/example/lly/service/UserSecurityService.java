@@ -24,4 +24,5 @@ public interface UserSecurityService {
 
     boolean hasRole(User user, String roleName);
 
+
 }

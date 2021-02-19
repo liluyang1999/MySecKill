@@ -12,6 +12,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,22 @@ public class RedisComponent {
                 redisTemplate.opsForHash().put("seckillInfos", each.getId(), each));
     }
 
+    public void putAllSeckillInfosInProgress() {
+        List<SeckillInfo> seckillInfoList = seckillInfoMapper.queryAllSeckillInfoInProgress(
+                Timestamp.valueOf(LocalDateTime.now()));
+        seckillInfoList.forEach(each ->
+                redisTemplate.opsForHash().put("seckillInfosInProgress", each.getId(), each));
+    }
+
+
+    public void putAllSeckillInfosInFuture() {
+        List<SeckillInfo> seckillInfoList = seckillInfoMapper.queryAllSeckillInfoInFuture(
+                Timestamp.valueOf(LocalDateTime.now()));
+        seckillInfoList.forEach(each ->
+                redisTemplate.opsForHash().put("seckillInfosInFuture", each.getId(), each));
+    }
+
+
     public void putAllProducts() {
         List<Product> productList = productMapper.queryAll();
         productList.forEach(each ->
@@ -51,8 +69,10 @@ public class RedisComponent {
                 redisTemplate.opsForHash().put("users", each.getUsername(), each));
     }
 
-    public void putAllInAdvanced() {
+    public void loadReadingCache() {
         putAllSeckillInfos();
+        putAllSeckillInfosInProgress();
+        putAllSeckillInfosInFuture();
         putAllProducts();
         putAllUsers();
     }
@@ -72,6 +92,37 @@ public class RedisComponent {
         return seckillInfoList;
     }
 
+    public List<SeckillInfo> getAllSeckillInfosInProgress() {
+        List<Object> objectList = redisTemplate.opsForHash().values("seckillInfosInProgress");
+
+        if (objectList.isEmpty()) {
+            return null;
+        }
+
+        List<SeckillInfo> seckillInfoInProgressList = new ArrayList<>();
+        for (Object each : objectList) {
+            SeckillInfo seckillInfo = (SeckillInfo) each;
+            seckillInfoInProgressList.add(seckillInfo);
+        }
+        return seckillInfoInProgressList;
+    }
+
+    public List<SeckillInfo> getAllSeckillInfosInFuture() {
+        List<Object> objectList = redisTemplate.opsForHash().values("seckillInfosInFuture");
+
+        if (objectList.isEmpty()) {
+            return null;
+        }
+
+        List<SeckillInfo> seckillInfoInFutureList = new ArrayList<>();
+        for (Object each : objectList) {
+            SeckillInfo seckillInfo = (SeckillInfo) each;
+            seckillInfoInFutureList.add(seckillInfo);
+        }
+        return seckillInfoInFutureList;
+    }
+
+
     public List<Product> getAllProducts() {
         List<Object> objectList = redisTemplate.opsForHash().values("products");
 
@@ -87,6 +138,7 @@ public class RedisComponent {
         return productList;
     }
 
+
     public List<User> getAllUsers() {
         List<Object> objectList = redisTemplate.opsForHash().values("users");
 
@@ -100,5 +152,13 @@ public class RedisComponent {
             userList.add(user);
         }
         return userList;
+    }
+
+    public void putEncodedUrl(Integer userId, String encodedUrl) {
+        redisTemplate.opsForHash().put("encodedUrls", userId, encodedUrl);
+    }
+
+    public String getEncodedUrl(Integer userId) {
+        return String.valueOf(redisTemplate.opsForHash().get("encodedUrls", userId));
     }
 }

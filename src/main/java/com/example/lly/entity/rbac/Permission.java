@@ -2,7 +2,6 @@ package com.example.lly.entity.rbac;
 
 import com.example.lly.util.BaseUtil;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 import java.io.Serial;

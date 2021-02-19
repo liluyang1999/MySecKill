@@ -26,5 +26,7 @@ public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
     @SelectProvider(type = OrderInfoSqlProvider.class, method = "queryByUserId")
     List<OrderInfo> queryByUserId();
 
+    @InsertProvider(type = OrderInfoSqlProvider.class, method = "insert")
+    int insert(OrderInfo orderInfo);
 
 }

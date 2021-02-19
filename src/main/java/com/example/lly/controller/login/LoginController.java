@@ -7,8 +7,6 @@ import com.example.lly.service.UserSecurityService;
 import com.example.lly.util.result.ResponseEnum;
 import com.example.lly.util.result.ResponseResult;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,20 +21,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/login_page")    //localhost:8080/login
 public class LoginController {
-
-    private final UserSecurityService userSecurityService;
-    private final UserMapper userMapper;
-    private final JwtAuthService jwtAuthService;
-    private final RedisTemplate<String, Serializable> redisTemplate;
-
-    @Autowired
-    public LoginController(UserSecurityService userSecurityService, UserMapper userMapper, JwtAuthService jwtAuthService, RedisTemplate<String, Serializable> redisTemplate) {
-        this.userSecurityService = userSecurityService;
-        this.userMapper = userMapper;
-        this.jwtAuthService = jwtAuthService;
-        this.redisTemplate = redisTemplate;
-    }
-
 
     //localhost:8080/login/requestLogin  请求验证, 返回JwtToken令牌
     @RequestMapping(value = "/requestLogin", method = RequestMethod.POST)
@@ -69,22 +53,34 @@ public class LoginController {
     }
 
 
-    @RequestMapping(value = "/refreshLogin", method = RequestMethod.POST)
+    private final UserSecurityService userSecurityService;
+    private final UserMapper userMapper;
+    private final JwtAuthService jwtAuthService;
+    private final RedisTemplate<String, Serializable> redisTemplate;
+
+    @Autowired
+    public LoginController(UserSecurityService userSecurityService, UserMapper userMapper, JwtAuthService jwtAuthService, RedisTemplate<String, Serializable> redisTemplate) {
+        this.userSecurityService = userSecurityService;
+        this.userMapper = userMapper;
+        this.jwtAuthService = jwtAuthService;
+        this.redisTemplate = redisTemplate;
+    }
+
+    @RequestMapping(value = "/requestRefreshToken", method = RequestMethod.POST)
     public ResponseResult<String> refreshLogin(HttpServletRequest request) {
         String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
 
         if (StringUtils.isEmpty(token)) {
             return ResponseResult.error(ResponseEnum.TOKEN_EMPTY);
-        } else if (JwtTokenUtil.isExpiration(token)) {
+        } else if (jwtAuthService.validateExpiration(token)) {
             return ResponseResult.error(ResponseEnum.TOKEN_EXPIRED);
+        } else if (jwtAuthService.validateUsername(token)) {
+            return ResponseResult.error(ResponseEnum.UNMATCHED_USERNAME);
         }
 
         String newToken = jwtAuthService.refreshLogin(token);
         System.out.println("Token令牌刷新成功");
         return ResponseResult.success(newToken);
     }
-
-
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 }

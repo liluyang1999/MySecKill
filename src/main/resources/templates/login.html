@@ -94,7 +94,8 @@
         </legend>
     </fieldset>
     <div class="layui-row layui-col-space14">
-        <form action="/login_page/home_page" class="layui-form zyl_pad_01" method="post" onsubmit="requestLogin()">
+        <form action="/login_page/home_page" class="layui-form zyl_pad_01"
+              method="post" onsubmit="requestLogin()" style="padding-left: 30px; padding-right: 30px">
             <div class="layui-col-sm12 layui-col-md12">
                 <div class="layui-form-item">
                     <input autocomplete="off" class="layui-input" id="username" lay-verify="required|userName"
@@ -148,9 +149,10 @@
 <!-- Javascript引入 -->
 
 <script>
-    layui.use(['carousel', 'form'], function () {
-        var carousel = layui.carousel
-            , form = layui.form;
+    layui.use(['carousel', 'form', 'layer'], function () {
+        var carousel = layui.carousel;
+        var form = layui.form;
+        var layer = layui.layer;
 
         //自定义验证规则
         form.verify({

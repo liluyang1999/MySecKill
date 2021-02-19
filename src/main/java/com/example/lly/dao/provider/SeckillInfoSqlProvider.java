@@ -25,21 +25,21 @@ public class SeckillInfoSqlProvider {
         Integer id = (Integer) params.get("id");
         Timestamp orderTime = (Timestamp) params.get("orderTime");
         //下单时间必须要在合规时间内，否则视为无效
-        return "UPDATE" + seckillInfoTableName +
-                " SET number = number - 1" +
+        return "UPDATE " + seckillInfoTableName +
+                " SET remaining_number = remaining_number - 1" +
                 " WHERE id = " + id +
-                " AND number > 0" +
-                " AND start_time <= " + orderTime +
-                " AND end_time >= " + orderTime;
+                " AND remaining_number > 0" +
+                " AND start_time <= '" + orderTime.toString() + "'" +
+                " AND end_time >= '" + orderTime.toString() + "'";
     }
 
     public String increaseNumber(Map<String, Object> params) {
         Integer id = (Integer) params.get("id");
         Timestamp timestamp = (Timestamp) params.get("operateTime");
         return "UPDATE" + seckillInfoTableName +
-                " SET number = number + 1" +
+                " SET remaining_number = remaining_number + 1" +
                 " WHERE id = " + id +
-                " AND startTime >= " + timestamp;
+                " AND startTime >= '" + timestamp.toString() + "'";
     }
 
     public String queryNumberById(Integer id) {

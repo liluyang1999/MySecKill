@@ -23,7 +23,6 @@ public interface SeckillInfoMapper extends BaseMapper<SeckillInfo> {
             @Result(property = "version", column = "version"),
             @Result(property = "seckillPrice", column = "seckill_price"),
             @Result(property = "originalPrice", column = "original_price"),
-            @Result(property = "filePath", column = "file_path"),
             @Result(property = "product", column = "product_id",
                     one = @One(select = "com.example.lly.dao.mapper.ProductMapper.queryById",
                             fetchType = FetchType.EAGER))
@@ -54,13 +53,13 @@ public interface SeckillInfoMapper extends BaseMapper<SeckillInfo> {
     /**
      * 按照活动Id与秒杀时刻去扣减库存，下单时间要符合
      */
-    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "decreaseNumber")
+    @UpdateProvider(type = SeckillInfoSqlProvider.class, method = "decreaseNumber")
     int decreaseNumber(@Param("id") Integer id, @Param("orderTime") Timestamp orderTime);
 
     /**
      * 按照活动ID增加库存，手动设定增加的库存量
      */
-    @SelectProvider(type = SeckillInfoSqlProvider.class, method = "increaseNumber")
+    @UpdateProvider(type = SeckillInfoSqlProvider.class, method = "increaseNumber")
     int increaseNumber(@Param("seckillId") long seckillId);
 
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryNumberById")

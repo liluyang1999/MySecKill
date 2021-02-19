@@ -4,16 +4,16 @@ import com.example.lly.dao.mapper.BaseMapper;
 import com.example.lly.dao.mapper.rbac.PermissionMapper;
 import com.example.lly.dao.mapper.rbac.RoleMapper;
 import com.example.lly.dao.mapper.rbac.UserMapper;
-import com.example.lly.dto.StateExposer;
 import com.example.lly.entity.Product;
 import com.example.lly.entity.rbac.Permission;
 import com.example.lly.entity.rbac.Role;
 import com.example.lly.entity.rbac.User;
-import com.example.lly.service.DemoService;
+import com.example.lly.module.lock.RedissLockDemo;
+import com.example.lly.module.lock.RedissLockUtil;
 import com.example.lly.service.SeckillService;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -23,9 +23,6 @@ public class TestingController {
 
     @Autowired
     private BaseMapper<Product> baseMapper;
-
-    @Autowired
-    private DemoService demoService;
 
     @Autowired
     private UserMapper userMapper;
@@ -39,12 +36,17 @@ public class TestingController {
     @Autowired
     private SeckillService seckillService;
 
+    @Autowired
+    private RedissLockUtil redissLockUtil;
+
+    @Autowired
+    private RedissonClient client;
 
     private final Product product = new Product("雀巢奶昔", 30);
 
     @GetMapping("/queryUser")
     public User query1() {
-         return userMapper.queryById(1);
+        return userMapper.queryById(1);
     }
 
     @GetMapping("/queryRole")
@@ -55,22 +57,18 @@ public class TestingController {
 
     @GetMapping("/queryPermission")
     public Permission query3() {
-       return permissionMapper.queryById(11);
+        return permissionMapper.queryById(11);
     }
 
-    @RequestMapping("/find")
-    public User findUser() {
-        return demoService.findOne("zhangsan");
-    }
 
-    @RequestMapping("/findAnother")
-    public User findAnother() {
-        return demoService.findAnother("zhangsan");
-    }
-
-    @RequestMapping("/queryUrl")
-    public StateExposer queryUrl() {
-        return seckillService.getCorrespondingStateExposer(123);
+    @GetMapping("/helloWorld")
+    public void helloWorld() {
+        RedissLockDemo demo = new RedissLockDemo();
+        demo.testReentrantLock(client);
+        demo.testFairLock(client);
+//        demo.testAsyncReentrantLock(client);
+//        demo.testRedLock(client, client, client);
+//        demo.testMultiLock(client, client, client);
     }
 
 }

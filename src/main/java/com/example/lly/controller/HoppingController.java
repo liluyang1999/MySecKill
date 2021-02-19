@@ -192,7 +192,19 @@ public class HoppingController {
         mav.addObject("startTime", BaseUtil.convertDateFormat(seckillInfo.getStartTime()));
 
         double percent = ((double) (seckillInfo.getExpectedNumber() - seckillInfo.getRemainingNumber())) / seckillInfo.getExpectedNumber() * 100;
+        if (percent == 0.0) {
+            mav.addObject("hasSoldOut", true);
+        } else {
+            mav.addObject("hasSoldOut", false);
+        }
         mav.addObject("percent", percent + "%");
+
+        boolean ifOrder = seckillService.hasOrderBefore(seckillInfoId, user.getId());
+        if (ifOrder) {
+            mav.addObject("ifOrder", true);
+        } else {
+            mav.addObject("ifOrder", false);
+        }
 
         checkRole(user, mav);
         String newToken = jwtAuthService.refreshLogin(token);

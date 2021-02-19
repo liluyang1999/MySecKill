@@ -25,7 +25,7 @@ public class GraphicsCard implements Serializable, Cloneable {
     private int totalNumber;  //总数量
 
     private int userId;  //购买人
-    
+
     private int type;
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

@@ -1,4 +1,4 @@
-package com.example.lly.config;
+package com.example.lly.swagger2;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

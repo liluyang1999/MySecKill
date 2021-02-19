@@ -14,7 +14,6 @@ import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 //Role-Based Access Control，基于角色的访问控制
 @Data
@@ -106,7 +105,7 @@ public class User implements UserDetails, Cloneable {
     }
 
     @Serial
-    @Transient
+//    @Transient
     private static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;
 
     @Override

@@ -4,13 +4,10 @@ import com.example.lly.dto.ExecutedResult;
 import com.example.lly.dto.StateExposer;
 import com.example.lly.entity.rbac.User;
 import com.example.lly.exception.BaseSeckillException;
-import com.example.lly.exception.FailedSeckillException;
-import com.example.lly.exception.RepeatSeckillException;
 import com.example.lly.module.security.JwtTokenUtil;
 import com.example.lly.service.JwtAuthService;
 import com.example.lly.service.SeckillService;
 import com.example.lly.service.UserSecurityService;
-import com.example.lly.util.enumeration.SeckillStateType;
 import com.example.lly.util.result.ResponseEnum;
 import com.example.lly.util.result.ResponseResult;
 import io.swagger.annotations.Api;
@@ -35,9 +32,9 @@ public class SeckillController {
     private static final ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolScale, corePoolScale + 1, 101, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(1500));
 
+
     /**
      * 当前时间数值一定从服务器端获取, 防止提前参与秒杀
-     *
      * @return 包含当前时间的封装类, 时间以秒数表示
      */
     @RequestMapping(method = RequestMethod.GET, value = "/getCurrentTime")
@@ -59,7 +56,7 @@ public class SeckillController {
     }
 
     /**
-     * 用来返回秒杀状态
+     * 用来返回包含加密链接秒杀状态
      *
      * @param seckillInfoId 对应的秒杀活动
      * @return 包含秒杀状态实体的封装类  加密链接
@@ -73,18 +70,20 @@ public class SeckillController {
             return ResponseResult.error(ResponseEnum.NOT_LOGIN);
         }
 
-
-        ResponseResult<StateExposer> result;
+        String username = JwtTokenUtil.getUsernameFromToken(token);
+        User user = userSecurityService.getUserByUsername(username);
+        ResponseResult<StateExposer> responseResult;
         try {
-            StateExposer exposer = seckillService.getCorrespondingStateExposer(seckillInfoId);
-            result = ResponseResult.success(exposer);
+            StateExposer exposer = seckillService.getCorrespondingStateExposer(seckillInfoId, user);
+            responseResult = ResponseResult.success(exposer);
         } catch (Exception e) {
             logger.error("**********发生异常！**********");
             e.printStackTrace();
-            result = ResponseResult.error(ResponseEnum.FAILED);
+            responseResult = ResponseResult.error(ResponseEnum.FAILED);
         }
-        return result;
+        return responseResult;
     }
+
 
     /**
      * 用户点击按钮后发送到此接口，开启秒杀执行过程
@@ -94,11 +93,12 @@ public class SeckillController {
      * @param request       包含执行结果的封装类
      * @return 包含执行结果的封装类
      */
-    @ApiOperation(value = "Lock with AOP")
+    @ApiOperation(value = "Lock with redisson")
     @RequestMapping(value = "/{seckillInfoId}/{encodedUrl}/executeSeckillWithAopLock")
-    public ResponseResult<ExecutedResult> executeSeckillWithAopLock(@PathVariable("seckillInfoId") Integer seckillInfoId,
-                                                                    @PathVariable("encodedUrl") String encodedUrl,
-                                                                    HttpServletRequest request) {
+    public ResponseResult<ExecutedResult> executeSeckill(@PathVariable("seckillInfoId") Integer seckillInfoId,
+                                                         @PathVariable("encodedUrl") String encodedUrl,
+                                                         HttpServletRequest request) {
+        System.out.println("开始执行秒杀");
         //先从缓存中查询用户, 空值则先让用户登录
         String token = request.getHeader(JwtTokenUtil.TOKEN_HEADER);
         if (!authenticateToken(token)) {
@@ -108,20 +108,15 @@ public class SeckillController {
 
         String username = JwtTokenUtil.getUsernameFromToken(token);
         User user = userSecurityService.getUserByUsername(username);
+        ExecutedResult executedResult;
         try {
-            Callable<ExecutedResult> callable = () -> seckillService.executeSeckillTask(user.getId(), seckillInfoId, encodedUrl);
-            ExecutedResult executedResult = executor.submit(callable).get();
+            Callable<ExecutedResult> callable = () -> seckillService.executeSeckillTask(user.getUsername(), seckillInfoId, encodedUrl);
+            Future<ExecutedResult> submit = executor.submit(callable);
+            executedResult = submit.get();
             return ResponseResult.success(executedResult);
-        } catch (FailedSeckillException e) {
-            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.FINISH);
-            return ResponseResult.error(ResponseEnum.FAILED);
-        } catch (RepeatSeckillException e) {
-            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.DUPLICATE);
-            return ResponseResult.error(ResponseEnum.FAILED);
         } catch (BaseSeckillException | InterruptedException | ExecutionException e) {
-            //unknown Exception
-            ExecutedResult executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.SYSTEM_ERROR);
-            return ResponseResult.error(ResponseEnum.FAILED);
+            //发生未知错误
+            return ResponseResult.error(ResponseEnum.SERVER_ERROR);
         }
     }
 
@@ -207,3 +202,14 @@ public class SeckillController {
 //        model.addAttribute("seckillInfo", seckillInfo);
 //        return "detail";
 //    }
+
+//        catch (FailedSeckillException e) {
+//            executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.FINISH);
+//            return ResponseResult.success(executedResult);
+//        } catch (RepeatSeckillException e) {
+//            executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.DUPLICATE);
+//            return ResponseResult.success(executedResult);
+//        } catch(TamperSeckillException e) {
+//            executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.TAMPER);
+//            return ResponseResult.success(executedResult);
+//        }

@@ -1,5 +1,6 @@
 package com.example.lly.util;
 
+import com.example.lly.aop.SeckillLock;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -35,10 +36,6 @@ public class BaseUtil {
         return prefix + str;
     }
 
-    public static String addIdToName(String name, Integer id) {
-        return name + ":" + id;
-    }
-
     public static String getTableName(Object entity) {
         return "t_" + entity.getClass().getSimpleName().toLowerCase();
     }
@@ -63,6 +60,10 @@ public class BaseUtil {
             }
         }
         return newStringBuffer.toString();
+    }
+
+    public static String addIdToName(String name, Integer id) {
+        return name + ":" + id;
     }
 
     //复制一份
@@ -117,10 +118,12 @@ public class BaseUtil {
         return code.toString();
     }
 
+
     public static String convertDateFormat(Timestamp date) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒");
         return date.toLocalDateTime().format(dateTimeFormatter);
     }
+
 
     public static String convertDateFormat(Timestamp date, String format) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
@@ -128,7 +131,12 @@ public class BaseUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(convertDateFormat(Timestamp.valueOf(LocalDateTime.now())));
+
+    }
+
+    @SeckillLock
+    public void hello() {
+        System.out.println("Hello World~");
     }
 
 }

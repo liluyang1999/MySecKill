@@ -3,11 +3,9 @@ package com.example.lly.util.enumeration;
 public enum SeckillStateType {
 
     SUCCESS(1, "秒杀成功"),
-    FAIL(0, "秒杀失败"),
     FINISH(2, "秒杀结束"),
     DUPLICATE(3, "重复秒杀"),
-    TAMPER(4, "篡改秒杀"),
-    SYSTEM_ERROR(5, "系统错误");
+    TAMPER(4, "篡改秒杀");
 
     SeckillStateType(Integer code, String msg) {
         this.code = code;

@@ -1,13 +1,15 @@
 package com.example.lly.dto;
 
 import com.example.lly.util.BaseUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Transient;
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
@@ -20,11 +22,13 @@ public class StateExposer implements Serializable {
 
     private Integer seckillInfoId;    //秒杀活动连接
 
-    private LocalDateTime now;
-
-    private LocalDateTime start;
-
-    private LocalDateTime end;
+    @Serial
+    @Transient
+    private static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Timestamp now;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Timestamp start;
 
     @Override
     public String toString() {
@@ -38,7 +42,7 @@ public class StateExposer implements Serializable {
                 '}';
     }
 
-    @Serial
-    private static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Timestamp end;
 
 }

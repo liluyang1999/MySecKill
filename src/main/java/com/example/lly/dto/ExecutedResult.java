@@ -17,25 +17,25 @@ public class ExecutedResult implements Serializable {    //秒杀执行结果
 
     private long seckillInfoId;
 
-    private SeckillStateType state;
+    private Integer stateCode;
 
-    private String stateInfo;
+    private String stateMsg;
 
     private OrderInfo orderInfo;
 
     //这是秒杀失败的构造函数
     public ExecutedResult(Integer seckillInfoId, SeckillStateType state) {
         this.seckillInfoId = seckillInfoId;
-        this.state = state;
-        this.stateInfo = state.getMsg();
+        this.stateCode = state.getCode();
+        this.stateMsg = state.getMsg();
         this.orderInfo = null;
     }
 
     //这是秒杀成功的构造函数
     public ExecutedResult(Integer seckillInfoId, SeckillStateType state, OrderInfo orderInfo) {
         this.seckillInfoId = seckillInfoId;
-        this.state = state;
-        this.stateInfo = state.getMsg();
+        this.stateCode = state.getCode();
+        this.stateMsg = state.getMsg();
         this.orderInfo = orderInfo;
     }
 

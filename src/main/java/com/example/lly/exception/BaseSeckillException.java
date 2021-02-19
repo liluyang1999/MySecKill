@@ -14,9 +14,6 @@ public class BaseSeckillException extends RuntimeException {
         super(message);
     }
 
-    public BaseSeckillException(Throwable cause) {
-        super(cause);
-    }
 
     public BaseSeckillException(String message) {
         super(message);

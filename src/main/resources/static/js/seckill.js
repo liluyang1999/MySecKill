@@ -1,26 +1,55 @@
-const URL = {
+//发送秒杀链接获取请求
+function requestSeckillUrl(seckillInfoId, token) {
+    let encodedUrl = null;
+    $.ajax({
+        url: 'http://localhost:8080/' + seckillInfoId + '/showStateExposer',
+        method: "post",
+        cache: false,
+        async: false,
+        headers: {
+            Authorization: token,
+        },
+        success: function (originalData) {
+            let code = getJsonCode(originalData);
+            let msg = getJsonMsg(originalData);
+            let stateExposer = getJsonData(originalData);
+            if (code === 200) {
+                encodedUrl = stateExposer['encodedUrl'];
+                setCookie(encodedUrl);
+                window.localStorage.setItem('encodedUrl', encodedUrl);
+            } else {
+                layer.msg(msg, {icon: 2});
+            }
+        },
+        error: function () {
+            alert("获取秒杀链接失败");
+        }
+    });
+    return encodedUrl;
+}
 
-    executeSeckill: function () {
-        return "http://localhost:8080/seckill/executeSeckill";
-    },
-
-    requestSeckillUrl: function () {
-        return "http://localhost:8080/seckill/requstSeckillUrl";
-    },
-
-    requestSeckillInfoInProgressList: function () {
-        return "http://localhost:8080/seckill/requestSeckillInfoInProgressList";
-    },
-
-    requestSeckillInfoInFutureList: function () {
-        return "http://localhost:8080/seckill/requestSeckillInfoInFutureList";
-    },
-
-    requestSeckillInfoDetail: function (seckillInfoId) {
-        return "http://localhost:8080/seckill/requetSeckillInfoDetail/" + seckillInfoId;
-    }
-
-};
+//正式发送秒杀执行请求, 后端校验成功后进行相应的秒杀逻辑, 执行后返回秒杀结果
+function executeSeckill(seckillInfoId, encodedUrl, token) {
+    let executedResult = null;
+    $.ajax({
+        url: "http://localhost:8080/" + seckillInfoId + "/" + encodedUrl + "/executeSeckillWithAopLock",
+        method: "post",
+        cache: false,
+        async: false,
+        headers: {
+            Authorization: token
+        },
+        success: function (originalData) {
+            let code = getJsonCode(originalData);
+            let msg = getJsonMsg(originalData);
+            executedResult = getJsonData(originalData);
+        },
+        error: function (originalData) {
+            executedResult = null;
+        }
+    });
+    return executedResult;
+}
 
 
 //请求seckillInfoList
@@ -87,68 +116,6 @@ function requestSeckillInfoDetail(token, seckillInfoId) {
     return seckillInfo;
 }
 
-function requestSeckillUrl(token, seckillInfoId) {
-//发送秒杀链接获取请求
-    $.ajax({
-        url: URL.requestSeckillUrl(),
-        method: "post",
-        contentType: "application/json;charset=utf-8",
-        headers: {
-            Accept: "application/json;charset=utf-8",
-            Authorization: token
-        },
-        data: {
-            seckillInfoId: seckillInfoId
-        },
-        success: function (data) {
-
-            if (data.code === 0) {
-                var encodedUrl = data.data;
-                executeSeckill(encodedUrl);
-            } else {
-                layer.msg(data.message);
-            }
-        },
-        error: function () {
-            alert("获取秒杀链接失败");
-        }
-    })
-}
-
-//正式发送秒杀执行请求, 后端校验成功后进行相应的秒杀逻辑, 执行后返回秒杀结果
-function executeSeckill(token, encodedUrl) {
-    var executedResult = "";
-    $.ajax({
-        url: URL.executeSeckill(),
-        method: "post",
-        headers: {
-            Accept: "application/json;charset=utf-8",
-            Authorization: token
-        },
-        data: {
-            "encodedUrl": encodedUrl
-        },
-        contentType: "application/json;charset=utf-8",
-        success: function (originalData) {
-            let code = getJsonCode(originalData);
-            let msg = getJsonMsg(originalData);
-            executedResult = getJsonData(originalData);
-        },
-        error: function (originalData) {
-            let msg = getJsonMsg(originalData);
-            layer.msg(msg);
-        }
-    });
-    return executedResult;
-}
-
-
-// function getSeckillResult(seckillInfoId) {
-//     $.ajax({
-//
-//     });
-// }
-
 
 var seckill = {
 
@@ -186,5 +153,29 @@ var seckill = {
     }
 
 }
+
+const URL = {
+
+    executeSeckill: function () {
+        return "http://localhost:8080/seckill/executeSeckill";
+    },
+
+    requestSeckillUrl: function () {
+        return "http://localhost:8080/seckill/requestSeckillUrl";
+    },
+
+    requestSeckillInfoInProgressList: function () {
+        return "http://localhost:8080/seckill/requestSeckillInfoInProgressList";
+    },
+
+    requestSeckillInfoInFutureList: function () {
+        return "http://localhost:8080/seckill/requestSeckillInfoInFutureList";
+    },
+
+    requestSeckillInfoDetail: function (seckillInfoId) {
+        return "http://localhost:8080/seckill/requetSeckillInfoDetail/" + seckillInfoId;
+    }
+
+};
 
 
