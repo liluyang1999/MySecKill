@@ -22,13 +22,15 @@ public class StateExposer implements Serializable {
 
     private Integer seckillInfoId;    //秒杀活动连接
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Timestamp now;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Timestamp start;
+
     @Serial
     @Transient
     private static final long serialVersionUID = BaseUtil.SERIAL_VERSION_UID;
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Timestamp now;
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Timestamp start;
 
     @Override
     public String toString() {
@@ -41,7 +43,6 @@ public class StateExposer implements Serializable {
                 ", 结束时刻=" + end +
                 '}';
     }
-
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp end;
 

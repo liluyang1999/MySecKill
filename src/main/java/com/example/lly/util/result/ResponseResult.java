@@ -36,7 +36,7 @@ public class ResponseResult<T> {
     public String toString() {
         return "ResponseResult{" +
                 "状态=" + this.code +
-                ", 错误信息='" + this.msg + '\'' +
+                ", 信息='" + this.msg + '\'' +
                 ", 内容=" + this.data +
                 "}";
     }

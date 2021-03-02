@@ -1,5 +1,6 @@
 package com.example.lly.module.security;
 
+import com.example.lly.util.encryption.MD5Util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -59,6 +60,7 @@ public class JwtTokenUtil implements Serializable {
         claims.put(KEY_EXPIRATION, expiration);
         return createToken(claims);
     }
+
 
     public static String createToken(Map<String, Object> claims) {
         return Jwts.builder().setClaims(claims)
@@ -129,13 +131,6 @@ public class JwtTokenUtil implements Serializable {
     }
 
 
-    public static void main(String[] args) {
-        String token = "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJST0xFX2FkbWluOml0ZW0ifV0sImNyZWF0ZVRpbWUiOjE2MTIzNTc5NzEzNDEsInJlbWVtYmVyTWUiOnRydWUsImV4cCI6MTYxMjk2Mjc3MSwidXNlcm5hbWUiOiJ6aGFuZ3NhbiJ9.mp2Eemr4HseqhNSq9DylPWJPlr6ByjaN6uAJ7Y_EVS-uJitN2IJ7bXZMDGWAhESf4dv98NQYNOkJQOquOVZwaw";
-        System.out.println(JwtTokenUtil.getUsernameFromToken(token));
-        System.out.println(JwtTokenUtil.getTokenBody(token));
-        System.out.println(JwtTokenUtil.getTokenBody(token).getExpiration());
-    }
-
     public static Collection<? extends GrantedAuthority> getUserRoleFromToken(String token) {
         Collection<? extends GrantedAuthority> roles;
         try {
@@ -145,6 +140,11 @@ public class JwtTokenUtil implements Serializable {
             roles = null;
         }
         return roles;
+    }
+
+    public static void main(String[] args) {
+        String token = "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJST0xFX2FkbWluOml0ZW0ifV0sImNyZWF0ZVRpbWUiOjE2MTIzNTc5NzEzNDEsInJlbWVtYmVyTWUiOnRydWUsImV4cCI6MTYxMjk2Mjc3MSwidXNlcm5hbWUiOiJ6aGFuZ3NhbiJ9.mp2Eemr4HseqhNSq9DylPWJPlr6ByjaN6uAJ7Y_EVS-uJitN2IJ7bXZMDGWAhESf4dv98NQYNOkJQOquOVZwaw";
+        System.out.println(MD5Util.encodeString("123456"));
     }
 
 }

@@ -151,7 +151,7 @@
             </div>
             <div class="layui-col-md12" style="padding: 10px;text-align: center">
                 <button class="layui-btn-radius layui-btn-lg layui-bg-orange" id="startSeckillBtn"
-                        th:if="${hasSoldOut} == false"
+                        th:if="${hasSoldOut == false && ifOrder == false}"
                         th:onclick="'javascript:startSeckillProgress(\''+${seckillInfo.getId()}+'\', getToken());'">
                     点击秒杀
                 </button>
@@ -163,7 +163,7 @@
                 <button class="layui-btn-radius layui-btn-lg layui-bg-gray layui-btn-disabled"
                         disabled
                         th:if="${hasSoldOut == false && ifOrder == true}">
-                    卖光了
+                    请勿重复下单
                 </button>
             </div>
         </div>
@@ -225,6 +225,11 @@
                 layui.$('#remainingTime').val(str);
             });
         });
+
+        let encodedUrl = requestSeckillUrl([[${seckillInfo.getId()}]], token);
+        setCookie("encodedUrl", encodedUrl, 1);
+        window.localStorage.setItem("encodedUrl", encodedUrl);
+        alert(encodedUrl);
     }
 
     function inputVercode() {
@@ -282,7 +287,11 @@
             }
         });
 
-        let encodedUrl = requestSeckillUrl(seckillInfoId, token);
+        // let encodedUrl = requestSeckillUrl(seckillInfoId, token);
+        let encodedUrl = getCookie("encodedUrl");
+        if (encodedUrl == null) {
+            encodedUrl = window.localStorage.getItem("encodedUrl");
+        }
         if (encodedUrl !== null) {
             let executedResult = executeSeckill(seckillInfoId, encodedUrl, token);
             layer.closeAll();

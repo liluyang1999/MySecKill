@@ -8,8 +8,9 @@ import com.example.lly.service.RolePermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RolePermissionServiceImpl implements RolePermissionService {
@@ -20,9 +21,9 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 
     @Override
     public User addPermission(User user) {
-        List<Role> roleList = user.getRoles();
+        Set<Role> roleList = user.getRoles();
         for (Role role : roleList) {
-            List<Permission> permissionList = new ArrayList<>(permissionMapper.queryByRole(role));
+            Set<Permission> permissionList = new HashSet<>(permissionMapper.queryByRole(role));
             role.setPermissions(permissionList);
         }
         return user;
@@ -31,9 +32,9 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     @Override
     public List<User> addPermissions(List<User> userList) {
         for (User user : userList) {
-            List<Role> roleList = user.getRoles();
+            Set<Role> roleList = user.getRoles();
             for (Role role : roleList) {
-                List<Permission> permissionList = new ArrayList<>(permissionMapper.queryByRole(role));
+                Set<Permission> permissionList = new HashSet<>(permissionMapper.queryByRole(role));
                 role.setPermissions(permissionList);
             }
         }

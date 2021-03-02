@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -34,7 +34,7 @@ public class Permission implements Serializable, Cloneable {
     @JoinTable(name = "t_role_permission",
             joinColumns = {@JoinColumn(name = "permission_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private List<Role> roles;
+    private Set<Role> roles;
 
     @Serial
     @Transient

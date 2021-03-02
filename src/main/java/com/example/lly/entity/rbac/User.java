@@ -11,9 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serial;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 //Role-Based Access Control，基于角色的访问控制
 @Data
@@ -48,7 +48,7 @@ public class User implements UserDetails, Cloneable {
     @JoinTable(name = "t_user_role",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private List<Role> roles;
+    private Set<Role> roles;
 
     @Override
     public String getPassword() {
@@ -78,9 +78,9 @@ public class User implements UserDetails, Cloneable {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        List<Role> roles = this.getRoles();
-        for(Role role : roles) {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        Set<Role> roles = this.getRoles();
+        for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
         }
         return authorities;

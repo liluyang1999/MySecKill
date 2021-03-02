@@ -28,7 +28,6 @@ public enum ResponseEnum {
         return code;
     }
 
-
     public String getMsg() {
         return msg;
     }

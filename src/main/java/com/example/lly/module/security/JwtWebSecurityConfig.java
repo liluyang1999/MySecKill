@@ -50,14 +50,6 @@ public class JwtWebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); //stateless禁用session
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//        http.authorizeRequests()
-//                .antMatchers("/login_page/requestLogin").permitAll()
-//                .antMatchers("/login_page/refreshLogin").permitAll()
-//                .antMatchers("/register_page").permitAll()
-//                .antMatchers("/seckill_list_page").permitAll()
-//                .antMatchers("/login_page/home_page/seckill_management_page").hasRole("ADMIN")
-//                .antMatchers("/login_page/home_page/seckill_execution_page").hasAnyRole("ADMIN", "USER")
-//                .anyRequest().authenticated();
     }
 
 
@@ -118,3 +110,12 @@ public class JwtWebSecurityConfig extends WebSecurityConfigurerAdapter {
 //
 //    @Autowired
 //    private AuthenticationFailureHandler authenticationFailureHandler;
+
+//        http.authorizeRequests()
+//                .antMatchers("/login_page/requestLogin").permitAll()
+//                .antMatchers("/login_page/refreshLogin").permitAll()
+//                .antMatchers("/register_page").permitAll()
+//                .antMatchers("/seckill_list_page").permitAll()
+//                .antMatchers("/login_page/home_page/seckill_management_page").hasRole("ADMIN")
+//                .antMatchers("/login_page/home_page/seckill_execution_page").hasAnyRole("ADMIN", "USER")
+//                .anyRequest().authenticated();

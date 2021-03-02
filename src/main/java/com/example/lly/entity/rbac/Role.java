@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -25,14 +25,14 @@ public class Role implements Serializable, Cloneable {
     @JoinTable(name = "t_role_permission",
             joinColumns = {@JoinColumn(name = "role_id")},
             inverseJoinColumns = {@JoinColumn(name = "permission_id")})
-    private List<Permission> permissions;
+    private Set<Permission> permissions;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "t_user_role",
             joinColumns = {@JoinColumn(name = "role_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")})
-    private List<User> users;
+    private Set<User> users;
 
     @Serial
     @Transient

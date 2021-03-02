@@ -1,5 +1,6 @@
 package com.example.lly.controller;
 
+import com.example.lly.aop.SeckillLimit;
 import com.example.lly.dto.ExecutedResult;
 import com.example.lly.dto.StateExposer;
 import com.example.lly.module.security.JwtTokenUtil;
@@ -20,6 +21,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +58,7 @@ public class SeckillController {
      *
      * @return 包含当前时间的封装类, 时间以秒数表示
      */
-    @RequestMapping(value = "/getCurrentTime")
+    @RequestMapping(value = "/getCurrentTime", method = RequestMethod.GET)
     public ResponseResult<Long> getCurrentTime() {
         Long currentTime = System.currentTimeMillis();
         return ResponseResult.success(currentTime);
@@ -79,19 +81,8 @@ public class SeckillController {
 
         String url = "http://localhost:8081/" + seckillInfoId + "/showStateExposer";
         String result = httpService.sendMessage(url, HttpMethod.POST, null, token);
+        System.out.println(new Gson().fromJson(result, ResponseResult.class));
         return new Gson().fromJson(result, ResponseResult.class);
-//        String username = JwtTokenUtil.getUsernameFromToken(token);
-//        User user = userSecurityService.getUserByUsername(username);
-//        ResponseResult<StateExposer> responseResult;
-//        try {
-//            StateExposer exposer = seckillService.getCorrespondingStateExposer(seckillInfoId, user);
-//            responseResult = ResponseResult.success(exposer);
-//        } catch (Exception e) {
-//            logger.error("**********发生异常！**********");
-//            e.printStackTrace();
-//            responseResult = ResponseResult.error(ResponseEnum.FAILED);
-//        }
-//        return responseResult;
     }
 
 
@@ -103,6 +94,7 @@ public class SeckillController {
      * @param request       包含执行结果的封装类
      * @return 包含执行结果的封装类
      */
+    @SeckillLimit
     @ApiOperation(value = "Lock with redisson")
     @RequestMapping(value = "/{seckillInfoId}/{encodedUrl}/executeSeckillWithAopLock")
     public ResponseResult<ExecutedResult> executeSeckill(@PathVariable("seckillInfoId") Integer seckillInfoId,
@@ -119,18 +111,6 @@ public class SeckillController {
         String url = "http://localhost:8081/" + seckillInfoId + "/" + encodedUrl + "/executeSeckillWithAopLock";
         String result = httpService.sendMessage(url, HttpMethod.POST, null, token);
         return new Gson().fromJson(result, ResponseResult.class);
-//        String username = JwtTokenUtil.getUsernameFromToken(token);
-//        User user = userSecurityService.getUserByUsername(username);
-//        ExecutedResult executedResult;
-//        try {
-//            Callable<ExecutedResult> callable = () -> seckillService.executeSeckillTask(user.getUsername(), seckillInfoId, encodedUrl);
-//            Future<ExecutedResult> submit = executor.submit(callable);
-//            executedResult = submit.get();
-//            return ResponseResult.success(executedResult);
-//        } catch (BaseSeckillException | InterruptedException | ExecutionException e) {
-//            //发生未知错误
-//            return ResponseResult.error(ResponseEnum.SERVER_ERROR);
-//        }
     }
 
     private boolean authenticateToken(String token) {
@@ -226,3 +206,29 @@ public class SeckillController {
 //            executedResult = new ExecutedResult(seckillInfoId, SeckillStateType.TAMPER);
 //            return ResponseResult.success(executedResult);
 //        }
+
+//        String username = JwtTokenUtil.getUsernameFromToken(token);
+//        User user = userSecurityService.getUserByUsername(username);
+//        ExecutedResult executedResult;
+//        try {
+//            Callable<ExecutedResult> callable = () -> seckillService.executeSeckillTask(user.getUsername(), seckillInfoId, encodedUrl);
+//            Future<ExecutedResult> submit = executor.submit(callable);
+//            executedResult = submit.get();
+//            return ResponseResult.success(executedResult);
+//        } catch (BaseSeckillException | InterruptedException | ExecutionException e) {
+//            //发生未知错误
+//            return ResponseResult.error(ResponseEnum.SERVER_ERROR);
+//        }
+
+//        String username = JwtTokenUtil.getUsernameFromToken(token);
+//        User user = userSecurityService.getUserByUsername(username);
+//        ResponseResult<StateExposer> responseResult;
+//        try {
+//            StateExposer exposer = seckillService.getCorrespondingStateExposer(seckillInfoId, user);
+//            responseResult = ResponseResult.success(exposer);
+//        } catch (Exception e) {
+//            logger.error("**********发生异常！**********");
+//            e.printStackTrace();
+//            responseResult = ResponseResult.error(ResponseEnum.FAILED);
+//        }
+//        return responseResult;

@@ -44,14 +44,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
                 //验证账号是否一直和token是否过期
                 if (StringUtils.isEmpty(jwtToken) || jwtAuthService.validateExpiration(jwtToken) || !jwtAuthService.validateUsername(jwtToken)) {
-                    System.out.println("这个页面进行验证了！");
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     Authentication authentication = getAuthentication(jwtToken);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    System.out.println("header " + authentication.getPrincipal());
-                    System.out.println("header " + authentication.getAuthorities());
                 }
             }
         }

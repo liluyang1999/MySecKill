@@ -5,6 +5,7 @@ import com.example.lly.entity.Product;
 import com.example.lly.entity.SeckillInfo;
 import com.example.lly.entity.rbac.Permission;
 import com.example.lly.entity.rbac.User;
+import com.example.lly.module.redis.RedisComponent;
 import com.example.lly.module.security.JwtTokenUtil;
 import com.example.lly.service.JwtAuthService;
 import com.example.lly.service.RolePermissionService;
@@ -45,15 +46,17 @@ public class HoppingController {
     private final PermissionMapper permissionMapper;
     private final RolePermissionService rolePermissionService;
     private final BaseUtil baseUtil;
+    private final RedisComponent redisComponent;
 
     @Autowired
-    public HoppingController(JwtAuthService jwtAuthService, SeckillService seckillService, UserSecurityService userSecurityService, PermissionMapper permissionMapper, RolePermissionService rolePermissionService, BaseUtil baseUtil) {
+    public HoppingController(JwtAuthService jwtAuthService, SeckillService seckillService, UserSecurityService userSecurityService, PermissionMapper permissionMapper, RolePermissionService rolePermissionService, BaseUtil baseUtil, RedisComponent redisComponent) {
         this.jwtAuthService = jwtAuthService;
         this.seckillService = seckillService;
         this.userSecurityService = userSecurityService;
         this.permissionMapper = permissionMapper;
         this.rolePermissionService = rolePermissionService;
         this.baseUtil = baseUtil;
+        this.redisComponent = redisComponent;
     }
 
     //公用seckill_list页面
@@ -180,6 +183,7 @@ public class HoppingController {
             return mav;
         }
 
+        redisComponent.loadReadingCache();
         User user = userSecurityService.getUserByUsername(JwtTokenUtil.getUsernameFromToken(token));
         user = rolePermissionService.addPermission(user);
         mav = new ModelAndView("seckill_execution");
@@ -192,7 +196,8 @@ public class HoppingController {
         mav.addObject("startTime", BaseUtil.convertDateFormat(seckillInfo.getStartTime()));
 
         double percent = ((double) (seckillInfo.getExpectedNumber() - seckillInfo.getRemainingNumber())) / seckillInfo.getExpectedNumber() * 100;
-        if (percent == 0.0) {
+        System.out.println("percent: " + percent);
+        if (percent == 100.0) {
             mav.addObject("hasSoldOut", true);
         } else {
             mav.addObject("hasSoldOut", false);

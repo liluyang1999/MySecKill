@@ -20,7 +20,6 @@ public class MySecKillApplication {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MySecKillApplication.class);
 
-
     public static void main(String[] args) {
 		LOGGER.info("秒杀项目开始启动");
 		SpringApplication springApplication = new SpringApplication(MySecKillApplication.class);

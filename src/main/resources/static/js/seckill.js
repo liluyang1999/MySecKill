@@ -15,10 +15,8 @@ function requestSeckillUrl(seckillInfoId, token) {
             let stateExposer = getJsonData(originalData);
             if (code === 200) {
                 encodedUrl = stateExposer['encodedUrl'];
-                setCookie(encodedUrl);
-                window.localStorage.setItem('encodedUrl', encodedUrl);
             } else {
-                layer.msg(msg, {icon: 2});
+                alert(msg);
             }
         },
         error: function () {

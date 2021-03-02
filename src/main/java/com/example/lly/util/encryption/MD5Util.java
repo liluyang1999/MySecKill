@@ -8,7 +8,7 @@ import java.security.MessageDigest;
 public class MD5Util {
 
     //固定盐值，混淆Url链接
-    private static final String SALT = "FixedSaltValue";
+    private static final String SALT = "SaltValue";
 
     public static String encodeString(String inputStr) {
         if(inputStr == null) {

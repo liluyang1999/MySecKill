@@ -5,12 +5,13 @@ import com.example.lly.entity.rbac.User;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Set;
 
 public interface UserSecurityService {
 
-    boolean containsUserRole(List<Role> roles);
+    boolean containsUserRole(Set<Role> roles);
 
-    boolean containsAdminRole(List<Role> roles);
+    boolean containsAdminRole(Set<Role> roles);
 
     User getUserByUsername(String username);
 

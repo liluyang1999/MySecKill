@@ -14,5 +14,4 @@ public class RedisConsumer {
     @Autowired
     private SeckillService seckillService;
 
-
 }
