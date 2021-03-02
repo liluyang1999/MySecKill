@@ -152,7 +152,8 @@
             <div class="layui-col-md12" style="padding: 10px;text-align: center">
                 <button class="layui-btn-radius layui-btn-lg layui-bg-orange" id="startSeckillBtn"
                         th:if="${hasSoldOut == false && ifOrder == false}"
-                        th:onclick="'javascript:startSeckillProgress(\''+${seckillInfo.getId()}+'\', getToken());'">
+                        onclick="inputVercode()">
+                    <!--                    th:onclick="'javascript:startSeckillProgress(\''+${seckillInfo.getId()}+'\', getToken());'"-->
                     点击秒杀
                 </button>
                 <button class="layui-btn-radius layui-btn-lg layui-bg-gray layui-btn-disabled"
@@ -244,7 +245,8 @@
             anim: 1,
             yes: function (index, layero) {
                 if (validateVercode()) {
-                    requestSeckillUrl([[${seckillInfo.getId()}]], getToken());
+                    // requestSeckillUrl([[${seckillInfo.getId()}]], getToken());
+                    startSeckillProgress([[${seckillInfo.getId()}]], getToken());
                 } else {
                     layer.msg('验证码错误(区分大小写)', {icon: 2});
                 }
@@ -308,6 +310,8 @@
                     $("#startSeckillBtn").prop("disabled", false).text("点击秒杀").attr("class", "layui-btn-radius layui-btn-lg layui-bg-orange");
                 }, 5000);
             }
+        } else {
+            layer.msg("无访问Url链接,请重新登录");
         }
     }
 
