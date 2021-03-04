@@ -11,7 +11,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class RedissLockUtil {
 
-    private static RedissonClient redissonClient;
+    public static RedissonClient redissonClient;
+
+    public static void setRedissonClient(RedissonClient locker) {
+        redissonClient = locker;
+    }
+
 
     /**
      * 加锁
@@ -93,10 +98,6 @@ public class RedissLockUtil {
         } catch (InterruptedException e) {
             return false;
         }
-    }
-
-    public void setRedissonClient(RedissonClient locker) {
-        redissonClient = locker;
     }
 
     /**

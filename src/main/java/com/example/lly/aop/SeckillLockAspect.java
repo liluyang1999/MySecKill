@@ -6,6 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -24,15 +25,15 @@ public class SeckillLockAspect {
     public void seckillLockAspect() {
     }
 
-
     @Around("seckillLockAspect()")
     public Object around(ProceedingJoinPoint joinPoint) {
         System.out.println("切面锁进入");
         boolean res;
         Object proceed = null;
         String lockKey = joinPoint.getArgs()[0] + "";
+        RLock rLock = RedissLockUtil.redissonClient.getFairLock(lockKey);
         try {
-            res = RedissLockUtil.tryLock(lockKey, TimeUnit.SECONDS, 3, 10);
+            res = rLock.tryLock(3, 10, TimeUnit.SECONDS);
             if (res) {
                 proceed = joinPoint.proceed();
             }
@@ -41,12 +42,11 @@ public class SeckillLockAspect {
             throw new RuntimeException();
         } finally {
             redisComponent.putAllSeckillInfos();  //下单结束后更新缓存
-            RedissLockUtil.unlock(lockKey);
+            rLock.unlock();
         }
         System.out.println("切面锁结束");
         return proceed;
     }
-
 
 }
 

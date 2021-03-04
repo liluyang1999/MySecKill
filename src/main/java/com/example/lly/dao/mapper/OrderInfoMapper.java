@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
 
-    @Results(id = "OrderInfoMap", value = {
+    @Results(id = "orderInfoMap", value = {
             @Result(property = "seckillInfoId", column = "seckillinfo_id", id = true),
             @Result(property = "userId", column = "user_id", id = true),
             @Result(property = "state", column = "state"),
@@ -18,13 +18,17 @@ public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
     @SelectProvider(type = OrderInfoSqlProvider.class, method = "queryById")
     OrderInfo queryById(@Param("seckillInfoId") Integer seckillInfoId, @Param("userId") Integer userId);
 
-    @ResultType(OrderInfo.class)
+    @ResultMap("orderInfoMap")
     @SelectProvider(type = OrderInfoSqlProvider.class, method = "queryAll")
     List<OrderInfo> queryAll();
 
-    @ResultType(OrderInfo.class)
+    @ResultMap("orderInfoMap")
+    @SelectProvider(type = OrderInfoSqlProvider.class, method = "queryByState")
+    List<OrderInfo> queryByState(Short state);
+
+    @ResultMap("orderInfoMap")
     @SelectProvider(type = OrderInfoSqlProvider.class, method = "queryByUserId")
-    List<OrderInfo> queryByUserId();
+    List<OrderInfo> queryByUserId(Integer userId);
 
     @InsertProvider(type = OrderInfoSqlProvider.class, method = "insert")
     int insert(OrderInfo orderInfo);

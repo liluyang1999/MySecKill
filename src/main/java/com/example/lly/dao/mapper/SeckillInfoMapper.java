@@ -60,16 +60,16 @@ public interface SeckillInfoMapper extends BaseMapper<SeckillInfo> {
      * 按照活动ID增加库存，手动设定增加的库存量
      */
     @UpdateProvider(type = SeckillInfoSqlProvider.class, method = "increaseNumber")
-    int increaseNumber(@Param("seckillId") long seckillId);
+    int increaseNumber(@Param("seckillId") Long seckillId);
 
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryNumberById")
-    int queryNumberById(@Param("seckillInfoId") Integer seckillInfoId);
+    int queryNumberById(@Param("id") Integer id);
 
     /**
      * 按照索引值(从零开始)最大数量来查询，对应SQL语句的LIMIT用法
      */
     @ResultMap("seckillInfoMap")
     @SelectProvider(type = SeckillInfoSqlProvider.class, method = "queryByLimit")
-    List<SeckillInfo> queryByLimit(@Param("index") int index, @Param("limit") int limit);
+    List<SeckillInfo> queryByLimit(@Param("index") Integer index, @Param("limit") Integer limit);
 
 }

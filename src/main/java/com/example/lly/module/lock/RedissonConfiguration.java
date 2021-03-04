@@ -63,13 +63,12 @@ public class RedissonConfiguration {
 
     /**
      * 装配locker类，并将实例注入到RedissLockUtil中
-     *
      * @return redissLockUtil
      */
     @Bean
     RedissLockUtil redissLockUtil(RedissonClient redissonClient) {
         RedissLockUtil redissLockUtil = new RedissLockUtil();
-        redissLockUtil.setRedissonClient(redissonClient);
+        RedissLockUtil.setRedissonClient(redissonClient);
         return redissLockUtil;
     }
 

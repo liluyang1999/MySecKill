@@ -5,7 +5,6 @@ import com.example.lly.entity.rbac.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.List;
 import java.util.Set;
 
 @Mapper
@@ -23,6 +22,6 @@ public interface UserRoleMapper {
 
     @Select("SELECT account FROM t_user WHERE" +
             " id IN (SELECT user_id FROM t_user_role WHERE role_id = #{id})")
-    List<String> queryAllUserAccountByRoleId(Integer roleId);
+    Set<String> queryAllUserAccountByRoleId(Integer roleId);
 
 }

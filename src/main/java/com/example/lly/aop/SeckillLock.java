@@ -8,6 +8,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface SeckillLock {
 
-    String description() default "自定义注解实现秒杀限流";
+    String description() default "自定义注解实现AOP锁";
 
 }
