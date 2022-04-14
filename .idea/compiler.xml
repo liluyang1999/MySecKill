@@ -11,7 +11,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="MySeckill" target="15" />
+      <module name="lly" target="1.5" />
+      <module name="MySeckill" target="16" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
