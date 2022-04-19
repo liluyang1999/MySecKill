@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SeckillLimitAspect {
 
-
     //每个IP分配相应的令牌桶，每天定时清空刷新
     private static final LoadingCache<String, RateLimiter> loadingCaches = CacheBuilder.newBuilder()
             .expireAfterAccess(1, TimeUnit.DAYS)  //有效期为一天
