@@ -10,8 +10,8 @@
         <module name="MySecKill" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="MySecKill" target="16" />
+    <bytecodeTargetLevel target="14">
+      <module name="MySecKill" target="14" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
