@@ -18,7 +18,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
-          <factory-entry name="MySeckill" />
+          <factory-entry name="MySecKill" />
           <factory-entry name="entityManagerFactory" value="928c06a7-49f5-44ef-bd30-2d8cc02e4f2e" />
         </datasource-mapping>
         <naming-strategy-map />
