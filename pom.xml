@@ -12,8 +12,8 @@
     <groupId>com.example</groupId>
     <artifactId>lly</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>MySeckill</name>
-    <description>MySeckill project for Spring Boot</description>
+    <name>MySecKill</name>
+    <description>MySecKill project for Spring Boot</description>
 
     <properties>
         <java.version>16</java.version>
