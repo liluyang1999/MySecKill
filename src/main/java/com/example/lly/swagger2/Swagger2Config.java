@@ -18,7 +18,7 @@ public class Swagger2Config {
     //设置浏览网页的地址
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("秒杀系统接口文档")
-                                    .contact(new Contact("lly的学习笔记", "https://github.com/liluyang1999", "liluyang1999@qq.com"))
+                                    .contact(new Contact("lly的学习笔记", "https://github.com/liluyang1999", "liluyang1999@163.com"))
                                     .termsOfServiceUrl("https://www.baidu.com")
                                     .version("1.0")
                                     .build();
@@ -26,7 +26,7 @@ public class Swagger2Config {
 
     @Bean
     public Docket mySecKillApi() {    //以controller包为基准来生成API文档，路径不限制，生成SelectorBuilder后再把这个Docket给build出来
-        return new Docket(DocumentationType.SWAGGER_2).groupName("MySecKill")
+        return new Docket(DocumentationType.SWAGGER_2).groupName("SecKillSystem")
                                                         .apiInfo(this.apiInfo())
                                                         .select()
                                                         .paths(PathSelectors.any())   //路径

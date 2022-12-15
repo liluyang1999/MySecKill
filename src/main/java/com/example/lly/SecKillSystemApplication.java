@@ -16,13 +16,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableCaching
 @EnableTransactionManagement
 @SpringBootApplication
-public class MySecKillApplication {
+public class SecKillSystemApplication {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MySecKillApplication.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SecKillSystemApplication.class);
 
     public static void main(String[] args) {
 		LOGGER.info("秒杀项目开始启动");
-		SpringApplication springApplication = new SpringApplication(MySecKillApplication.class);
+		SpringApplication springApplication = new SpringApplication(SecKillSystemApplication.class);
 		springApplication.setBannerMode(Banner.Mode.CONSOLE);
         springApplication.run(args);
 	}
