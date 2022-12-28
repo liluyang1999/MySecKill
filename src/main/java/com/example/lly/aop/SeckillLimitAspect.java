@@ -36,8 +36,7 @@ public class SeckillLimitAspect {
             });
 
     @Pointcut("@annotation(com.example.lly.aop.SeckillLimit)") //切入点, 作用于方法上
-    public void seckillLimitAspect() {
-    }
+    public void seckillLimitAspect() {  }
 
     @Around("seckillLimitAspect()")
     public Object around(ProceedingJoinPoint joinPoint) {

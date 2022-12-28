@@ -10,7 +10,7 @@
         <module name="SeckillSystem" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="14">
+    <bytecodeTargetLevel target="16">
       <module name="SeckillSystem" target="16" />
     </bytecodeTargetLevel>
   </component>
