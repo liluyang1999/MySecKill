@@ -7,16 +7,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="SeckillSystem" />
+        <module name="seckill-system" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="16">
-      <module name="SeckillSystem" target="16" />
+      <module name="seckill-system" target="16" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="SeckillSystem" options="-parameters" />
+      <module name="seckill-system" options="-parameters" />
     </option>
   </component>
 </project>

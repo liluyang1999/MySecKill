@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SeckillSystem.iml" filepath="$PROJECT_DIR$/SeckillSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/seckill-system.iml" filepath="$PROJECT_DIR$/seckill-system.iml" />
     </modules>
   </component>
 </project>
